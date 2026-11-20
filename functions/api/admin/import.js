@@ -4,6 +4,8 @@
  * 识别 id 列 + 审核状态列（支持：通过/approved/1/是 -> approved；不通过/拒绝/rejected/0/否 -> rejected；其余 -> pending）
  */
 
+import { isAdminPasswordValid } from '../../_admin-auth.js';
+
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
@@ -43,9 +45,9 @@ function normalizeStatus(raw) {
 }
 
 export async function onRequestPost({ request, env }) {
-  const expected = env.ADMIN_PASSWORD || '';
-  const got = request.headers.get('x-admin-key') || '';
-  if (!expected || got !== expected) return json({ ok: false, error: 'UNAUTHORIZED' }, 401);
+  if (!isAdminPasswordValid(request.headers.get('x-admin-key'), env)) {
+    return json({ ok: false, error: 'UNAUTHORIZED' }, 401);
+  }
   if (!env.DB) return json({ ok: false, error: 'DB_NOT_BOUND' }, 503);
 
   const csvText = await request.text();

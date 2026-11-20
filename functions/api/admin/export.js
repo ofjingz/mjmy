@@ -3,6 +3,8 @@
  * GET /api/admin/export
  */
 
+import { isAdminPasswordValid } from '../../_admin-auth.js';
+
 function csvCell(value) {
   const s = String(value ?? '');
   if (/[",\r\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
@@ -12,10 +14,9 @@ function csvCell(value) {
 const STATUS_ZH = { pending: '待审核', approved: '通过', rejected: '不通过' };
 
 export async function onRequestGet({ request, env }) {
-  const expected = env.ADMIN_PASSWORD || '';
   const url = new URL(request.url);
   const got = request.headers.get('x-admin-key') || url.searchParams.get('key') || '';
-  if (!expected || got !== expected) {
+  if (!isAdminPasswordValid(got, env)) {
     return new Response('Unauthorized', { status: 401 });
   }
   if (!env.DB) return new Response('DB_NOT_BOUND', { status: 503 });

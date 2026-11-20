@@ -1,9 +1,11 @@
 /**
- * 留言板管理员审核接口（需 Header: x-admin-key 匹配环境变量 ADMIN_PASSWORD）
+ * 留言板管理员审核接口（需 Header: x-admin-key 匹配任一管理员密码）
  * GET    /api/admin/notes        -> 拉取全部留言（pending / approved / rejected）
  * PATCH  /api/admin/notes        -> 批量或单条修改 status ({ id, status } 或 { items: [...] })
  * DELETE /api/admin/notes?id=123 -> 删除单条留言
  */
+
+import { isAdminPasswordValid } from '../../_admin-auth.js';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -13,9 +15,7 @@ function json(data, status = 200) {
 }
 
 function checkAuth(request, env) {
-  const expected = env.ADMIN_PASSWORD || '';
-  const got = request.headers.get('x-admin-key') || '';
-  return Boolean(expected) && got === expected;
+  return isAdminPasswordValid(request.headers.get('x-admin-key'), env);
 }
 
 export async function onRequestGet({ request, env }) {
