@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>幕间漫游 · 首页视觉方案对比预览（方案 1 vs 方案 3 × 色温微调）</title>
+<link rel="stylesheet" href="/shared/shell.css">
+<style>
+:root {
+  --ease-cinema: cubic-bezier(0.22, 0.72, 0.2, 1);
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  min-height: 100%;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* ============================================================
+   4 套色温令牌（含《电影 101 夜》瓦尔达海报气质微调）
+   ============================================================ */
+body[data-theme="darkroom"] {
+  color-scheme: dark;
+  --bg-top: #1a202a;
+  --bg-mid: #101319;
+  --bg-bot: #090a0e;
+  --glow-a: rgba(212, 163, 89, 0.14);
+  --glow-b: rgba(110, 145, 168, 0.10);
+  --glow-c: rgba(212, 163, 89, 0.06);
+  --fg: #f3efe6;
+  --fg-muted: rgba(243, 239, 230, 0.68);
+  --fg-subtle: rgba(243, 239, 230, 0.44);
+  --accent: #d4a359;
+  --accent-soft: rgba(212, 163, 89, 0.20);
+  --accent-contrast: #14110b;
+  --glass: rgba(17, 20, 28, 0.72);
+  --glass-border: rgba(243, 239, 230, 0.12);
+  --card-bg: rgba(24, 29, 39, 0.62);
+  --card-hover: rgba(34, 40, 54, 0.82);
+  --star-opacity: 0.35;
+}
+
+/* 《101夜》星夜梦境：星夜钴蓝 + 丝绒梅紫底晕 + 暖金灯牌 */
+body[data-theme="nuit101"] {
+  color-scheme: dark;
+  --bg-top: #152b63;
+  --bg-mid: #0c1739;
+  --bg-bot: #1e0b22;
+  --glow-a: rgba(245, 199, 101, 0.17);
+  --glow-b: rgba(184, 46, 107, 0.28);
+  --glow-c: rgba(82, 134, 240, 0.22);
+  --fg: #fff7e8;
+  --fg-muted: rgba(255, 244, 224, 0.72);
+  --fg-subtle: rgba(245, 222, 196, 0.48);
+  --accent: #f3c464;
+  --accent-soft: rgba(243, 196, 100, 0.22);
+  --accent-contrast: #1a1019;
+  --glass: rgba(12, 20, 48, 0.72);
+  --glass-border: rgba(255, 241, 214, 0.16);
+  --card-bg: rgba(18, 29, 64, 0.60);
+  --card-hover: rgba(35, 31, 66, 0.84);
+  --star-opacity: 0.92;
+}
+
+/* 《101夜》克制暗调：午夜暗房为骨，揉进普鲁士夜蓝与极淡丝绒梅紫 */
+body[data-theme="nuit101-subtle"] {
+  color-scheme: dark;
+  --bg-top: #141f38;
+  --bg-mid: #0c111f;
+  --bg-bot: #140b15;
+  --glow-a: rgba(226, 180, 100, 0.15);
+  --glow-b: rgba(150, 30, 83, 0.18);
+  --glow-c: rgba(74, 114, 188, 0.14);
+  --fg: #f5f0e6;
+  --fg-muted: rgba(245, 240, 230, 0.70);
+  --fg-subtle: rgba(245, 240, 230, 0.45);
+  --accent: #e0b263;
+  --accent-soft: rgba(224, 178, 99, 0.20);
+  --accent-contrast: #16110e;
+  --glass: rgba(15, 19, 32, 0.76);
+  --glass-border: rgba(245, 240, 230, 0.13);
+  --card-bg: rgba(20, 26, 42, 0.62);
+  --card-hover: rgba(32, 30, 48, 0.84);
+  --star-opacity: 0.65;
+}
+
+/* 档案温纸：适合目录深看 */
+body[data-theme="paper"] {
+  color-scheme: light;
+  --bg-top: #f6f3ec;
+  --bg-mid: #f2ede2;
+  --bg-bot: #ebe1ce;
+  --glow-a: rgba(184, 64, 47, 0.06);
+  --glow-b: rgba(212, 163, 89, 0.10);
+  --glow-c: rgba(110, 135, 168, 0.06);
+  --fg: #181614;
+  --fg-muted: rgba(24, 22, 20, 0.68);
+  --fg-subtle: rgba(24, 22, 20, 0.46);
+  --accent: #b8402f;
+  --accent-soft: rgba(184, 64, 47, 0.12);
+  --accent-contrast: #f6f3ec;
+  --glass: rgba(248, 244, 236, 0.84);
+  --glass-border: rgba(24, 22, 20, 0.10);
+  --card-bg: rgba(255, 253, 248, 0.78);
+  --card-hover: rgba(255, 255, 255, 0.96);
+  --star-opacity: 0;
+}
+
+body {
+  background: var(--bg-bot);
+  color: var(--fg);
+  transition: color 0.55s var(--ease-cinema);
+}
+
+/* Fixed atmospheric backdrop */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 68% 48% at 22% 16%, var(--glow-c), transparent 72%),
+    radial-gradient(ellipse 72% 52% at 78% 88%, var(--glow-b), transparent 70%),
+    radial-gradient(ellipse 56% 42% at 50% 42%, var(--glow-a), transparent 72%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 52%, var(--bg-bot) 100%);
+  transition: background 0.7s var(--ease-cinema);
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Starlight & projector dust canvas — strictly locked to viewport */
+#sky-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Topbar + Curator Control Dock */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  padding: max(12px, env(safe-area-inset-top)) clamp(16px, 3vw, 34px) 12px;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.brand-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  color: var(--fg);
+  text-decoration: none;
+}
+.brand-sub {
+  font-size: 12px;
+  color: var(--fg-muted);
+  letter-spacing: 0.04em;
+}
+
+.controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.seg-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(128, 128, 128, 0.12);
+  border: 1px solid var(--glass-border);
+}
+
+.seg-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--fg-muted);
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+}
+.seg-btn:hover { color: var(--fg); }
+.seg-btn.is-active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 500;
+}
+
+.swatch-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.toggle-chip {
+  appearance: none;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--fg-muted);
+  font-family: var(--font-body);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.25s, color 0.25s, background-color 0.25s;
+}
+.toggle-chip:hover { color: var(--fg); }
+.toggle-chip.is-on {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Info Banner */
+.compare-hint {
+  position: relative;
+  z-index: 10;
+  max-width: 1260px;
+  margin: 18px auto 0;
+  padding: 0 clamp(16px, 3vw, 34px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+.compare-hint strong {
+  color: var(--fg);
+  font-weight: 500;
+}
+.back-real {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 12.5px;
+}
+.back-real:hover { text-decoration: underline; }
+
+/* ============================================================
+   ROAM STAGE (方案 1 & 方案 3)
+   ============================================================ */
+.stage-wrap {
+  position: relative;
+  z-index: 10;
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: clamp(22px, 3.5vh, 44px) clamp(18px, 3.5vw, 42px) 92px;
+}
+
+.roam-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(24px, 3.6vw, 44px) clamp(18px, 2.8vw, 36px);
+  align-items: start;
+}
+
+/* Organic staggered heights so it feels like a floating cinema constellation, NOT a rigid grid */
+.portal:nth-child(2) { margin-top: 34px; }
+.portal:nth-child(3) { margin-top: 10px; }
+.portal:nth-child(4) { margin-top: 42px; }
+.portal:nth-child(5) { margin-top: 18px; }
+.portal:nth-child(6) { margin-top: -6px; }
+.portal:nth-child(7) { margin-top: 28px; }
+.portal:nth-child(8) { margin-top: 6px; }
+
+.portal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  perspective: 900px;
+  cursor: pointer;
+  outline: none;
+  z-index: 1;
+  transition: z-index 0s;
+}
+.portal:hover, .portal:focus-visible, .portal.is-peek {
+  z-index: 30;
+}
+
+/* 3D Object Stage */
+.portal-stage {
+  position: relative;
+  width: clamp(154px, 16.5vw, 214px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+  transition: transform 0.55s var(--ease-cinema);
+  animation: float-bob var(--dur, 7.5s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+}
+.portal:hover .portal-stage,
+.portal:focus-visible .portal-stage,
+.portal.is-peek .portal-stage {
+  animation-play-state: paused;
+}
+
+@keyframes float-bob {
+  from { transform: translate3d(0, -6px, 0) rotate(-1.2deg); }
+  to   { transform: translate3d(0, 8px, 0) rotate(1.4deg); }
+}
+
+/* Luminous ambient halo behind 3D artifact */
+.portal-halo {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--node-glow, rgba(243, 196, 100, 0.34)) 0%, transparent 68%);
+  filter: blur(18px);
+  opacity: 0.48;
+  transform: translateZ(-20px) scale(0.92);
+  transition: opacity 0.45s var(--ease-cinema), transform 0.55s var(--ease-cinema);
+  pointer-events: none;
+}
+body[data-theme="paper"] .portal-halo {
+  opacity: 0.22;
+}
+.portal:hover .portal-halo,
+.portal.is-lit .portal-halo,
+.portal.is-peek .portal-halo {
+  opacity: 0.92;
+  transform: translateZ(-20px) scale(1.14);
+}
+
+/* The actual handcrafted 3D artifact image */
+.portal-obj {
+  position: relative;
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  transform: translateZ(24px);
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.52));
+  transition: transform 0.5s var(--ease-cinema), filter 0.5s var(--ease-cinema), opacity 0.45s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+body[data-theme="paper"] .portal-obj {
+  filter: drop-shadow(0 14px 20px rgba(34, 24, 14, 0.24));
+}
+
+/* Unvisited dim mystery mode (when footprint simulation is ON) */
+body.sim-footprint .portal:not(.is-lit) .portal-obj {
+  filter: saturate(0.45) brightness(0.76) drop-shadow(0 14px 22px rgba(0, 0, 0, 0.55));
+}
+body.sim-footprint .portal:not(.is-lit):hover .portal-obj,
+body.sim-footprint .portal:not(.is-lit).is-peek .portal-obj {
+  filter: saturate(1.06) brightness(1.06) drop-shadow(0 22px 34px rgba(0, 0, 0, 0.62));
+}
+
+.portal:hover .portal-obj,
+.portal.is-peek .portal-obj {
+  transform: translateZ(42px) scale(1.08);
+  filter: brightness(1.06) drop-shadow(0 24px 36px rgba(0, 0, 0, 0.62));
+}
+body[data-theme="paper"] .portal:hover .portal-obj {
+  filter: brightness(1.04) drop-shadow(0 20px 26px rgba(34, 24, 14, 0.30));
+}
+
+/* Bespoke playful micro-motion per artifact on hover */
+.portal[data-id="cinema"]:hover .portal-obj { transform: translateZ(44px) scale(1.08) rotate(8deg); }
+.portal[data-id="101"]:hover .portal-obj    { transform: translateZ(44px) scale(1.08) rotate(-10deg); }
+.portal[data-id="same"]:hover .portal-obj   { transform: translateZ(44px) scale(1.09) rotate(4deg); }
+.portal[data-id="next"]:hover .portal-obj   { transform: translateZ(44px) scale(1.08) translateY(-6px); }
+
+/* Tiny marquee star / lit indicator */
+.lit-pip {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg-subtle);
+  margin-right: 6px;
+  vertical-align: middle;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+.portal.is-lit .lit-pip {
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* Typography beneath object (Long Cang display + PingFang body) */
+.portal-meta {
+  text-align: center;
+  margin-top: 8px;
+  max-width: 220px;
+}
+.portal-title {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.2vw, 30px);
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  color: var(--fg);
+  transition: color 0.3s ease, text-shadow 0.35s ease;
+}
+.portal:hover .portal-title,
+.portal.is-peek .portal-title {
+  color: var(--accent);
+  text-shadow: 0 0 22px var(--accent-soft);
+}
+.portal-contrib {
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.45;
+}
+.portal-tag {
+  margin-top: 4px;
+  font-size: 11.5px;
+  color: var(--fg-subtle);
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+/* ============================================================
+   方案 3 专属魔术：靠近时从 3D 物件旁投射「真实展品胶片帧」
+   ============================================================ */
+.portal-stage {
+  z-index: 2;
+}
+.portal-meta {
+  position: relative;
+  z-index: 1;
+}
+.proj-card {
+  position: absolute;
+  left: calc(50% + 92px);
+  top: 12px;
+  width: 240px;
+  transform: translate3d(-12px, 6px, 0) scale(0.92) rotate(1.4deg);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 60;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(12, 15, 24, 0.95);
+  border: 1px solid rgba(255, 241, 214, 0.24);
+  box-shadow: 0 24px 56px rgba(0, 0, 0, 0.68), 0 0 32px var(--accent-soft);
+  backdrop-filter: blur(14px);
+  transition: opacity 0.32s var(--ease-cinema), transform 0.42s var(--ease-cinema);
+}
+body[data-theme="paper"] .proj-card {
+  background: rgba(252, 249, 242, 0.98);
+  border-color: rgba(24, 22, 20, 0.14);
+  box-shadow: 0 18px 42px rgba(34, 24, 14, 0.24);
+}
+
+/* Rightmost column (4th & 8th) opens to the left so it never clips viewport edge */
+.portal:nth-child(4n) .proj-card {
+  left: auto;
+  right: calc(50% + 92px);
+  transform: translate3d(12px, 6px, 0) scale(0.92) rotate(-1.4deg);
+}
+
+body[data-mode="scheme3"] .portal:hover .proj-card,
+body[data-mode="scheme3"] .portal:focus-visible .proj-card,
+body[data-mode="scheme3"] .portal.is-peek .proj-card {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1) rotate(0.6deg);
+}
+body[data-mode="scheme3"] .portal:nth-child(4n):hover .proj-card,
+body[data-mode="scheme3"] .portal:nth-child(4n):focus-visible .proj-card,
+body[data-mode="scheme3"] .portal:nth-child(4n).is-peek .proj-card {
+  transform: translate3d(0, 0, 0) scale(1) rotate(-0.6deg);
+}
+
+.proj-film-strip {
+  height: 10px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 8px, rgba(255, 246, 227, 0.28) 8px 13px, transparent 13px 22px),
+    rgba(0, 0, 0, 0.45);
+}
+.proj-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #0a0c10;
+  overflow: hidden;
+}
+.proj-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.06);
+  filter: saturate(0.7) blur(2px);
+  transition: transform 0.65s var(--ease-cinema), filter 0.55s var(--ease-cinema);
+}
+body[data-mode="scheme3"] .portal:hover .proj-img-wrap img,
+body[data-mode="scheme3"] .portal.is-peek .proj-img-wrap img {
+  transform: scale(1);
+  filter: saturate(1) blur(0);
+}
+.proj-caption {
+  padding: 10px 12px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.proj-kicker {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.proj-line {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fg);
+}
+.proj-enter {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+/* ============================================================
+   CATALOG VIEW PREVIEW (3D 物件落在目录卡里)
+   ============================================================ */
+.catalog-wrap {
+  display: none;
+  position: relative;
+  z-index: 10;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 24px clamp(18px, 3.5vw, 40px) 84px;
+}
+body[data-mode="catalog"] .stage-wrap { display: none; }
+body[data-mode="catalog"] .catalog-wrap { display: block; }
+
+.catalog-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.catalog-top h2 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: 0.06em;
+}
+.catalog-top span {
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.cat-card {
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: var(--card-bg);
+  text-decoration: none;
+  color: inherit;
+  backdrop-filter: blur(10px);
+  transition: transform 0.35s var(--ease-cinema), background-color 0.3s ease, box-shadow 0.35s ease;
+}
+.cat-card:hover {
+  transform: translateY(-3px);
+  background: var(--card-hover);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+}
+.cat-thumb {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+}
+.cat-thumb img.obj {
+  width: 86px;
+  height: 86px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.26));
+  transition: transform 0.4s var(--ease-cinema);
+}
+.cat-card:hover .cat-thumb img.obj {
+  transform: scale(1.1) rotate(-3deg);
+}
+.cat-mini-photo {
+  position: absolute;
+  right: -4px;
+  bottom: 0;
+  width: 42px;
+  height: 30px;
+  border-radius: 5px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  border: 1.5px solid var(--card-hover);
+  transform: rotate(4deg);
+  transition: transform 0.35s var(--ease-cinema);
+}
+.cat-card:hover .cat-mini-photo {
+  transform: rotate(0deg) scale(1.12);
+}
+.cat-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.25;
+}
+.cat-contrib {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin-top: 3px;
+}
+.cat-desc {
+  font-size: 12.5px;
+  color: var(--fg-subtle);
+  margin-top: 5px;
+}
+.cat-arrow {
+  font-size: 18px;
+  color: var(--accent);
+  transition: transform 0.25s ease;
+}
+.cat-card:hover .cat-arrow { transform: translateX(4px); }
+
+/* Mobile */
+@media (max-width: 920px) {
+  .roam-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 16px;
+  }
+  .portal:nth-child(n) { margin-top: 0; }
+  .portal:nth-child(even) { margin-top: 22px; }
+  .portal-stage { width: clamp(134px, 38vw, 174px); }
+  .cat-grid { grid-template-columns: 1fr; }
+  .proj-card { width: 210px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-stage { animation: none !important; }
+  * { transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body data-mode="scheme3" data-theme="nuit101-subtle">
+  <div class="backdrop" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <canvas id="sky-canvas" aria-hidden="true"></canvas>
+
+  <header class="topbar">
+    <div class="brand-wrap">
+      <a class="brand-title" href="/hub/#hall">幕间漫游</a>
+      <span class="brand-sub">首页入口方案预览 · 可实时切换体验</span>
+    </div>
+
+    <div class="controls-bar">
+      <!-- 方案切换 -->
+      <div class="seg-group" role="group" aria-label="方案切换">
+        <button class="seg-btn" data-set-mode="scheme1">方案 1 · 纯 3D 物件</button>
+        <button class="seg-btn is-active" data-set-mode="scheme3">方案 3 · 3D + 投射真图</button>
+        <button class="seg-btn" data-set-mode="catalog">目录卡片预览</button>
+      </div>
+
+      <!-- 底色色温切换 -->
+      <div class="seg-group" role="group" aria-label="底色色温切换">
+        <button class="seg-btn" data-set-theme="darkroom"><span class="swatch-dot" style="background:#1b2028;border:1px solid #d4a359"></span>午夜暗房</button>
+        <button class="seg-btn is-active" data-set-theme="nuit101-subtle"><span class="swatch-dot" style="background:#142244;border:1px solid #b82e6b"></span>101夜 · 克制暗调</button>
+        <button class="seg-btn" data-set-theme="nuit101"><span class="swatch-dot" style="background:#1a3880;border:1px solid #f3c464"></span>101夜 · 星夜梦境</button>
+        <button class="seg-btn" data-set-theme="paper"><span class="swatch-dot" style="background:#f4f1e9;border:1px solid #b8402f"></span>档案温纸</button>
+      </div>
+
+      <button id="sim-fp-btn" class="toggle-chip" type="button">模拟足迹点亮：关</button>
+    </div>
+  </header>
+
+  <div class="compare-hint">
+    <div id="mode-desc">
+      <strong>当前：方案 3（3D 奇幻物件 × 靠近投射真实展品）</strong> — 鼠标滑过或轻点任意物件，看它立体倾斜并投射出该展区真实照片帧。
+    </div>
+    <a class="back-real" href="/hub/#hall">← 回到当前正式首页</a>
+  </div>
+
+  <!-- 方案 1 / 方案 3 共用漫游舞台 -->
+  <main class="stage-wrap">
+    <div class="roam-grid" id="roam-grid"></div>
+  </main>
+
+  <!-- 目录视图预览 -->
+  <section class="catalog-wrap">
+    <div class="catalog-top">
+      <h2>展区目录</h2>
+      <span>3D 物件 + 真实展品角标 · 浅纸/深场都清晰可辨</span>
+    </div>
+    <div class="cat-grid" id="cat-grid"></div>
+  </section>
+
+<script>
+(function () {
+  var ITEMS = [
+    {
+      id: 'linli',
+      title: '活动手记',
+      contrib: '林立',
+      tagline: '在影像中相遇：欧洲电影策展手记',
+      href: '/linli/',
+      obj: './preview-assets/obj-linli.png',
+      photo: '/linli/media/thumbs/thumb-01.jpg',
+      kicker: 'REEL 01 · SEASIDE SCREENING',
+      glow: 'rgba(98, 168, 245, 0.36)',
+      dur: '7.4s', delay: '-0.6s', lit: true
+    },
+    {
+      id: 'cinema',
+      title: '全球影院',
+      contrib: 'miyra · 好好学姐 · 无名客 · 还是黑 · 凯议 · Joey',
+      tagline: '16 座城市电影空间与 56 张胶片记忆',
+      href: '/cinema/',
+      obj: './preview-assets/obj-cinema.png',
+      photo: '/cinema/assets/photos/academy-museum/01.webp',
+      kicker: 'REEL 02 · 16 ART CINEMAS',
+      glow: 'rgba(110, 190, 196, 0.36)',
+      dur: '8.2s', delay: '-2.1s', lit: true
+    },
+    {
+      id: 'letter',
+      title: '影 诗',
+      contrib: '凯议 · 陆陆 · 小文 · 梓鸽 · Joey',
+      tagline: '迷影书信文章与 11 支影迷短视频',
+      href: '/letter/',
+      obj: './preview-assets/obj-letter.png',
+      photo: '/letter/media/kaiyi-australia/photo-01.jpg',
+      kicker: 'REEL 03 · LETTERS & SHORTS',
+      glow: 'rgba(245, 206, 134, 0.38)',
+      dur: '7.8s', delay: '-3.4s', lit: false
+    },
+    {
+      id: '101',
+      title: '电影101工作室',
+      contrib: '101',
+      tagline: '等一部电影：1996—2026 民间放映三十年',
+      href: '/101/',
+      obj: './preview-assets/obj-101.png',
+      photo: '/101/assets/07-tarkovsky-1999.jpg',
+      kicker: 'REEL 04 · 1996 — 2026 ARCHIVE',
+      glow: 'rgba(228, 166, 84, 0.40)',
+      dur: '8.6s', delay: '-1.3s', lit: true
+    },
+    {
+      id: 'vibecoding',
+      title: 'vibecoding 合集',
+      contrib: '文文 · 李锐鸿 · Yang',
+      tagline: '影迷自己写给影迷的排片与观影小工具',
+      href: '/vibecoding/',
+      obj: './preview-assets/obj-vibecoding.png',
+      photo: '/vibecoding/media/yang-gomovie.jpg',
+      kicker: 'REEL 05 · CINEPHILE TOOLS',
+      glow: 'rgba(242, 184, 96, 0.36)',
+      dur: '7.1s', delay: '-4.2s', lit: false
+    },
+    {
+      id: 'collection',
+      title: '收藏背后',
+      contrib: '还是黑',
+      tagline: '书、碟、剧照、帆布袋与远方朋友的赠礼',
+      href: '/collection/',
+      obj: './preview-assets/obj-collection.png',
+      photo: '/collection/media/gallery/col-01.jpg',
+      kicker: 'REEL 06 · KEEPSAKES & GIFTS',
+      glow: 'rgba(196, 78, 128, 0.38)',
+      dur: '8.0s', delay: '-2.8s', lit: false
+    },
+    {
+      id: 'next',
+      title: '下场看什么',
+      contrib: 'Felix',
+      tagline: '从第一场《椒麻堂会》到千人共看的放映史',
+      href: '/next/',
+      obj: './preview-assets/obj-next.png',
+      photo: '/next/media/art-alliance-01.jpg',
+      kicker: 'REEL 07 · COMMUNITY SCREENINGS',
+      glow: 'rgba(218, 72, 82, 0.38)',
+      dur: '7.6s', delay: '-1.7s', lit: false
+    },
+    {
+      id: 'same',
+      title: 'same',
+      contrib: 'kai',
+      tagline: 'SAME 文明观影宣传片与胶片放映档案',
+      href: '/same/',
+      obj: './preview-assets/obj-same.png',
+      photo: '/same/media/same-01.jpg',
+      kicker: 'REEL 08 · 35MM ETIQUETTE',
+      glow: 'rgba(116, 158, 240, 0.38)',
+      dur: '8.4s', delay: '-3.9s', lit: false
+    }
+  ];
+
+  var roamGrid = document.getElementById('roam-grid');
+  var catGrid = document.getElementById('cat-grid');
+  var modeDesc = document.getElementById('mode-desc');
+
+  ITEMS.forEach(function (item) {
+    // Roam node
+    var a = document.createElement('a');
+    a.className = 'portal' + (item.lit ? ' is-lit' : '');
+    a.href = item.href;
+    a.dataset.id = item.id;
+    a.style.setProperty('--node-glow', item.glow);
+    a.style.setProperty('--dur', item.dur);
+    a.style.setProperty('--delay', item.delay);
+    a.innerHTML =
+      '<div class="portal-stage">' +
+        '<div class="portal-halo"></div>' +
+        '<img class="portal-obj" src="' + item.obj + '" alt="' + item.title + '" width="512" height="512">' +
+      '</div>' +
+      '<div class="portal-meta">' +
+        '<div class="portal-title"><span class="lit-pip"></span>' + item.title + '</div>' +
+        '<div class="portal-contrib">' + item.contrib + '</div>' +
+        '<div class="portal-tag">' + item.tagline + '</div>' +
+      '</div>' +
+      '<div class="proj-card" aria-hidden="true">' +
+        '<div class="proj-film-strip"></div>' +
+        '<div class="proj-img-wrap"><img src="' + item.photo + '" alt="" loading="lazy"></div>' +
+        '<div class="proj-caption">' +
+          '<span class="proj-kicker">' + item.kicker + '</span>' +
+          '<span class="proj-line">' + item.tagline + '</span>' +
+          '<span class="proj-enter">点击进入展厅 ↗</span>' +
+        '</div>' +
+      '</div>';
+
+    // Gentle 3D tilt following cursor
+    var stage = a.querySelector('.portal-stage');
+    a.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
+      var r = stage.getBoundingClientRect();
+      var nx = (e.clientX - r.left) / r.width - 0.5;
+      var ny = (e.clientY - r.top) / r.height - 0.5;
+      stage.style.transform = 'rotateY(' + (nx * 18).toFixed(1) + 'deg) rotateX(' + (-ny * 16).toFixed(1) + 'deg) translateY(-6px)';
+    });
+    a.addEventListener('pointerleave', function () {
+      stage.style.transform = '';
+    });
+
+    roamGrid.appendChild(a);
+
+    // Catalog card
+    var c = document.createElement('a');
+    c.className = 'cat-card';
+    c.href = item.href;
+    c.innerHTML =
+      '<div class="cat-thumb">' +
+        '<img class="obj" src="' + item.obj + '" alt="" width="512" height="512">' +
+        '<img class="cat-mini-photo" src="' + item.photo + '" alt="" loading="lazy">' +
+      '</div>' +
+      '<div>' +
+        '<div class="cat-title">' + item.title + '</div>' +
+        '<div class="cat-contrib">' + item.contrib + '</div>' +
+        '<div class="cat-desc">' + item.tagline + '</div>' +
+      '</div>' +
+      '<span class="cat-arrow">→</span>';
+    catGrid.appendChild(c);
+  });
+
+  // Mode switcher
+  var MODE_TEXT = {
+    scheme1: '<strong>当前：方案 1（纯 3D 奇幻物件剧场）</strong> — 画面极致纯粹，8 件定制微缩电影物件随光标立体倾斜、呼吸发光，零遮挡。',
+    scheme3: '<strong>当前：方案 3（3D 奇幻物件 × 靠近投射真实展品）</strong> — 鼠标滑过任意物件，立体微倾的同时从旁边投射出该展区真实投稿照片帧。',
+    catalog: '<strong>当前：目录卡片预览</strong> — 8 枚 3D 物件叠配一小帧真实展品角标，点右上角可切换「档案温纸」或「101夜暗调」对比看。'
+  };
+
+  document.querySelectorAll('[data-set-mode]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var m = btn.getAttribute('data-set-mode');
+      document.body.setAttribute('data-mode', m);
+      document.querySelectorAll('[data-set-mode]').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+      modeDesc.innerHTML = MODE_TEXT[m] || '';
+      if (m === 'catalog' && document.body.getAttribute('data-theme') === 'darkroom') {
+        // Keep user's chosen theme, let them toggle freely
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-set-theme]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var t = btn.getAttribute('data-set-theme');
+      document.body.setAttribute('data-theme', t);
+      document.querySelectorAll('[data-set-theme]').forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+    });
+  });
+
+  var simBtn = document.getElementById('sim-fp-btn');
+  simBtn.addEventListener('click', function () {
+    var on = document.body.classList.toggle('sim-footprint');
+    simBtn.classList.toggle('is-on', on);
+    simBtn.textContent = on ? '模拟足迹点亮：开（已亮 3/8）' : '模拟足迹点亮：关';
+  });
+
+  // Starfield + warm projector dust canvas (strictly locked to window innerWidth/innerHeight)
+  var canvas = document.getElementById('sky-canvas');
+  var ctx = canvas.getContext('2d');
+  var W = 1, H = 1, DPR = 1;
+  var stars = [];
+  var ptr = { x: 0.5, y: 0.45, tx: 0.5, ty: 0.45, active: 0 };
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function initStars() {
+    stars = [];
+    for (var i = 0; i < 68; i++) {
+      stars.push({
+        x: Math.random(),
+        y: Math.random(),
+        r: 0.6 + Math.random() * 1.7,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.4 + Math.random() * 1.1,
+        vx: (Math.random() - 0.5) * 0.004,
+        vy: -0.002 - Math.random() * 0.004,
+        warm: Math.random() > 0.42
+      });
+    }
+  }
+
+  function resize() {
+    W = Math.max(1, window.innerWidth);
+    H = Math.max(1, window.innerHeight);
+    DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+    var tw = Math.round(W * DPR), th = Math.round(H * DPR);
+    if (canvas.width !== tw || canvas.height !== th) {
+      canvas.width = tw;
+      canvas.height = th;
+    }
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+
+  window.addEventListener('resize', resize, { passive: true });
+  window.addEventListener('pointermove', function (e) {
+    ptr.tx = e.clientX / Math.max(1, W);
+    ptr.ty = e.clientY / Math.max(1, H);
+    ptr.active = 1;
+  }, { passive: true });
+
+  initStars();
+  resize();
+
+  var last = performance.now();
+  function tick(now) {
+    var dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    var theme = document.body.getAttribute('data-theme');
+    ctx.clearRect(0, 0, W, H);
+
+    if (theme !== 'paper') {
+      ptr.x += (ptr.tx - ptr.x) * Math.min(1, dt * 4.5);
+      ptr.y += (ptr.ty - ptr.y) * Math.min(1, dt * 4.5);
+
+      // Soft warm projector beam following cursor
+      var gx = ptr.x * W, gy = ptr.y * H;
+      var rad = Math.max(240, Math.min(W, H) * 0.34);
+      var grad = ctx.createRadialGradient(gx, gy, 0, gx, gy, rad);
+      var beamRgb = theme === 'nuit101' ? '245, 200, 112' : '218, 174, 102';
+      grad.addColorStop(0, 'rgba(' + beamRgb + ', 0.11)');
+      grad.addColorStop(0.5, 'rgba(' + beamRgb + ', 0.03)');
+      grad.addColorStop(1, 'rgba(' + beamRgb + ', 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Drifting starlight & film dust motes
+      var starMult = theme === 'nuit101' ? 0.95 : (theme === 'nuit101-subtle' ? 0.68 : 0.38);
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        if (!reduced) {
+          s.x = (s.x + s.vx * dt + 1) % 1;
+          s.y = (s.y + s.vy * dt + 1) % 1;
+          s.phase += s.speed * dt;
+        }
+        var alpha = (0.22 + 0.58 * (0.5 + 0.5 * Math.sin(s.phase))) * starMult;
+        ctx.beginPath();
+        ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = s.warm
+          ? 'rgba(255, 224, 152, ' + alpha.toFixed(3) + ')'
+          : 'rgba(196, 220, 255, ' + (alpha * 0.85).toFixed(3) + ')';
+        ctx.fill();
+      }
+    }
+
+    if (!reduced) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

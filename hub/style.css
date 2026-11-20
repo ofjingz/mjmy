@@ -1,0 +1,750 @@
+/* ============================================================
+   幕间漫游 · 主大厅 hub（site/hub/）—— 框架优先视觉层
+   ------------------------------------------------------------
+   · 只做「设计线框级正确」：房间色温令牌做底、文字三级、
+     一个强调色仅用于主按钮与 focus 焦点环、8px 节奏、无边框。
+   · 视觉统一与美化由用户之后的 Gemini 工序负责（见 DESIGN_HANDOFF.md）。
+   · 字体：标题 Long Cang（--font-display），正文苹方黑体栈（--font-body）；
+     变量定义见 /shared/shell.css。
+   ============================================================ */
+
+:root {
+  color-scheme: dark;
+  /* 字体：标题 --font-display / 正文 --font-body，定义见 /shared/shell.css；--font-mono 备用 */
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #080809; /* 兜底：开屏银盐黑 */
+  color: #E9E7E2;
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: clip;
+}
+
+/* 通用：hidden 强制隐藏（含 display:flex/grid 的元素） */
+[hidden] {
+  display: none !important;
+}
+
+/* 视觉隐藏但保留朗读 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.noscript-note {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 24px;
+  z-index: 9999;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #17171a;
+  color: #f2efe9;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ============================================================
+   根容器与房间色温令牌（Room Lighting Tokens）
+   房间随 #hub-root 状态类切换：开屏=银盐黑 / 漫游=午夜蓝黑 / 目录=温纸
+   ============================================================ */
+#hub-root {
+  position: relative;
+  min-height: 100vh;
+
+  /* 房间 1 · 序幕（暗房开场）：银盐纯黑 + 微光白 */
+  --bg: #080809;
+  --bg-2: #080809;
+  --fg: #E9E7E2;
+  --fg-muted: rgba(233, 231, 226, 0.72);
+  --fg-subtle: rgba(233, 231, 226, 0.46);
+  --accent: #E9E7E2;             /* 开屏主按钮 = 微光白 */
+  --accent-contrast: #080809;
+  --surface: rgba(233, 231, 226, 0.07);
+  --surface-strong: #17171a;
+}
+
+/* 房间 2 · 随机漫游（午夜放映）：蓝黑 + 暖白 + 琥珀金 */
+#hub-root.is-entered:not(.is-catalog-mode) {
+  --bg: #0D0D0F;
+  --bg-2: #1B2028;
+  --fg: #F2EFE9;
+  --fg-muted: #A39E93;
+  --fg-subtle: #6E6B64;
+  --accent: #D4A359;
+  --accent-contrast: #14120D;
+  --surface: rgba(27, 33, 43, 0.72);
+  --surface-strong: #171a21;
+}
+
+/* 房间 3 · 传统目录（温纸，提案）：纸面 + 炭黑 + 印章朱红 */
+#hub-root.is-entered.is-catalog-mode {
+  color-scheme: light;
+  --bg: #EFE4D2;
+  --bg-2: #F4F1E9;
+  --fg: #161616;
+  --fg-muted: rgba(22, 22, 22, 0.72);
+  --fg-subtle: rgba(22, 22, 22, 0.50);
+  --accent: #B8402F;
+  --accent-contrast: #F4F1E9;
+  --surface: rgba(255, 255, 255, 0.62);
+  --surface-strong: #FFFFFF;
+}
+
+/* 房间背景层（z0，位于画布之下，随房间切换色温） */
+.hub-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+}
+
+/* 暗房光束氛围画布（z1，位于背景之上、内容之下） */
+#atmosphere {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 内容层（z2，透明背景，让背景与光束透出） */
+#opening,
+#hall,
+.hub-nav {
+  position: relative;
+  z-index: 2;
+}
+
+/* 原版黑白序幕的独立样式见 opening.css。 */
+
+/* ============================================================
+   按钮（主按钮=房间强调色实底；次按钮=ghost 无边框）
+   ============================================================ */
+.btn {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  text-decoration: none;
+  transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.btn--primary:hover {
+  opacity: 0.9;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--fg);
+}
+
+.btn--ghost:hover {
+  opacity: 0.72;
+}
+
+.btn--sm {
+  min-height: 36px;
+  padding: 7px 14px;
+  font-size: 13px;
+  border-radius: 9px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ============================================================
+   展厅顶栏
+   ============================================================ */
+.hall-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: max(10px, env(safe-area-inset-top)) 20px 10px;
+  background: linear-gradient(180deg, var(--bg-2), transparent);
+}
+
+.brand-home {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  padding: 8px 4px;
+}
+
+.brand-home:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.mode-toggle {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.mode-btn {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--fg-muted);
+  min-height: 36px;
+  padding: 7px 12px;
+  border-radius: 9px;
+}
+
+.mode-btn:hover {
+  color: var(--fg);
+}
+
+.mode-btn.is-active {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.mode-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.topbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.lit-count {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--accent);
+  padding: 8px 2px;
+}
+
+/* ============================================================
+   随机漫游（roam-node 由 hub.js 注入并绝对定位）
+   ============================================================ */
+.hall-main {
+  position: relative;
+}
+
+.roam-view {
+  position: relative;
+}
+
+.roam-stage {
+  position: relative;
+  width: 100%;
+}
+
+.roam-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: clamp(140px, 19vw, 208px);
+  color: inherit;
+  text-decoration: none;
+  transition: left 0.55s ease, top 0.55s ease;
+}
+
+.roam-node:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
+.roam-art {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  display: block;
+}
+
+.roam-aura {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, var(--accent), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.roam-node.is-lit .roam-aura {
+  opacity: 0.14;
+}
+
+.roam-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.roam-outline {
+  opacity: 0.52;
+}
+
+.roam-grain {
+  opacity: var(--exposure, 0);
+  transition: opacity 0.4s ease;
+}
+
+.roam-node.is-lit .roam-grain {
+  opacity: 0.9;
+}
+
+.roam-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  text-align: center;
+}
+
+.roam-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.roam-lit-dot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fg-subtle);
+}
+
+.roam-node.is-lit .roam-lit-dot {
+  background: var(--accent);
+  animation: lit-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes lit-pulse {
+  0%, 100% { opacity: 0.45; box-shadow: 0 0 0 0 rgba(212, 163, 89, 0); }
+  50% { opacity: 1; box-shadow: 0 0 10px 2px rgba(212, 163, 89, 0.45); }
+}
+
+.roam-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+
+.roam-lit-tag {
+  font-size: 12px;
+  color: var(--accent);
+  opacity: 0;
+}
+
+.roam-node.is-lit .roam-lit-tag {
+  opacity: 1;
+}
+
+.roam-contrib {
+  font-size: 12px;
+  color: var(--fg-muted);
+  overflow-wrap: anywhere;
+}
+
+.roam-tagline {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fg-subtle);
+  overflow-wrap: anywhere;
+}
+
+/* 漫游节点宽度跟随 hub.js 的碰撞盒估算（boxW） */
+@media (max-width: 767px) {
+  .roam-node {
+    width: clamp(140px, calc(50vw - 26px), 168px);
+  }
+  .roam-art {
+    height: 96px;
+  }
+}
+
+@media (max-width: 379px) {
+  .roam-node {
+    width: 144px;
+  }
+}
+
+/* ============================================================
+   传统目录
+   ============================================================ */
+.catalog-view {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+.catalog-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-bottom: 8px;
+}
+
+.catalog-head-text {
+  flex: 1 1 auto;
+  min-width: 200px;
+}
+
+.catalog-head-title {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fg);
+}
+
+.catalog-lit-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.catalog-progress {
+  flex: 1 1 160px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+#catalog-progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.catalog-category {
+  margin-top: 40px;
+}
+
+.catalog-cat-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.catalog-cat-num {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.catalog-cat-titles h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--fg);
+}
+
+.catalog-cat-titles p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.catalog-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.catalog-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 18px;
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.catalog-card:hover {
+  opacity: 0.9;
+}
+
+.catalog-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.catalog-thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+}
+
+.thumb-outline,
+.thumb-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.thumb-outline {
+  opacity: 0.55;
+}
+
+.thumb-grain {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#hub-root.is-catalog-mode .thumb-outline,
+#hub-root.is-catalog-mode .thumb-grain {
+  filter: invert(1) contrast(1.1);
+}
+
+#hub-root.is-catalog-mode .thumb-outline {
+  opacity: 0.68;
+}
+
+.catalog-card.is-lit .thumb-grain {
+  opacity: 0.9;
+}
+
+.catalog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.catalog-top-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+
+.catalog-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+
+.catalog-contrib {
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+.catalog-lit-pill {
+  font-size: 12px;
+  color: var(--fg-subtle);
+}
+
+.catalog-card.is-lit .catalog-lit-pill {
+  color: var(--accent);
+}
+
+.catalog-card.is-lit {
+  animation: catalog-lit-glow 3.2s ease-in-out infinite;
+}
+
+@keyframes catalog-lit-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(212, 163, 89, 0); }
+  50% { box-shadow: 0 0 22px rgba(212, 163, 89, 0.12); }
+}
+
+.catalog-tagline {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  overflow-wrap: anywhere;
+}
+
+.catalog-arrow {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: 18px;
+  color: var(--fg-subtle);
+}
+
+@media (max-width: 680px) {
+  .catalog-list {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .catalog-thumb {
+    width: 72px;
+    height: 72px;
+  }
+  .catalog-view {
+    padding: 20px 16px 40px;
+  }
+}
+
+/* ============================================================
+   站内导览（底导，仅在进入展厅后显示）
+   ============================================================ */
+.hub-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 28px;
+  padding: 24px 20px max(28px, env(safe-area-inset-bottom));
+}
+
+#hub-root:not(.is-entered) .hub-nav {
+  display: none;
+}
+
+.hub-nav a {
+  color: var(--fg-muted);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 8px;
+}
+
+.hub-nav a:hover {
+  color: var(--fg);
+}
+
+.hub-nav a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ============================================================
+   响应式：1440 / 390 / 320 不溢出
+   ============================================================ */
+@media (max-width: 680px) {
+  .hall-topbar {
+    padding: max(8px, env(safe-area-inset-top)) 14px 8px;
+  }
+  .brand-home {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 379px) {
+  .topbar-actions .btn--sm {
+    padding: 7px 10px;
+  }
+  .mode-btn {
+    padding: 7px 9px;
+  }
+}
+
+/* ============================================================
+   动效弱化：prefers-reduced-motion 全部静止
+   （hub.js 同时会给 #hub-root 加 .is-reduced）
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+#hub-root.is-reduced .roam-node,
+#hub-root.is-reduced .artifact,
+#hub-root.is-reduced .opening-copy {
+  transition: none !important;
+}
+
+/* 页面切后台时暂停内容层动画感（状态类由 hub.js 切换） */
+#hub-root.is-background .roam-node {
+  transition: none;
+}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>幕间漫游 · 线上迷影展</title>
+  <meta name="description" content="幕间漫游 · 线上迷影展主大厅：暗房开场、随机漫游与传统目录三种观展方式，凭足迹生成专属漫游票根。">
+  <meta name="theme-color" content="#03132d">
+  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="./style.css?v=receipt-1">
+  <link rel="stylesheet" href="./opening.css?v=opening-title-timing-20261120">
+  <link rel="stylesheet" href="./roam.css?v=roam-motion-20261120">
+  <link rel="stylesheet" href="./ticket.css?v=receipt-2">
+</head>
+<body data-module="hub">
+  <div id="hub-root" class="is-opening-phase">
+
+    <!-- 房间色温背景层（z0，随 #hub-root 状态类切换） -->
+    <div class="hub-backdrop" aria-hidden="true"></div>
+
+    <!-- 暗房光束氛围画布（z1，atmosphere.js 挂载） -->
+    <canvas id="atmosphere" aria-hidden="true"></canvas>
+    <div id="hall-motifs" class="hall-motifs" aria-hidden="true"></div>
+
+    <!-- ===== 房间 1 · 序幕（暗房开场） ===== -->
+    <section id="opening" class="opening" aria-label="幕间漫游互动开场">
+      <div id="opening-objects" class="opening-objects objects" role="group" aria-label="触碰电影元素，让它们显影"></div>
+      <div class="title-block">
+        <h1 class="main-title" aria-label="幕间漫游"><button type="button" id="enter" class="title-trigger" aria-label="开启幕间漫游"><span>幕</span><span>间</span><span>漫</span><span>游</span></button></h1>
+      </div>
+      <button type="button" id="skip" class="skip">跳过</button>
+    </section>
+    <div class="opening-curtain opening-curtain-left" aria-hidden="true"></div>
+    <div class="opening-curtain opening-curtain-right" aria-hidden="true"></div>
+
+    <!-- ===== 展厅（漫游 / 目录） ===== -->
+    <div id="hall" class="hall" hidden aria-hidden="true">
+
+      <header class="hall-topbar">
+        <button type="button" id="brand-home-btn" class="brand-home" aria-label="幕间漫游，回到漫游"><span class="mj-orbit-mark" aria-hidden="true"></span>幕间漫游</button>
+
+        <button type="button" id="hall-menu-toggle" class="hall-nav-item hall-menu-toggle" aria-expanded="false" aria-controls="hall-navigation">菜单</button>
+        <nav id="hall-navigation" class="hall-navigation" aria-label="展厅导航">
+          <button type="button" id="mode-roam-btn" class="hall-nav-item" aria-current="page">漫游</button>
+          <button type="button" id="mode-catalog-btn" class="hall-nav-item">目录</button>
+          <a id="top-note-link" class="hall-nav-item" href="#">留言板</a>
+          <button type="button" id="ticket-open-btn" class="hall-nav-item hall-ticket-link">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6Z"/>
+              <path d="M14 7v2m0 2v2m0 2v2"/>
+            </svg>
+            票根 <span aria-hidden="true">↗</span>
+          </button>
+          <button type="button" id="ticket-exit-btn" class="hall-nav-item">结束漫游</button>
+        </nav>
+      </header>
+
+      <main class="hall-main">
+        <!-- 随机漫游 -->
+        <section id="roam-view" class="roam-view" aria-label="随机漫游">
+          <div id="roam-stage" class="roam-stage"></div>
+        </section>
+
+        <!-- 传统目录 -->
+        <section id="catalog-view" class="catalog-view" aria-label="传统目录" hidden aria-hidden="true">
+          <div class="catalog-head">
+            <div class="catalog-head-text">
+              <h2 class="catalog-head-title">展区目录</h2>
+            </div>
+          </div>
+          <div id="catalog-groups" class="catalog-groups"></div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ===== 站内导览 ===== -->
+    <nav class="hub-nav" aria-label="站内导览">
+      <a id="nav-info" href="#">线下展览信息</a>
+      <a id="nav-thanks" href="#">共创者与鸣谢</a>
+    </nav>
+
+    <!-- 朗读区（aria-live，视觉隐藏） -->
+    <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+
+    <dialog id="ticket-modal" class="ticket-modal" aria-labelledby="ticket-title" data-theme="dark">
+      <div id="ticket-room" class="ticket-room">
+        <header class="ticket-head">
+          <h2 id="ticket-title">漫游票根</h2>
+          <div class="ticket-nav">
+            <button type="button" id="ticket-close-btn" autofocus>继续漫游</button>
+            <button type="button" id="ticket-skip-btn" hidden>直接离开 <span aria-hidden="true">↗</span></button>
+          </div>
+        </header>
+
+        <div class="ticket-stage">
+          <div class="ticket-printer" aria-hidden="true"><i></i><span></span></div>
+          <div id="ticket-scroll" class="ticket-scroll" tabindex="0" role="region" aria-label="票根预览">
+            <div id="ticket-sheet" class="ticket-sheet">
+              <img id="ticket-preview-img" alt="" draggable="false" hidden>
+            </div>
+          </div>
+        </div>
+
+        <footer class="ticket-toolbar">
+          <div class="ticket-actions">
+            <details id="ticket-edit">
+              <summary>改昵称</summary>
+              <form id="ticket-nickname-form" class="ticket-field">
+                <label for="ticket-nickname">观展昵称</label>
+                <input id="ticket-nickname" maxlength="40" placeholder="一位迷影者" autocomplete="off">
+                <button type="submit">完成</button>
+              </form>
+            </details>
+            <button type="button" id="ticket-download-btn" disabled>保存票根 <span aria-hidden="true">↓</span></button>
+          </div>
+          <p id="ticket-status" class="ticket-status" role="status"></p>
+        </footer>
+      </div>
+
+      <div id="ticket-farewell" class="ticket-farewell" hidden>
+        <span class="mj-orbit-mark" aria-hidden="true"></span>
+        <h2 id="ticket-farewell-title">散场了</h2>
+        <button type="button" id="ticket-return-btn">返回展厅</button>
+      </div>
+    </dialog>
+
+  </div>
+
+  <noscript>
+    <p class="noscript-note">幕间漫游主大厅需要启用 JavaScript 才能进入展厅，请在浏览器中开启后刷新。</p>
+  </noscript>
+
+  <script src="/shared/routes.js"></script>
+  <script src="/shared/footprint.js?v=ticket-nickname-1"></script>
+  <script src="./atmosphere.js?v=opening-cues-20261120"></script>
+  <script src="./ticket.js?v=receipt-5"></script>
+  <script src="./hub.js?v=opening-title-timing-20261120"></script>
+</body>
+</html>

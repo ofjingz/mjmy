@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>留言审核台 · 幕间漫游</title>
+  <meta name="description" content="幕间漫游 · 留言板审核台：审核留言、导出与导入 CSV。">
+  <meta name="theme-color" content="#F4F1E9">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/shared/shell.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body data-module="note" data-hide-dock="true">
+  <header class="exhibit-header admin-header">
+    <div class="header-inner">
+      <div class="header-meta">
+        <span>审核台</span>
+        <span>留言板管理</span>
+      </div>
+
+      <div class="header-title-row">
+        <div class="title-group">
+          <h1 class="exhibit-title">留言审核台</h1>
+          <p class="exhibit-lead">审核留言，导出 / 导入 CSV。</p>
+        </div>
+        <a class="admin-front-link" href="./index.html">← 回前台留言板</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="exhibit-main admin-main">
+    <!-- 登录 -->
+    <section class="admin-login" id="admin-login" aria-labelledby="login-title">
+      <h2 class="section-title" id="login-title">管理员登录</h2>
+      <form id="login-form" class="admin-login-form" novalidate>
+        <div class="field">
+          <label for="admin-key">管理员密码</label>
+          <input
+            id="admin-key"
+            name="admin-key"
+            type="password"
+            autocomplete="current-password"
+            required
+          >
+          <p class="field-error" id="login-error" role="status" aria-live="polite" hidden></p>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="c-btn c-btn--primary">登录</button>
+        </div>
+      </form>
+      <p class="admin-hint">密码仅保存在本机 sessionStorage，关闭标签页即失效。</p>
+    </section>
+
+    <!-- 管理面板 -->
+    <section class="admin-panel" id="admin-panel" hidden aria-labelledby="panel-title">
+      <div class="demo-banner" id="admin-demo-banner" hidden>仅演示（未连接 D1）</div>
+
+      <header class="section-head admin-toolbar">
+        <h2 class="section-title" id="panel-title">全部留言</h2>
+        <p class="section-count" id="admin-count" aria-live="polite"></p>
+        <div class="toolbar-actions">
+          <button type="button" class="c-btn c-btn--secondary" id="btn-export">导出 CSV</button>
+          <label class="c-btn c-btn--secondary file-label" for="import-file">导入 CSV</label>
+          <input type="file" id="import-file" accept=".csv,text/csv" class="sr-file">
+          <button type="button" class="c-btn c-btn--secondary" id="btn-logout">退出登录</button>
+        </div>
+      </header>
+
+      <div class="batch-bar" id="batch-bar">
+        <label class="batch-select-all">
+          <input type="checkbox" id="select-all">
+          <span>全选</span>
+        </label>
+        <span class="batch-count" id="batch-count">已选 0 条</span>
+        <div class="batch-actions">
+          <button type="button" class="c-btn c-btn--secondary" id="btn-approve-selected" disabled>通过所选</button>
+          <button type="button" class="c-btn c-btn--secondary" id="btn-reject-selected" disabled>拒绝所选</button>
+          <button type="button" class="c-btn c-btn--secondary danger" id="btn-delete-selected" disabled>删除所选</button>
+        </div>
+      </div>
+
+      <div class="notes-list admin-list" id="admin-list" aria-live="polite">
+        <div class="loading-state" role="status">正在加载全部留言……</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="exhibit-footer">
+    <p class="footer-credit">留言审核台 · 幕间漫游线上迷影展</p>
+  </footer>
+
+  <!-- Toast 反馈 -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- 审核条目模板（克隆后以 textContent 填充，杜绝 innerHTML 拼接用户内容） -->
+  <template id="admin-note-template">
+    <article class="note-card admin-card">
+      <header class="note-head">
+        <div class="note-head-left">
+          <label class="admin-select">
+            <input type="checkbox" class="admin-check">
+          </label>
+          <span class="status-badge"></span>
+        </div>
+        <time class="note-time"></time>
+      </header>
+      <p class="note-nickname"></p>
+      <p class="note-content"></p>
+      <p class="note-movie"></p>
+      <footer class="admin-actions">
+        <button type="button" class="c-btn c-btn--secondary admin-btn" data-action="approved">通过</button>
+        <button type="button" class="c-btn c-btn--secondary admin-btn" data-action="rejected">拒绝</button>
+        <button type="button" class="c-btn c-btn--secondary danger admin-btn" data-action="delete">删除</button>
+      </footer>
+    </article>
+  </template>
+
+  <script src="/shared/routes.js"></script>
+  <script src="/shared/footprint.js"></script>
+  <script src="/shared/shell.js"></script>
+  <script src="./admin.js"></script>
+</body>
+</html>

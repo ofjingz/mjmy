@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>影 诗 · 幕间漫游</title>
+  <meta name="description" content="影诗 · 幕间漫游">
+  <meta name="theme-color" content="#0e1013">
+  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="./style.css?v=submissions-20261120">
+</head>
+<body data-module="letter">
+  <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <div class="ambient-glow" aria-hidden="true"></div>
+
+  <header class="exhibit-header">
+    <div class="header-inner">
+      <div class="header-title-row">
+        <h1 class="exhibit-title">影 诗</h1>
+        <img
+          class="header-motif"
+          src="/shared/motifs/typewriter-outline.png"
+          alt=""
+          aria-hidden="true"
+          width="112"
+          height="92"
+        >
+      </div>
+
+      <div class="tab-bar" role="tablist" aria-label="影诗展区切换">
+        <button
+          type="button"
+          class="tab-btn is-active"
+          id="tab-articles"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-articles"
+          data-tab="articles"
+        >
+          文章
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          id="tab-videos"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-videos"
+          data-tab="videos"
+        >
+          短视频
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="exhibit-main">
+    <!-- TAB 1: 文章 · 影迷书写 -->
+    <section
+      id="panel-articles"
+      class="tab-panel is-active"
+      role="tabpanel"
+      aria-labelledby="tab-articles"
+    >
+      <div class="articles-layout">
+        <aside class="article-rail" aria-label="影迷书写目录">
+          <div class="rail-heading">
+            <span class="rail-label">文章目录</span>
+          </div>
+          <nav class="article-list" id="article-list" aria-label="文章切换列表">
+            <!-- Populated by app.js -->
+          </nav>
+        </aside>
+
+        <div class="reading-stage" id="reading-stage">
+          <article class="letter-sheet" id="letter-sheet" aria-live="polite">
+            <div class="loading-state">正在加载文章…</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: 短视频 · 影像共创 -->
+    <section
+      id="panel-videos"
+      class="tab-panel"
+      role="tabpanel"
+      aria-labelledby="tab-videos"
+      hidden
+    >
+      <div class="platform-filters" id="platform-filters" role="group" aria-label="按平台筛选短视频">
+        <!-- Populated by app.js -->
+      </div>
+
+      <div class="video-grid" id="video-grid">
+        <!-- Populated by app.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Photo & QR Lightbox Dialog -->
+  <div
+    class="lightbox"
+    id="lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="图片放大预览"
+    hidden
+  >
+    <div class="lightbox-backdrop" data-lb-close></div>
+    <div class="lightbox-frame">
+      <button type="button" class="lightbox-close" data-lb-close aria-label="关闭预览">✕</button>
+      <button type="button" class="lightbox-nav lightbox-prev" id="lb-prev" aria-label="上一张">‹</button>
+      <figure class="lightbox-figure">
+        <div class="lightbox-media" id="lb-media"></div>
+        <figcaption class="lightbox-caption" id="lb-caption"></figcaption>
+      </figure>
+      <button type="button" class="lightbox-nav lightbox-next" id="lb-next" aria-label="下一张">›</button>
+    </div>
+  </div>
+
+  <!-- Toast feedback -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="/shared/routes.js"></script>
+  <script src="/shared/footprint.js"></script>
+  <script src="/shared/shell.js?v=exhibit-return-20261120"></script>
+  <script src="/shared/qrcode.js"></script>
+  <script src="./app.js?v=submissions-20261120"></script>
+</body>
+</html>

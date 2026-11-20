@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#6E123B">
+  <meta name="description" content="共创者与特别鸣谢 · 幕间漫游">
+  <title>共创者与特别鸣谢 · 幕间漫游</title>
+  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-width: 280px;
+      height: 100%;
+      background: #6E123B;
+      overflow-x: hidden;
+    }
+
+    #end-credits {
+      height: 100svh;
+      min-height: 100svh;
+      --credits-height: 100svh;
+    }
+
+    .mj-return {
+      --mj-return-bg: #410d28;
+    }
+
+    @media (max-width: 720px) {
+      body[data-section="contributors"] .mj-return {
+        bottom: calc(68px + env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+  <script src="/shared/routes.js" defer></script>
+  <script src="/shared/footprint.js" defer></script>
+  <script src="/shared/shell.js?v=exhibit-return-20261120" defer></script>
+</head>
+<body data-module="thanks" data-section="contributors" data-card-open="false">
+  <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <main id="end-credits"></main>
+  <noscript>
+    <p style="color:#FFF6E3;text-align:center;padding:3rem 1.5rem;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif;">请启用 JavaScript 查看共创者与特别鸣谢。</p>
+  </noscript>
+  <script type="module">
+    import { mountCredits } from './module/credits.js';
+
+    const container = document.querySelector('#end-credits');
+    const credits = mountCredits(container);
+
+    container.addEventListener('credits:select', () => {
+      document.body.dataset.cardOpen = 'true';
+    });
+
+    container.addEventListener('credits:close', () => {
+      document.body.dataset.cardOpen = 'false';
+    });
+
+    container.addEventListener('credits:sectionchange', (event) => {
+      const next = event && event.detail && event.detail.section ? event.detail.section : 'contributors';
+      document.body.dataset.section = next;
+    });
+
+    credits.ready.then(() => {
+      if (window.location.hash === '#thanks') {
+        credits.showSection('thanks');
+      }
+    });
+  </script>
+</body>
+</html>

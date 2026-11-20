@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0e1013">
+  <title>下场看什么 · Felix — 幕间漫游</title>
+  <meta name="description" content="下场看什么 · Felix · 幕间漫游">
+  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="./style.css?v=submissions-20261120">
+</head>
+<body data-module="next">
+  <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <!-- 暗房放映厅序幕 -->
+  <header class="hero" id="top">
+    <div class="film-sprockets film-sprockets-top" aria-hidden="true"></div>
+
+    <div class="hero-backdrop" aria-hidden="true">
+      <div class="hero-projector-beam"></div>
+      <div class="hero-grain"></div>
+      <img class="hero-motif" src="/shared/motifs/tree-outline.png" alt="" decoding="async">
+    </div>
+
+    <div class="hero-inner">
+      <h1 class="hero-title" id="heroTitle">下场看什么</h1>
+
+      <div class="hero-meta-bar">
+        <div class="hero-byline">
+          <span class="byline-author" id="heroAuthor">Felix</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="film-sprockets film-sprockets-bottom" aria-hidden="true"></div>
+  </header>
+
+  <!-- 粘性快速切换栏：团长手记 / 放映现场档案 -->
+  <nav class="section-tabs" id="sectionTabs" aria-label="展厅分区导航">
+    <div class="section-tabs-inner">
+      <a class="sec-tab is-active" href="#notes-section" data-sec-tab="notes-section">
+        <span>团长手记</span>
+      </a>
+      <a class="sec-tab" href="#archive-section" data-sec-tab="archive-section">
+        <span>放映现场档案</span>
+      </a>
+    </div>
+  </nav>
+
+  <main class="cinema-main">
+    <!-- 第一展区：团长手记 -->
+    <section class="notes-section" id="notes-section" aria-labelledby="notesHeading">
+      <div class="section-head">
+        <h2 class="section-title" id="notesHeading">团长手记</h2>
+      </div>
+
+      <div class="notes-body" id="notesBody">
+        <div class="loading-state" role="status">正在展开放映手记……</div>
+      </div>
+    </section>
+
+    <!-- 胶片齿孔分隔带 -->
+    <div class="reel-divider" aria-hidden="true"></div>
+
+    <!-- 第二展区：放映现场档案（4 章节筛选 + 48 张原比例照片） -->
+    <section class="archive-section" id="archive-section" aria-labelledby="archiveHeading">
+      <div class="section-head archive-head">
+        <h2 class="section-title" id="archiveHeading">放映现场档案</h2>
+      </div>
+
+      <!-- 4 章节筛选栏 -->
+      <div class="filter-bar-wrap">
+        <div class="filter-bar" id="filterBar" role="tablist" aria-label="放映档案单元筛选"></div>
+      </div>
+
+      <!-- 原比例瀑布流展墙 -->
+      <div class="archive-masonry" id="archiveGrid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="exhibit-footer">
+    <div class="footer-rule" aria-hidden="true"></div>
+    <a class="footer-top-link" href="#top">回到展厅序幕 ↑</a>
+  </footer>
+
+  <!-- 大图查看器 Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="放映现场大图查看器" hidden>
+    <div class="lightbox-backdrop" data-lb-close></div>
+    <div class="lightbox-stage">
+      <div class="lightbox-topbar">
+        <div class="lightbox-section-tag" id="lbSectionTag"></div>
+        <button type="button" class="lightbox-close" id="lbClose" aria-label="关闭大图">✕</button>
+      </div>
+
+      <div class="lightbox-viewport" id="lbViewport">
+        <button type="button" class="lightbox-nav lightbox-prev" id="lbPrev" aria-label="上一张">‹</button>
+        <figure class="lightbox-figure">
+          <img class="lightbox-img" id="lbImg" src="" alt="">
+          <figcaption class="lightbox-caption">
+            <div class="lb-event" id="lbEvent"></div>
+            <div class="lb-detail" id="lbDetail"></div>
+          </figcaption>
+        </figure>
+        <button type="button" class="lightbox-nav lightbox-next" id="lbNext" aria-label="下一张">›</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/shared/routes.js"></script>
+  <script src="/shared/footprint.js"></script>
+  <script src="/shared/shell.js?v=exhibit-return-20261120"></script>
+  <script src="./app.js?v=submissions-20261120"></script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#161616">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="文字内容依据公众号「电影山海经」《电影101工作室 三十周年快乐》及展品原文。">
+<title>电影101工作室 · 等一部电影</title>
+<link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+<link rel="stylesheet" href="css/exhibition.css?v=submissions-20261120">
+<script src="js/intro.js" defer></script>
+</head>
+<body data-module="101">
+
+<dialog class="film-intro" id="filmIntro" aria-labelledby="filmIntroTitle">
+  <div class="film-intro__strip" aria-hidden="true">
+    <div class="film-intro__aperture">
+      <img class="film-intro__frames" data-src="assets/intro-horse-frames.webp" alt="" width="286" height="1068">
+    </div>
+  </div>
+  <p class="film-intro__title" id="filmIntroTitle">电影101工作室</p>
+  <button class="film-intro__skip" type="button" autofocus>跳过开场</button>
+</dialog>
+
+<!-- 侧边齿孔轨道：桌面装饰，移动端由 CSS 隐藏 -->
+<div class="rail l" aria-hidden="true"><div class="edge"></div><div class="holes" id="holesL"></div></div>
+<div class="rail r" aria-hidden="true"><div class="edge"></div><div class="holes" id="holesR"></div></div>
+
+<header class="topbar">
+  <a class="mj-return mj-return--header" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <div class="tb-right">
+    <div class="tb-chapter" id="tbChapter" aria-live="polite">封面</div>
+    <button type="button" class="tb-menu" id="tbMenu" aria-label="打开目录" aria-controls="menu" aria-expanded="false"><i></i><i></i><i></i></button>
+  </div>
+</header>
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<nav class="menu" id="menu" aria-label="展览章节目录" aria-hidden="true">
+  <div class="menu-inner" id="menuInner">
+    <a href="#cover">封面</a>
+    <a href="#prologue">一个数字的来历</a>
+    <a href="#hall1">一间客厅</a>
+    <a href="#hall2">灯暗下来之后</a>
+    <a href="#hall3">自己印刷</a>
+    <a href="#hall4">被世界看见</a>
+    <a href="#hall5">散场之后</a>
+    <a href="#epilogue">继续等待</a>
+    <a href="#sources">资料来源</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ 封面 ============ -->
+<section class="cover" id="cover" data-ch="封面">
+  <div class="cover-logo reveal"><img src="assets/01-logo.jpg" alt="电影101工作室标识" fetchpriority="high" decoding="async"></div>
+  <h1 class="reveal">等一部电影</h1>
+  <div class="years reveal">1 9 9 6 — 2 0 2 6</div>
+  <div class="cover-note reveal">"等待电影的日子"<br>经典影片观摩系列活动之一<br><span class="cover-note-src">——1999 年 4 月 10 日《樱桃的滋味》场刊</span></div>
+  <div class="scroll-hint reveal" aria-hidden="true">SCROLL TO PLAY</div>
+</section>
+
+<!-- ============ 序 ============ -->
+<section id="prologue" data-ch="一个数字的来历">
+  <div class="ch-head reveal">
+    <h2>一个数字的来历</h2>
+    <p class="wall">30年前，也就是 1996 年 10 月 1 日，几个来自社会各行各业的上海青年虞立炜、戴伟敏、李欣、杨璐、陈石韫、杨一敏和我成立了一个电影社团，因为那一年是电影诞生 101 年、那天是 10 月 1 日，因此把这个电影社团命名为"电影101办公室"（创办人还包括平辉，当时他在广州出差）。</p>
+    <p class="wall">于是，我们就凭空制作印刷了一本杂志，名为"电影101办公室"。之所以叫"办公室"而不是"工作室"，是因为这本杂志是地下刊物，为了避免不必要的麻烦，让"办公室"三个字更有隐蔽性，显得像是某个内部刊物而不是一个纯影迷独立杂志。"电影101办公室"直到 1999 年才正式改名为"电影101工作室"。</p>
+  </div>
+  <div class="frames">
+    <div class="fitem w4"><figure>
+      <div class="frame"><img src="assets/01-logo.jpg" alt="电影101工作室标识" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">电影101工作室标识</div><span class="yr">1996</span></div><div class="meta">设计：李欣</div></div>
+    </figure></div>
+    <div class="fitem w8 drop"><figure>
+      <div class="frame"><img src="assets/02-cards.jpg" alt="101 名片设计稿" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">名片设计稿</div><span class="yr">1996</span></div><div class="meta">设计：李欣。五张名片，四张有名字：杨璐、戴伟敏、阎文亮、徐鸢；中间一张姓名留白。均印"自由撰稿人"，地址为天目中路 460 号南星一号楼 804 室，联系方式为 BP 机与电子邮件。</div></div>
+    </figure></div>
+  </div>
+  <div class="quote reveal"><p>"1996 年是一个手机只能打电话没有拍照上网功能、上网需要电话线拨号'猫'的年代，VCD 市场刚刚起步，一张《独立日》的双碟 VCD 卖 40 元人民币，大家只靠着报纸和杂志获取国外电影信息。"</p><cite>——《电影101工作室 三十周年快乐》</cite></div>
+</section>
+
+<!-- ============ 第一厅 ============ -->
+<section id="hall1" data-ch="一间客厅">
+  <div class="ch-head reveal">
+    <h2>一间客厅</h2>
+    <p class="wall">虞立炜在上海市天目中路 460 号南星一号楼某室的家成为了中国最早的民间影像放映场所。我们常常会在下班后、坐地铁去虞立炜家，翻翻他的书柜和录像带，顺便聊聊各自对于电影的白日梦，并在日后一一付诸于行动。</p>
+  </div>
+  <div class="frames">
+    <div class="fitem w7"><figure>
+      <div class="frame"><img src="assets/03-anniversary-1997.jpg" alt="1997年101一周年聚会上海影城现场" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">101 成立一周年聚会</div><span class="yr">1997</span></div><div class="meta">上海影城</div></div>
+    </figure></div>
+    <div class="fitem w5 drop"><figure>
+      <div class="frame"><img src="assets/04-volunteers-1997.jpg" alt="1997年为第三届上海国际电影节招募志愿者上海影城现场工作照" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">为第三届上海国际电影节招募志愿者</div><span class="yr">1997</span></div><div class="meta">上海影城。左起：李欣、平辉、杨璐、陈石韫、虞立炜。</div></div>
+    </figure></div>
+    <div class="fitem w5 rise"><figure>
+      <div class="frame"><img src="assets/05-debate-1998.jpg" alt="1998年辩论赛永福路现场" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">辩论赛</div><span class="yr">1998</span></div><div class="meta">永福路</div></div>
+    </figure></div>
+    <div class="fitem w7 drop"><figure>
+      <div class="frame"><img src="assets/06-shortfilm-1998.jpg" alt="1998年短片创作拍摄现场陕南村" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">短片创作拍摄现场</div><span class="yr">1998</span></div><div class="meta">陕南村。左起：阎文亮、虞立炜、季平澜。</div></div>
+    </figure></div>
+  </div>
+  <div class="quote reveal"><p>"'电影101工作室'1997 年与上海国际电影节合作招募志愿者、为多家本地媒体撰稿，逐渐扩大影响力，日后一度成为内地最大的民间电影社团，活动经费来自于核心成员给媒体撰稿所得的稿费。"</p><cite>——《电影101工作室 三十周年快乐》</cite></div>
+</section>
+
+<!-- ============ 第二厅 ============ -->
+<section id="hall2" data-ch="灯暗下来之后">
+  <div class="ch-head reveal">
+    <h2>灯暗下来之后</h2>
+    <p class="wall">"电影101办公室"直到 1999 年才正式改名为"电影101工作室"。</p>
+    <p class="wall">1999 年创办内地第一份也是唯一一份实体印刷、每天出版、在上海国际电影节期间免费派送给观众的记录电影节民间记忆的每日新闻"电影节十日谈"。</p>
+  </div>
+  <div class="frames">
+    <div class="fitem w6"><figure>
+      <div class="frame"><img src="assets/07-tarkovsky-1999.jpg" alt="1999年2月塔可夫斯基作品放映现场乍浦路图书馆" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">塔可夫斯基作品放映现场</div><span class="yr">1999.2</span></div><div class="meta">乍浦路图书馆</div></div>
+    </figure></div>
+    <div class="fitem w6 drop"><figure>
+      <div class="frame"><img src="assets/08-tarkovsky-poster-1999.jpg" alt="1999年2月塔可夫斯基作品放映乍浦路图书馆门口海报" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">放映海报</div><span class="yr">1999.2</span></div><div class="meta">乍浦路图书馆门口</div></div>
+    </figure></div>
+    <div class="fitem w8"><figure>
+      <div class="frame"><img src="assets/09-cherry-program-1999.jpg" alt="1999年4月10日等待电影的日子第一场《樱桃的滋味》场刊" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">"等待电影的日子"第一场《樱桃的滋味》场刊</div><span class="yr">1999.4.10</span></div><div class="meta">胜利电影院。场刊印有："等待电影的日子"经典影片观摩系列活动之一。</div></div>
+    </figure></div>
+    <div class="fitem w4 drop"><figure>
+      <div class="frame"><img src="assets/10-cherry-qa-1999.jpg" alt="1999年4月樱桃的滋味映后现场胜利电影院" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">《樱桃的滋味》映后现场</div><span class="yr">1999.4</span></div><div class="meta">胜利电影院</div></div>
+    </figure></div>
+    <div class="fitem w6 rise"><figure>
+      <div class="frame"><img src="assets/11-tenday-1999.jpg" alt="1999年10月第四届上海国际电影节十日谈" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">《电影节十日谈》</div><span class="yr">1999.10</span></div><div class="meta">第四届上海国际电影节。实体印刷、每天出版、免费派送。</div></div>
+    </figure></div>
+    <div class="fitem w6"><figure>
+      <div class="frame"><img src="assets/12-fellini-2000.jpg" alt="2000年1月费里尼回顾展放映现场乍浦路图书馆" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">费里尼回顾展放映现场</div><span class="yr">2000.1</span></div><div class="meta">乍浦路图书馆</div></div>
+    </figure></div>
+    <div class="fitem w12 drop"><figure>
+      <div class="frame"><img src="assets/13-brussels-2001.jpg" alt="2001年12月布鲁塞尔上海短片双城展现场乍浦路图书馆" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">布鲁塞尔·上海短片双城展现场</div><span class="yr">2001.12</span></div><div class="meta">乍浦路图书馆</div></div>
+    </figure></div>
+  </div>
+  <div class="venues reveal">
+    <h3>线下放映</h3>
+    <div class="hint">SPACE / 空间线索</div>
+    <div class="vrow"><div class="vname">乍浦路图书馆</div><div class="vitems"><span><em>1999.2</em> 塔可夫斯基</span><span><em>2000.1</em> 费里尼</span><span><em>2001.12</em> 布鲁塞尔双城展</span></div></div>
+    <div class="vrow"><div class="vname">曲阳图书馆</div><div class="vitems"><span><em>2009.2</em> 青年</span><span><em>2010.9</em> 我的抗战</span><span><em>2015.3</em> 唐皇游地府</span></div></div>
+    <div class="vrow"><div class="vname">新光影艺苑</div><div class="vitems"><span><em>2008.12</em> 小武十周年</span><span><em>2009.2</em> 甜蜜蜜</span></div></div>
+    <div class="vrow"><div class="vname">其他现场</div><div class="vitems"><span>胜利电影院</span><span>永福路</span><span>陕南村</span><span>季风书园</span><span>温哥华电影学院</span></div></div>
+  </div>
+  <div class="quote reveal"><p>"'电影101工作室'也最早在内地开展民间电影放映活动，《小武》《铁路沿线》等经典作品，都是通过'电影101工作室'策划的、面向所有市民的免费放映活动，完成了它们的上海首映。"</p><cite>——《电影101工作室 三十周年快乐》</cite></div>
+</section>
+
+<!-- ============ 第三厅 ============ -->
+<section id="hall3" data-ch="自己印刷">
+  <div class="ch-head reveal">
+    <h2>自己印刷</h2>
+    <p class="wall">这个团体从《电影故事》杂志的"超级影迷沙龙"脱胎而来，我们最初在《电影故事》杂志上发表文章，随后发现需要做一本自己喜欢的电影杂志。于是，我们就凭空制作印刷了一本杂志，名为"电影101办公室"。</p>
+  </div>
+  <div class="frames">
+    <div class="fitem w6"><figure>
+      <div class="frame"><img src="assets/31-banyuetan-1998.jpg" alt="1998年5月半月谭创刊号" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">《半月谭》创刊号</div><span class="yr">1998.5</span></div><div class="meta">编者：陈于洛宴</div></div>
+    </figure></div>
+    <div class="fitem w6 drop"><figure>
+      <div class="frame"><img src="assets/11-tenday-1999.jpg" alt="1999年10月第四届上海国际电影节十日谈" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">《电影节十日谈》</div><span class="yr">1999.10</span></div><div class="meta">实体印刷、每天出版、在上海国际电影节期间免费派送。</div></div>
+    </figure></div>
+    <div class="fitem w5 rise"><figure>
+      <div class="frame"><img src="assets/26-award-2000.jpg" alt="2000年最爱国产片评选奖状局部" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">最爱国产片评选奖状</div><span class="yr">2000.10</span></div><div class="meta">奖状原文："姜文先生：您导演的电影《鬼子来了》获首届电影壹零壹工作室'最爱国产片评选'（一九九九至二〇〇〇年度）最佳影片奖。"</div></div>
+    </figure></div>
+    <div class="fitem w7"><figure>
+      <div class="frame"><img src="assets/27-indie-2001.jpg" alt="2001年11月中国首届独立影像展上海站现场场刊封面封底" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">中国首届独立影像展·上海站</div><span class="yr">2001.11</span></div><div class="meta">现场场刊封面封底</div></div>
+    </figure></div>
+    <div class="fitem w12 drop"><figure>
+      <div class="frame"><img src="assets/25-rongshuxia.jpg" alt="101榕树下子网站首页设计稿" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">101 榕树下子网站首页设计稿</div><span class="yr">2000s</span></div><div class="meta">网页设计稿</div></div>
+    </figure></div>
+  </div>
+  <div class="quote reveal"><p>"最近 101 好事连篇，首届辩论会的成功举行、五月中旬杭州之旅，以及 101 某些成员即将成为上海电影评论学会的正式会员……101 发展至今，大家偶尔谈起来，总觉得有些迷惘，但从另一个角度来看，101 的初衷大家在回答这个问题的时候，101 的凝聚力是否如故？"</p><cite>——《半月谭》创刊号·编者：陈于洛宴，1998</cite></div>
+</section>
+
+<!-- ============ 第四厅 ============ -->
+<section id="hall4" data-ch="被世界看见">
+  <div class="ch-head reveal">
+    <h2>被世界看见</h2>
+    <p class="wall">"电影101工作室"的整体活动到 2003 年结束。此后，核心成员开始在媒体、影视等行业各自发展。</p>
+  </div>
+  <div class="frames">
+    <div class="fitem w12"><figure>
+      <div class="frame"><img src="assets/14-cahiers-2004.jpg" alt="2004年1月电影手册对中国独立电影放映机构的介绍" loading="lazy" decoding="async"></div>
+      <div class="tag"><div class="tag-top"><div class="ttl">"101 Club (à Shanghai)"</div><span class="yr">2004.1</span></div><div class="meta">法国《电影手册》2004 年 1 月号"Quelques adresses"一节，列有"101 Club (à Shanghai)"。</div></div>
+    </figure></div>
+  </div>
+  <div class="quote reveal"><p>"Quelques adresses … 101 Club (à Shanghai) … Box 22 Film …"</p><cite>——法国《电影手册》2004 年 1 月号，A / JANVIER 2004</cite></div>
+</section>
+
+<!-- ============ 第五厅 ============ -->
+<section id="hall5" data-ch="散场之后">
+  <div class="ch-head reveal">
+    <h2>散场之后</h2>
+    <p class="wall">我则因缘际会，于 2007 年至 2023 年和上海国际电影节进行合作、又于 2008 年至 2023 年与上海影视文献图书馆的武佳敏合作重建"影像现场"民间放映品牌、以及 2015 年起与上海艺术电影联盟合作进行上海日常影展放映拓荒。</p>
+  </div>
+  <div class="frames">
+    <div class="fitem w6"><figure><div class="frame"><img src="assets/15-xiaowu-program-2008.jpg" alt="2008年12月小武十周年放映现场场刊封底" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《小武》十周年放映场刊封底</div><span class="yr">2008.12</span></div><div class="meta">新光影艺苑</div></div></figure></div>
+    <div class="fitem w6 drop"><figure><div class="frame"><img src="assets/16-xiaowu-qa-2008.jpg" alt="2008年12月小武十周年放映映后" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《小武》十周年放映映后</div><span class="yr">2008.12</span></div><div class="meta">新光影艺苑。左起：孙孟晋、贾樟柯、余力为。</div></div></figure></div>
+    <div class="fitem w6 rise"><figure><div class="frame"><img src="assets/17-tianmimi-program-2009.jpg" alt="2009年2月甜蜜蜜胶片放映场刊封底新光影艺苑" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《甜蜜蜜》胶片放映场刊封底</div><span class="yr">2009.2</span></div><div class="meta">新光影艺苑</div></div></figure></div>
+    <div class="fitem w6"><figure><div class="frame"><img src="assets/29-nighttrain-2009.jpg" alt="2009年7月夜车放映场刊封面" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《夜车》放映场刊封面</div><span class="yr">2009.7</span></div><div class="meta">场刊封面</div></div></figure></div>
+    <div class="fitem w5 drop"><figure><div class="frame"><img src="assets/22-youth-2009.jpg" alt="2009年2月青年映后现场左起刘海波耿军曲阳图书馆" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《青年》映后现场</div><span class="yr">2009.2</span></div><div class="meta">曲阳图书馆。左起：刘海波、耿军。</div></div></figure></div>
+    <div class="fitem w7"><figure><div class="frame"><img src="assets/24-mywar-2010.jpg" alt="2010年9月我的抗战上海放映映后" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《我的抗战》上海放映映后</div><span class="yr">2010.9</span></div><div class="meta">曲阳图书馆。左起：张立宪、曾海若、崔永元。</div></div></figure></div>
+    <div class="fitem w6 rise"><figure><div class="frame"><img src="assets/18-qiujiongjiong-2012.jpg" alt="2012年4月邱炯炯作品展映后" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">邱炯炯作品展·映后</div><span class="yr">2012.4</span></div><div class="meta">左起：陈晓达、邱炯炯、黎小锋。</div></div></figure></div>
+    <div class="fitem w6"><figure><div class="frame"><img src="assets/19-tanghuang-2015.jpg" alt="2015年3月唐皇游地府映后现场曲阳图书馆" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《唐皇游地府》映后现场</div><span class="yr">2015.3</span></div><div class="meta">曲阳图书馆</div></div></figure></div>
+    <div class="fitem w5 drop"><figure><div class="frame"><img src="assets/23-linxin-2015.jpg" alt="2015年5月林鑫全集放映海报" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">林鑫全集放映海报</div><span class="yr">2015.5</span></div><div class="meta">放映海报</div></div></figure></div>
+    <div class="fitem w7"><figure><div class="frame"><img src="assets/20-tang-2016.jpg" alt="2016年6月德昂上海放映海报" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《德昂》上海放映海报</div><span class="yr">2016.6</span></div><div class="meta">放映海报</div></div></figure></div>
+    <div class="fitem w6 rise"><figure><div class="frame"><img src="assets/21-foucault-2016.jpg" alt="2016年9月福柯映后现场季风书园" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">福柯映后现场</div><span class="yr">2016.9</span></div><div class="meta">季风书园</div></div></figure></div>
+    <div class="fitem w6"><figure><div class="frame"><img src="assets/28-sanposha-2018.jpg" alt="2018年5月日曜日式散布者上海放映映后温哥华电影学院" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《日曜日式散布者》上海放映映后</div><span class="yr">2018.5</span></div><div class="meta">温哥华电影学院</div></div></figure></div>
+  </div>
+  <div class="people reveal">
+    <div class="person"><b>创办人</b><span>虞立炜、戴伟敏、李欣、杨璐、陈石韫、杨一敏、徐鸢；平辉（当时在广州出差）</span></div>
+  </div>
+</section>
+
+<!-- ============ 尾声 ============ -->
+<section id="epilogue" data-ch="继续等待">
+  <div class="final reveal">
+    <div class="mark">101</div>
+    <h2>继续等待</h2>
+    <p>2016 年，"电影101工作室"20 周年纪念，我编著了《等待电影的日子》一书，献给当年的小伙伴。<br>2026 年，"电影101工作室"30 周年纪念，我希望与当年的小伙伴一起，继续保持热忱与创造力，继续等待电影。</p>
+    <figure class="fbook"><div class="frame"><img src="assets/30-book-2016.jpg" alt="2016年10月等待电影的日子书籍封面" loading="lazy" decoding="async"></div><div class="tag"><div class="tag-top"><div class="ttl">《等待电影的日子》</div><span class="yr">2016.10</span></div><div class="meta">徐鸢编著，"电影101工作室20周年纪念"。</div></div></figure>
+  </div>
+</section>
+
+<!-- ============ 资料来源 ============ -->
+<section id="sources" data-ch="资料来源">
+  <div class="sources-box reveal">
+    <h3>资料来源</h3>
+    <ol class="src-list">
+      <li><a href="https://mp.weixin.qq.com/s/AQUR2St-lBJSrUo0bBJnvQ" target="_blank" rel="noopener">《电影101工作室 三十周年快乐》</a><span class="desc">妖灵妖（徐鸢）· 公众号「电影山海经」· 本展全部叙述文字与引文出处</span></li>
+      <li><a href="https://mp.weixin.qq.com/s/AQUR2St-lBJSrUo0bBJnvQ" target="_blank" rel="noopener">展品实物文字</a><span class="desc">《樱桃的滋味》场刊（1999.4.10）、法国《电影手册》（2004.1）、最爱国产片评选奖状（2000.10）、《半月谭》创刊号（1998.5）、101 名片设计稿</span></li>
+    </ol>
+    <p class="src-foot">延伸阅读（未直接引用）：百度百科「电影101工作室」/「等待电影的日子」；奇遇电影《"中国影迷就是烂命一条"》；青年报《影迷进化史》；虹膜《上海最大的影迷黑帮，出了一本书记录二十年坎坷历程》。<br>图片由「电影101工作室」相关历史资料提供 · 2026</p>
+  </div>
+</section>
+
+</main>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-hidden="true" aria-label="展品大图预览">
+  <div class="lb-bar">
+    <button type="button" class="lb-close" id="lbclose" aria-label="关闭大图">×</button>
+  </div>
+  <div class="lb-stage" id="lbstage">
+    <button type="button" class="lb-nav lb-prev" id="lbprev" aria-label="上一张展品">‹</button>
+    <img id="lbimg" alt="">
+    <button type="button" class="lb-nav lb-next" id="lbnext" aria-label="下一张展品">›</button>
+  </div>
+  <div class="lb-cap" id="lbcap">
+    <div class="lb-cap-head">
+      <span class="lb-cap-ttl" id="lbttl"></span>
+      <span class="lb-cap-yr" id="lbyr"></span>
+    </div>
+    <div class="lb-cap-meta" id="lbmeta"></div>
+  </div>
+</div>
+
+<script src="/shared/routes.js"></script>
+<script src="/shared/footprint.js"></script>
+<script src="/shared/shell.js?v=exhibit-return-20261120"></script>
+<script src="js/exhibition.js?v=submissions-20261120"></script>
+</body>
+</html>

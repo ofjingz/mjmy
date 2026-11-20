@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>same · 银幕背后 — 幕间漫游</title>
+  <meta name="description" content="same · 幕间漫游">
+  <meta name="theme-color" content="#0D0D0F">
+  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="./style.css?v=submissions-20261120">
+</head>
+<body data-module="same">
+  <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <header class="exhibit-header">
+    <div class="header-inner">
+      <div class="header-title-row">
+        <div class="title-group">
+          <h1 class="exhibit-title" id="exhibit-title">same</h1>
+          <p class="exhibit-author" id="exhibit-author">kai / SAME</p>
+        </div>
+        <img
+          class="header-motif"
+          src="/shared/motifs/eyes-outline.png"
+          alt=""
+          aria-hidden="true"
+          width="112"
+          height="82"
+          decoding="async"
+        >
+      </div>
+    </div>
+  </header>
+
+  <main class="exhibit-main">
+    <!-- 宣传片 Hero：标题 / 平台 / 观看按钮 / 二维码 / 复制链接（由 data.json 渲染） -->
+    <section class="promo-hero" id="promo-hero" aria-labelledby="promo-title">
+      <div class="promo-inner" id="promo-inner">
+        <div class="loading-state" role="status">正在加载宣传片……</div>
+      </div>
+    </section>
+
+    <!-- 30 张胶片放映档案画廊（网格 + lightbox + 图注） -->
+    <section class="gallery" id="gallery" aria-labelledby="gallery-title">
+      <div class="film-edge" aria-hidden="true"></div>
+      <header class="section-head">
+        <h2 class="section-title" id="gallery-title">胶片放映档案</h2>
+      </header>
+
+      <div class="gallery-grid" id="gallery-grid" aria-live="polite">
+        <div class="loading-state" role="status">正在布展……</div>
+      </div>
+      <div class="film-edge" aria-hidden="true"></div>
+    </section>
+  </main>
+
+  <noscript>
+    <p class="noscript-note">本页展品需启用 JavaScript 才能从 data.json 渲染，请在浏览器中开启后刷新。</p>
+  </noscript>
+
+  <!-- 图片与二维码 Lightbox -->
+  <div
+    class="lightbox"
+    id="lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="图片与二维码放大预览"
+    hidden
+  >
+    <div class="lightbox-backdrop" data-lb-close></div>
+    <div class="lightbox-frame">
+      <button type="button" class="lightbox-close" data-lb-close aria-label="关闭预览">✕</button>
+      <button type="button" class="lightbox-nav lightbox-prev" id="lb-prev" aria-label="上一张" hidden>‹</button>
+      <figure class="lightbox-figure">
+        <div class="lightbox-media" id="lb-media"></div>
+        <figcaption class="lightbox-caption" id="lb-caption"></figcaption>
+      </figure>
+      <button type="button" class="lightbox-nav lightbox-next" id="lb-next" aria-label="下一张" hidden>›</button>
+    </div>
+  </div>
+
+  <!-- 手动复制兜底弹窗（微信内置浏览器） -->
+  <div
+    class="copy-dialog"
+    id="copy-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-label="手动复制"
+    hidden
+  >
+    <div class="copy-dialog-backdrop" data-cd-close></div>
+    <div class="copy-dialog-frame">
+      <button type="button" class="copy-dialog-close" data-cd-close aria-label="关闭">✕</button>
+      <h2 class="copy-dialog-title">自动复制未成功</h2>
+      <p class="copy-dialog-hint">请长按下方文字，选择「复制」：</p>
+      <input
+        class="copy-dialog-input"
+        id="copy-dialog-input"
+        type="text"
+        readonly
+        value=""
+      >
+      <button type="button" class="c-btn c-btn--primary copy-dialog-done" data-cd-close>完成</button>
+    </div>
+  </div>
+
+  <!-- Toast 反馈 -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="/shared/routes.js"></script>
+  <script src="/shared/footprint.js"></script>
+  <script src="/shared/shell.js?v=exhibit-return-20261120"></script>
+  <script src="/shared/qrcode.js"></script>
+  <script src="./app.js?v=submissions-20261120"></script>
+</body>
+</html>

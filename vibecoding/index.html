@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>vibecoding 合集 · 幕间漫游</title>
+  <meta name="description" content="vibecoding 合集 · 幕间漫游">
+  <meta name="theme-color" content="#0D0D0F">
+  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="./style.css?v=submissions-20261120">
+</head>
+<body data-module="vibecoding">
+  <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <header class="exhibit-header">
+    <div class="header-inner">
+      <div class="header-title-row">
+        <div class="title-group">
+          <h1 class="exhibit-title">vibecoding 合集</h1>
+        </div>
+        <img
+          class="header-motif"
+          src="/shared/motifs/glasses-outline.png"
+          alt=""
+          aria-hidden="true"
+          width="112"
+          height="82"
+        >
+      </div>
+    </div>
+  </header>
+
+  <main class="exhibit-main">
+    <div class="cards-grid" id="cards-grid">
+      <div class="loading-state">正在布展……</div>
+    </div>
+
+    <noscript>
+      <p class="noscript-note">本页展品需启用 JavaScript 才能从 data.json 渲染，请在浏览器中开启后刷新。</p>
+    </noscript>
+  </main>
+
+  <!-- Photo & QR Lightbox -->
+  <div
+    class="lightbox"
+    id="lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="图片与二维码放大预览"
+    hidden
+  >
+    <div class="lightbox-backdrop" data-lb-close></div>
+    <div class="lightbox-frame">
+      <button type="button" class="lightbox-close" data-lb-close aria-label="关闭预览">✕</button>
+      <figure class="lightbox-figure">
+        <div class="lightbox-media" id="lb-media"></div>
+        <figcaption class="lightbox-caption" id="lb-caption"></figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <!-- Manual Copy Fallback Dialog (微信内置浏览器兜底) -->
+  <div
+    class="copy-dialog"
+    id="copy-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-label="手动复制"
+    hidden
+  >
+    <div class="copy-dialog-backdrop" data-cd-close></div>
+    <div class="copy-dialog-frame">
+      <button type="button" class="copy-dialog-close" data-cd-close aria-label="关闭">✕</button>
+      <h2 class="copy-dialog-title">自动复制未成功</h2>
+      <p class="copy-dialog-hint">请长按下方文字，选择「复制」：</p>
+      <input
+        class="copy-dialog-input"
+        id="copy-dialog-input"
+        type="text"
+        readonly
+        value=""
+      >
+      <button type="button" class="c-btn c-btn--primary copy-dialog-done" data-cd-close>完成</button>
+    </div>
+  </div>
+
+  <!-- Toast feedback -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="/shared/routes.js"></script>
+  <script src="/shared/footprint.js"></script>
+  <script src="/shared/shell.js?v=exhibit-return-20261120"></script>
+  <script src="/shared/qrcode.js"></script>
+  <script src="./app.js?v=submissions-20261120"></script>
+</body>
+</html>

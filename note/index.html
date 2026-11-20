@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>留言板 · 幕间漫游</title>
+  <meta name="description" content="留言板 · 幕间漫游">
+  <meta name="theme-color" content="#FCFCFB">
+  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="./style.css?v=submissions-20261120">
+</head>
+<body class="note-front" data-module="note">
+  <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <!-- 海报网格、红蓝图形和沿用的手绘鱼 -->
+  <div class="note-bg-stage" id="note-bg-stage" aria-hidden="true">
+    <div class="note-bg-gradient"></div>
+    <div class="note-bg-paper"></div>
+    <div class="note-bg-motifs">
+      <span class="bg-motif motif-ring"></span>
+      <span class="bg-motif motif-arrow"></span>
+      <span class="bg-motif motif-fish"></span>
+      <span class="bg-motif motif-star"></span>
+    </div>
+  </div>
+
+  <header class="exhibit-header note-hero">
+    <div class="header-inner">
+      <div class="header-title-row">
+        <div class="title-group">
+          <h1 class="exhibit-title">留言板</h1>
+        </div>
+
+        <div class="hero-actions">
+          <button type="button" class="c-btn c-btn--primary compose-trigger" id="btn-open-composer">
+            <span class="btn-icon" aria-hidden="true">✎</span>
+            <span>写一条留言</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="exhibit-main note-stage-main">
+    <!-- 浏览其他人的留言（页面主角） -->
+    <section class="notes-section" aria-labelledby="notes-title">
+      <header class="notes-toolbar">
+        <div class="notes-toolbar-head">
+          <h2 class="section-title" id="notes-title">观众纸笺</h2>
+        </div>
+
+        <div class="notes-toolbar-tools">
+          <div class="movie-filters" id="movie-filters" role="group" aria-label="按提到的电影筛选留言"></div>
+        </div>
+      </header>
+
+      <div class="demo-banner" id="demo-banner" hidden>本地演示数据（未连接 D1）</div>
+
+      <div class="notes-list notes-wall" id="notes-list" aria-live="polite">
+        <div class="loading-state" role="status">正在读取大家留下的纸笺……</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 滚动后右下角轻巧写留言入口（避开左下角全局返回浮条） -->
+  <button type="button" class="fab-compose" id="fab-open-composer" aria-label="写一条留言">
+    <span aria-hidden="true">✎</span>
+    <span>写留言</span>
+  </button>
+
+  <!-- 原生模态弹窗：写一条留言（无 role="dialog" / aria-modal，遵循原生 <dialog> 规范） -->
+  <dialog id="composer-dialog" class="note-dialog composer-dialog" closedby="any" aria-labelledby="form-title">
+    <div class="dialog-shell">
+      <header class="dialog-head">
+        <div>
+          <h2 class="dialog-title" id="form-title">写一条留言</h2>
+        </div>
+        <button type="button" class="dialog-close" id="composer-close-btn" aria-label="关闭写留言弹窗">✕</button>
+      </header>
+
+      <form id="note-form" class="note-form" novalidate>
+        <div class="field">
+          <label for="nickname">昵称</label>
+          <input
+            id="nickname"
+            name="nickname"
+            type="text"
+            placeholder="你的名字或代号"
+            autocomplete="nickname"
+            required
+            autofocus
+            aria-invalid="false"
+            data-error="nickname-error"
+          >
+          <p class="field-error" id="nickname-error" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="content">留言</label>
+          <textarea
+            id="content"
+            name="content"
+            rows="5"
+            placeholder="看展之后的感想、散场后的一瞬间，或想对其他影迷说的话……"
+            required
+            aria-invalid="false"
+            data-error="content-error"
+          ></textarea>
+          <p class="field-error" id="content-error" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="favorite-movie">替电影先生留住的一部电影 <span class="field-optional">选填</span></label>
+          <input
+            id="favorite-movie"
+            name="favorite_movie"
+            type="text"
+            placeholder="比如：101夜、四百击、花样年华……"
+            aria-invalid="false"
+            data-error="favorite-movie-error"
+          >
+          <p class="field-error" id="favorite-movie-error" hidden></p>
+        </div>
+
+        <p class="form-hint" id="form-hint" role="status" aria-live="polite" hidden></p>
+
+        <div class="form-actions">
+          <button type="button" class="c-btn c-btn--secondary" id="composer-cancel-btn">先再逛逛</button>
+          <button type="submit" class="c-btn c-btn--primary" id="composer-submit-btn">贴上留言墙</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- 原生模态弹窗：放大细读纸笺（支持左右翻页与随机漫游） -->
+  <dialog id="reader-dialog" class="note-dialog reader-dialog" closedby="any" aria-labelledby="reader-nickname">
+    <div class="dialog-shell reader-shell">
+      <span class="reader-tape" aria-hidden="true"></span>
+      <img class="reader-watermark" id="reader-watermark" src="/shared/motifs/moon-outline.png" alt="" aria-hidden="true" width="160" height="160">
+
+      <header class="dialog-head reader-head">
+        <div>
+          <h2 class="reader-author" id="reader-nickname"></h2>
+          <time class="reader-time" id="reader-time"></time>
+        </div>
+        <button type="button" class="dialog-close" id="reader-close-btn" aria-label="关闭细读窗口">✕</button>
+      </header>
+
+      <div class="reader-body">
+        <p class="reader-content" id="reader-content"></p>
+        <p class="reader-movie" id="reader-movie" hidden></p>
+      </div>
+
+      <footer class="reader-foot">
+        <button type="button" class="stamp-btn" id="reader-keep-btn" aria-pressed="false">
+          <span class="stamp-star" aria-hidden="true">✦</span>
+          <span class="stamp-label">记住这一句</span>
+        </button>
+
+        <div class="reader-nav">
+          <button type="button" class="c-btn c-btn--secondary reader-nav-btn" id="reader-prev-btn" aria-label="上一张纸笺">← 上一张</button>
+          <button type="button" class="c-btn c-btn--paper reader-nav-btn" id="reader-random-btn">随机翻一张</button>
+          <button type="button" class="c-btn c-btn--secondary reader-nav-btn" id="reader-next-btn" aria-label="下一张纸笺">下一张 →</button>
+        </div>
+      </footer>
+    </div>
+  </dialog>
+
+  <noscript>
+    <p class="noscript-note">留言板需启用 JavaScript 才能提交与显示留言，请在浏览器中开启后刷新。</p>
+  </noscript>
+
+  <!-- 屏幕阅读器错误播报区（单一 polite live region） -->
+  <div class="visually-hidden" id="sr-announcer" aria-live="polite"></div>
+
+  <!-- Toast 反馈 -->
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- 留言卡片模板（克隆后以 textContent 填充，杜绝 innerHTML 拼接用户内容） -->
+  <template id="note-card-template">
+    <article class="note-card">
+      <span class="card-tape" aria-hidden="true"></span>
+      <img class="card-motif" src="/shared/motifs/moon-outline.png" alt="" aria-hidden="true" width="110" height="110" loading="lazy" decoding="async">
+      <button type="button" class="card-open-hit" aria-label="展开细读这条留言">
+        <header class="note-head">
+          <span class="note-nickname"></span>
+          <time class="note-time"></time>
+        </header>
+        <p class="note-content"></p>
+        <p class="note-movie"></p>
+      </button>
+      <footer class="card-foot">
+        <span class="card-open-hint" aria-hidden="true">轻触展开细读 ↗</span>
+        <button type="button" class="stamp-btn card-keep-btn" aria-pressed="false">
+          <span class="stamp-star" aria-hidden="true">✦</span>
+          <span class="stamp-label">记住了</span>
+        </button>
+      </footer>
+    </article>
+  </template>
+
+  <script src="/shared/routes.js"></script>
+  <script src="/shared/footprint.js?v=ticket-nickname-1"></script>
+  <script src="/shared/shell.js?v=exhibit-return-20261120"></script>
+  <script src="./app.js?v=ticket-nickname-1"></script>
+</body>
+</html>

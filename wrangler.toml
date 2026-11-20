@@ -1,0 +1,10 @@
+name = "mujian-exhibition"
+compatibility_date = "2026-11-20"
+pages_build_output_dir = "."
+
+# 部署留言板 D1 数据库时，在 Cloudflare Dashboard 或命令行创建 D1 后填入 database_id：
+# wrangler d1 create mjmy-notes
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "mjmy-notes"
+# database_id = "<你的-D1-DATABASE-ID>"

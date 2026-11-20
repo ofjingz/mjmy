@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": "pingyao-calendar",
+      "author": "文文",
+      "name": "平遥观影日历",
+      "type": "网页应用",
+      "url": "https://duanwenwena-hue.github.io/pingyao-2026-calendar",
+      "copyText": "https://duanwenwena-hue.github.io/pingyao-2026-calendar",
+      "openable": true,
+      "description": "影迷自制的平遥国际电影展排片与观影日历工具。",
+      "images": [
+        "media/wenwen-01.jpg",
+        "media/wenwen-02.jpg"
+      ]
+    },
+    {
+      "id": "pyiff-all-day",
+      "author": "李锐鸿",
+      "name": "平遥一刻",
+      "type": "网页应用",
+      "url": "https://pyiff-all-day.com",
+      "copyText": "https://pyiff-all-day.com",
+      "openable": true,
+      "description": "影迷自制的平遥电影展日程与观影伴侣网站。",
+      "images": [
+        "media/lrh-preview.png"
+      ]
+    },
+    {
+      "id": "gomovie-jiangnan",
+      "author": "Yang",
+      "name": "江南分馆排片小程序（GO MOVIE）",
+      "type": "微信小程序",
+      "url": "",
+      "copyText": "#小程序：//GOMOVIE/FczPiZRfwqdRpFd",
+      "openable": false,
+      "description": "中国电影资料馆江南分馆日常影展排片与影迷互助情报站小程序。复制下方口令粘贴至微信任意聊天窗口即可打开。",
+      "images": [
+        "media/yang-gomovie.jpg"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>开场减弱动态检查</title>
+<script>
+// Isolated fixture: load the real hub with a reduced-motion media response.
+// No overrides are included by the exhibition entry point.
+fetch('../index.html').then(function (response) {
+  if (!response.ok) throw new Error('无法加载大厅');
+  return response.text();
+}).then(function (html) {
+  var setup = '<script>(' + function () {
+    var nativeMedia = window.matchMedia.bind(window);
+    window.matchMedia = function (query) {
+      if (query !== '(prefers-reduced-motion: reduce)') return nativeMedia(query);
+      var media = new EventTarget();
+      Object.defineProperties(media, {
+        matches: { value: true },
+        media: { value: query }
+      });
+      return media;
+    };
+  }.toString() + ')();<\/script>';
+  document.open();
+  document.write(html.replace('<head>', '<head><base href="../">' + setup));
+  document.close();
+}).catch(function (error) { document.body.textContent = error.message; });
+</script>

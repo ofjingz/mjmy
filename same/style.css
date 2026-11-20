@@ -1,0 +1,699 @@
+/* ============================================================
+   幕间漫游 · 9 号模块「same」（SAME 展区）视觉层 · v4 框架优先
+   房间：午夜放映（蓝黑 #0D0D0F → #1B2028 + 暖白 #F2EFE9 + 琥珀金 #D4A359）
+
+   本页只做「设计线框级正确」的基础可读样式；视觉统一与美化由
+   后续 Gemini 工序负责（见 _tasks/视觉交接规范-给Gemini.md）。
+
+   纪律：
+   - 文字三级（主 --screen-warm / 次 --ink-muted / 弱 --ink-subtle）
+   - 琥珀金 --amber 仅用于主按钮与 focus 焦点环（toast 成功态）
+   - 无 1px 实线边框、无框式标签、无装饰动画
+   - 8px 间距节奏；字阶四级（页眉主标题 / 章节标题 / 正文卡片标题 / 图注次要）
+   - 图片自适应：max-width:100%、height:auto、width/height 防跳动、
+     gallery 自然高度不裁切、lightbox 大图百分比自适应、二维码 clamp 尺寸
+   - 字体：标题 Long Cang（--font-display），正文苹方黑体栈（--font-body），
+     变量定义见 /shared/shell.css
+   ============================================================ */
+:root {
+  color-scheme: dark;
+
+  /* —— 午夜放映（房间 2）色温令牌 —— */
+  --bg-0: #0D0D0F;              /* 蓝黑最深处 */
+  --bg-1: #1B2028;              /* 午夜蓝黑亮端 */
+  --bg-card: #141821;           /* 卡片表面（浅一档蓝黑） */
+  --screen-warm: #F2EFE9;       /* 银幕暖白：标题 / 主文字 */
+  --amber: #D4A359;             /* 琥珀金：主按钮 / 焦点环 / toast */
+  --ink-muted: #A39E93;         /* 次级文字 */
+  --ink-subtle: #6E6B64;        /* 弱文字 */
+
+  /* 二维码前景 / 底色（由 JS 读取，不写死） */
+  --qr-fg: #161618;
+  --qr-bg: #ffffff;
+
+  /* 字体：标题 --font-display / 正文 --font-body，定义见 /shared/shell.css；--font-mono 备用 */
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+  background-attachment: fixed;
+  color: var(--screen-warm);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: clip;
+  padding-bottom: 104px; /* 为全局 .mj-shell-dock 预留安全空间 */
+}
+
+/* ============================================================
+   展区页眉（NO. 09 · 银幕背后）
+   ============================================================ */
+.exhibit-header {
+  position: relative;
+  z-index: 2;
+}
+
+.header-inner {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 40px 28px 0;
+}
+
+.header-title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 32px;
+}
+
+.exhibit-title {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 7vw, 64px);      /* 字阶 1：页眉主标题 */
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0;
+  color: var(--screen-warm);
+}
+
+.exhibit-author {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--ink-subtle);
+}
+
+.header-motif {
+  width: 104px;
+  height: auto;
+  opacity: 0.2;
+  flex-shrink: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ============================================================
+   主区域
+   ============================================================ */
+.exhibit-main {
+  position: relative;
+  z-index: 1;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 32px 28px 24px;
+}
+
+/* ============================================================
+   宣传片 Hero
+   ============================================================ */
+.promo-hero {
+  margin-bottom: 48px;
+}
+
+.promo-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 32px;
+  padding: 40px 40px;
+  background: linear-gradient(180deg, rgba(27, 33, 43, 0.9), rgba(16, 20, 27, 0.94));
+  border-radius: 20px;
+  box-shadow:
+    0 18px 44px rgba(0, 0, 0, 0.32),
+    0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.promo-copy {
+  flex: 1 1 360px;
+  min-width: 0;
+}
+
+.promo-platform {
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+.promo-title {
+  margin: 0 0 24px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.4vw, 32px);      /* 字阶 2：章节 / Hero 标题 */
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--screen-warm);
+  overflow-wrap: anywhere;
+}
+
+.promo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.promo-actions .c-btn {
+  flex: 1 1 auto;
+  min-width: 160px;
+  max-width: 320px;
+}
+
+.promo-qr {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================================
+   胶片放映档案画廊（网格 + 图注）
+   ============================================================ */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 24px 0 20px;
+}
+
+.section-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 30px);        /* 字阶 2：章节标题 */
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--screen-warm);
+}
+
+/* 柔和胶片齿孔纹理（纯 CSS 点阵，非边框线，可被 Gemini 移除/重做） */
+.film-edge {
+  height: 14px;
+  margin: 8px 0;
+  background-image: radial-gradient(
+    circle at center,
+    rgba(212, 163, 89, 0.28) 3px,
+    transparent 3.5px
+  );
+  background-size: 28px 14px;
+  background-repeat: repeat-x;
+  background-position: center;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.g-card {
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.g-shot {
+  appearance: none;
+  border: 0;
+  background: #0A0C10;
+  padding: 0;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: zoom-in;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 30px rgba(13, 13, 15, 0.5);
+}
+
+.g-shot-img {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  height: auto;                 /* 自然高度，不裁切 */
+  object-fit: contain;          /* 兜底：任何固定盒内都不裁切 */
+  background: #0A0C10;
+}
+
+.g-shot:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+.g-caption {
+  margin: 0;
+  font-size: 13px;              /* 字阶 4：图注 / 次要 */
+  line-height: 1.5;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+/* ============================================================
+   页脚
+   ============================================================ */
+.exhibit-footer {
+  position: relative;
+  z-index: 1;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 32px 28px 8px;
+}
+
+/* ============================================================
+   按钮：主按钮琥珀实底深字；次按钮 ghost（无边框）
+   ============================================================ */
+.c-btn {
+  appearance: none;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 11px;
+  border: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.c-btn--primary {
+  background: var(--amber);
+  color: #14120D;
+}
+
+.c-btn--primary:hover {
+  background: #E0B46A;
+}
+
+.c-btn--secondary {
+  background: transparent;
+  color: var(--screen-warm);
+}
+
+.c-btn--secondary:hover {
+  background: rgba(242, 239, 233, 0.07);
+  color: #FFFFFF;
+}
+
+.c-btn:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   二维码（clamp 尺寸，点击放大）
+   ============================================================ */
+.c-qr {
+  appearance: none;
+  border: 0;
+  padding: 8px;
+  background: #ffffff;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-in;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+  transition: transform 0.2s ease;
+}
+
+.c-qr:hover {
+  transform: scale(1.03);
+}
+
+.c-qr:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+.c-qr svg {
+  display: block;
+  width: clamp(96px, 16vw, 132px);
+  height: clamp(96px, 16vw, 132px);
+}
+
+.c-qr-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-subtle);
+  text-align: center;
+}
+
+/* ============================================================
+   LIGHTBOX（无边框面板，遮罩保持蓝黑）
+   ============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.lightbox[hidden],
+.copy-dialog[hidden] {
+  display: none !important;
+}
+
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 13, 15, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.lightbox-frame {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  max-width: 100%;
+}
+
+.lightbox-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+}
+
+.lightbox-media img {
+  display: block;
+  max-width: min(840px, 84vw);   /* 百分比自适应，不裁切 */
+  max-height: 76vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+  background: #0A0C10;
+}
+
+.lightbox-media .lb-qr-box {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+}
+
+.lightbox-media .lb-qr-box svg {
+  display: block;
+  width: min(260px, 68vw);
+  height: min(260px, 68vw);
+}
+
+.lightbox-caption {
+  margin-top: 14px;
+  font-size: 13.5px;
+  color: #E7DFD1;
+  text-align: center;
+  max-width: 60ch;
+  overflow-wrap: anywhere;
+}
+
+.lightbox-close {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top));
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(16, 19, 25, 0.8);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-close:hover {
+  background: rgba(242, 239, 233, 0.18);
+}
+
+.lightbox-close:focus-visible,
+.lightbox-nav:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.lightbox-nav {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(16, 19, 25, 0.8);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-nav:hover {
+  background: rgba(242, 239, 233, 0.18);
+}
+
+/* ============================================================
+   手动复制兜底弹窗（微信内置浏览器，无边框面板）
+   ============================================================ */
+.copy-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 9850;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.copy-dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 13, 15, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.copy-dialog-frame {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 92vw);
+  background: linear-gradient(180deg, #1A1F28, #12151B);
+  border-radius: 18px;
+  padding: 28px 24px 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.copy-dialog-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(16, 19, 25, 0.7);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-dialog-close:hover {
+  background: rgba(242, 239, 233, 0.18);
+}
+
+.copy-dialog-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--screen-warm);
+}
+
+.copy-dialog-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.copy-dialog-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: #171C24;
+  color: var(--screen-warm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.copy-dialog-input:focus {
+  outline: 2px solid var(--amber);
+  outline-offset: 1px;
+}
+
+.copy-dialog-done {
+  width: 100%;
+}
+
+/* ============================================================
+   TOAST / 状态
+   ============================================================ */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(74px, calc(env(safe-area-inset-bottom) + 64px));
+  transform: translateX(-50%);
+  z-index: 9900;
+  background: rgba(18, 21, 27, 0.96);
+  color: var(--screen-warm);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 13px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+
+.loading-state,
+.error-state {
+  grid-column: 1 / -1;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--ink-subtle);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.noscript-note {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+/* ============================================================
+   响应式（1440 / 390 / 320 不溢出、不裁切）
+   - 1440：默认桌面布局（header-inner / exhibit-main / 1220px 容器）
+   - 1020：画廊 3 → 2 列
+   - 680：画廊 2 → 1 列、Hero 纵向堆叠、收窄页边距
+   - 390/320：单列、更小页边距与字号、二维码 / lightbox 均用 vw 上限约束
+   ============================================================ */
+@media (max-width: 1020px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 680px) {
+  .header-inner {
+    padding: 28px 16px 0;
+  }
+
+  .header-title-row {
+    padding-bottom: 24px;
+  }
+
+  .header-motif {
+    width: 68px;
+    opacity: 0.18;
+  }
+
+  .exhibit-main {
+    padding: 24px 14px 20px;
+  }
+
+  .promo-inner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 28px 20px;
+    gap: 24px;
+  }
+
+  .promo-actions {
+    flex-direction: column;
+  }
+
+  .promo-actions .c-btn {
+    max-width: none;
+  }
+
+  .promo-qr {
+    align-self: center;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .lightbox-frame {
+    gap: 6px;
+  }
+
+  .lightbox-nav {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* ============================================================
+   动效弱化：prefers-reduced-motion 下全部静止
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

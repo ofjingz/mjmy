@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0e1013">
+  <title>收藏背后 · 还是黑 — 幕间漫游</title>
+  <meta name="description" content="收藏背后 · 还是黑 · 幕间漫游">
+  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="./style.css?v=submissions-20261120">
+</head>
+<body data-module="collection">
+  <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <!-- 顶部阅读进度发丝线 -->
+  <div class="read-progress-track" aria-hidden="true">
+    <div class="read-progress-bar" id="readProgressBar"></div>
+  </div>
+
+  <!-- 暗房序幕 Hero -->
+  <header class="hero" id="top">
+    <div class="hero-backdrop" aria-hidden="true">
+      <div class="hero-glow"></div>
+      <div class="hero-grain"></div>
+      <img class="hero-motif" src="/shared/motifs/umbrella-outline.png" alt="" decoding="async">
+    </div>
+
+    <div class="hero-inner">
+      <h1 class="hero-title" id="heroTitle">收藏背后</h1>
+
+      <div class="hero-byline">
+        <span class="byline-author" id="heroAuthor">还是黑</span>
+      </div>
+
+      <nav class="hero-actions" aria-label="展厅快速跳转">
+        <a class="hero-btn hero-btn-primary" href="#essay-section">开始阅读手记</a>
+        <a class="hero-btn hero-btn-ghost" href="#gallery-section">浏览实物图集</a>
+      </nav>
+    </div>
+
+    <div class="hero-edge" aria-hidden="true"></div>
+  </header>
+
+  <!-- 温暖档案书桌正文区域 -->
+  <main class="desk-surface">
+    <article class="essay-shell" id="essay-section" aria-label="还是黑《收藏背后》正文">
+      <div class="essay-body" id="essayBody">
+        <div class="loading-state" role="status">正在展开收藏档案……</div>
+      </div>
+    </article>
+
+    <!-- 实物实拍图集区域 -->
+    <section class="gallery-band" id="gallery-section" aria-labelledby="galleryHeading">
+      <div class="gallery-inner">
+        <header class="gallery-header">
+          <h2 class="gallery-heading" id="galleryHeading">实物收藏实拍</h2>
+        </header>
+
+        <div class="gallery-masonry" id="galleryGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <footer class="exhibit-footer">
+      <div class="footer-rule" aria-hidden="true"></div>
+      <a class="footer-top-link" href="#top">回到展厅序幕 ↑</a>
+    </footer>
+  </main>
+
+  <!-- 右下角极简浮动目录与进度胶囊（与左下角全局返回浮条对称不遮挡） -->
+  <div class="toc-widget" id="tocWidget">
+    <aside class="toc-drawer" id="tocDrawer" aria-label="阅读章节目录" hidden>
+      <div class="toc-drawer-head">
+        <span class="toc-drawer-title">收藏章节目录</span>
+        <button type="button" class="toc-close-btn" id="tocCloseBtn" aria-label="收起目录">✕</button>
+      </div>
+      <ol class="toc-list" id="tocList"></ol>
+      <div class="toc-drawer-foot">
+        <button type="button" class="toc-top-btn" id="tocTopBtn">↑ 回到顶部</button>
+        <span class="toc-progress-label" id="tocProgressText">已读 0%</span>
+      </div>
+    </aside>
+
+    <button
+      type="button"
+      class="toc-fab"
+      id="tocToggleBtn"
+      aria-expanded="false"
+      aria-controls="tocDrawer"
+      aria-label="打开阅读目录与进度"
+    >
+      <span class="toc-fab-icon" aria-hidden="true">☰</span>
+      <span class="toc-fab-label">目录</span>
+      <span class="toc-fab-pct" id="tocFabPct">0%</span>
+    </button>
+  </div>
+
+  <!-- 原比例大图 Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="藏品大图查看器" hidden>
+    <div class="lightbox-backdrop" data-lb-close></div>
+    <div class="lightbox-stage">
+      <div class="lightbox-topbar">
+        <div class="lightbox-group" id="lbGroup">实物实拍</div>
+        <button type="button" class="lightbox-close" id="lbClose" aria-label="关闭大图">✕</button>
+      </div>
+
+      <div class="lightbox-viewport" id="lbViewport">
+        <button type="button" class="lightbox-nav lightbox-prev" id="lbPrev" aria-label="上一张">‹</button>
+        <figure class="lightbox-figure">
+          <img class="lightbox-img" id="lbImg" src="" alt="">
+          <figcaption class="lightbox-caption" id="lbCaption"></figcaption>
+        </figure>
+        <button type="button" class="lightbox-nav lightbox-next" id="lbNext" aria-label="下一张">›</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/shared/routes.js"></script>
+  <script src="/shared/footprint.js"></script>
+  <script src="/shared/shell.js?v=exhibit-return-20261120"></script>
+  <script src="./app.js?v=submissions-20261120"></script>
+</body>
+</html>
