@@ -19,7 +19,7 @@
     videos: [],
     activeTab: 'articles',
     activeArticleId: '',
-    activePlatform: '全部',
+    activeVideoAuthor: '',
     lightboxItems: [],
     lightboxIndex: 0,
     lastFocused: null
@@ -31,7 +31,7 @@
     panelVideos: document.getElementById('panel-videos'),
     articleList: document.getElementById('article-list'),
     letterSheet: document.getElementById('letter-sheet'),
-    platformFilters: document.getElementById('platform-filters'),
+    authorFilters: document.getElementById('author-filters'),
     videoGrid: document.getElementById('video-grid'),
     lightbox: document.getElementById('lightbox'),
     lbMedia: document.getElementById('lb-media'),
@@ -465,31 +465,21 @@
   /* =========================================================
      SHORT VIDEOS RENDERING
      ========================================================= */
-  function getPlatformClass(platform) {
-    if (platform === '哔哩哔哩') return 'platform-badge--bili';
-    if (platform === '抖音') return 'platform-badge--douyin';
-    if (platform === '微信视频号') return 'platform-badge--wechat';
-    return 'platform-badge--bili';
-  }
+  function renderAuthorFilters() {
+    if (!els.authorFilters) return;
+    var authors = Array.from(new Set(state.videos.map(function (video) {
+      return video.author;
+    }).filter(Boolean)));
 
-  function renderPlatformFilters() {
-    if (!els.platformFilters) return;
-    var order = ['全部'].concat(Array.from(new Set(state.videos.map(function (video) {
-      return video.platform;
-    }))));
-
-    els.platformFilters.innerHTML = order
-      .map(function (plat) {
-        var active = state.activePlatform === plat;
+    els.authorFilters.innerHTML = [''].concat(authors)
+      .map(function (author) {
         return (
-          '<button type="button" class="filter-pill' +
-          (active ? ' is-active' : '') +
-          '" data-platform="' +
-          escapeHtml(plat) +
+          '<button type="button" class="filter-pill" data-author="' +
+          escapeHtml(author) +
           '" aria-pressed="' +
-          (active ? 'true' : 'false') +
+          (state.activeVideoAuthor === author ? 'true' : 'false') +
           '">' +
-          escapeHtml(plat) +
+          escapeHtml(author || '全部') +
           '</button>'
         );
       })
@@ -499,7 +489,7 @@
   function renderVideoGrid() {
     if (!els.videoGrid) return;
     var list = state.videos.filter(function (v) {
-      return state.activePlatform === '全部' || v.platform === state.activePlatform;
+      return !state.activeVideoAuthor || v.author === state.activeVideoAuthor;
     });
 
     var html = list
@@ -534,7 +524,7 @@
         }
 
         var qrHint = isWechat
-          ? '<p class="qr-hint qr-hint--wechat">微信内长按或扫码观看</p>'
+          ? '<p class="qr-hint">微信内长按或扫码观看</p>'
           : '';
 
         var actionsHtml = '';
@@ -558,13 +548,6 @@
 
         return (
           '<article class="video-card">' +
-          '<div class="video-card-top">' +
-          '<span class="platform-badge ' +
-          getPlatformClass(v.platform) +
-          '">' +
-          escapeHtml(v.platform) +
-          '</span>' +
-          '</div>' +
           '<div class="video-info">' +
           '<h2 class="video-title">' +
           escapeHtml(v.title) +
@@ -675,13 +658,14 @@
       });
     }
 
-    // Video platform filter delegation
-    if (els.platformFilters) {
-      els.platformFilters.addEventListener('click', function (e) {
-        var pill = e.target.closest('[data-platform]');
-        if (!pill) return;
-        state.activePlatform = pill.getAttribute('data-platform') || '全部';
-        renderPlatformFilters();
+    // Video author filter delegation
+    if (els.authorFilters) {
+      els.authorFilters.addEventListener('click', function (e) {
+        var pill = e.target.closest('[data-author]');
+        if (!pill || pill.getAttribute('aria-pressed') === 'true') return;
+        state.activeVideoAuthor = pill.getAttribute('data-author');
+        els.authorFilters.querySelector('[aria-pressed="true"]').setAttribute('aria-pressed', 'false');
+        pill.setAttribute('aria-pressed', 'true');
         renderVideoGrid();
       });
     }
@@ -775,7 +759,7 @@
         if (state.articles.length) {
           renderArticleSheet(route.articleId || state.articles[0].id, { skipHash: true });
         }
-        renderPlatformFilters();
+        renderAuthorFilters();
         renderVideoGrid();
         setTab(route.tab, { skipHash: true });
       })

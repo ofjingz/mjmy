@@ -1,38 +1,11 @@
 (function () {
   'use strict';
 
-  var DATA_URL = './data.json';
-
-  var CHAPTER_ANCHORS = [
-    { blockIndex: 0,   id: 'sec-007-items', title: '007 收藏起点与周边' },
-    { blockIndex: 20,  id: 'sec-007-books', title: '007 系列书籍' },
-    { blockIndex: 41,  id: 'sec-march', title: '古典好莱坞 · 弗雷德里克·马奇' },
-    { blockIndex: 66,  id: 'sec-bologna', title: '博洛尼亚修复电影节周边' },
-    { blockIndex: 82,  id: 'sec-la', title: '洛杉矶“捡垃圾”与原始底片' },
-    { blockIndex: 100, id: 'sec-cabinet', title: '展示柜与环球怪物' },
-    { blockIndex: 103, id: 'sec-australia', title: '澳洲影展与各地场刊' }
-  ];
+  var DATA_URL = './data.json?v=collection-word-20261121';
 
   var lightboxItems = [];
   var lightboxIndex = 0;
   var lastFocusedEl = null;
-
-  function isFigureIndexText(text) {
-    return /^\d{4,}$/.test(text.trim());
-  }
-
-  function isItemHeading(text) {
-    var t = text.trim();
-    if (!/^\d+(?:-\d+)?\s*[.．：:]/.test(t)) return false;
-    if (t.length > 48) return false;
-    if (t.indexOf('，') !== -1 || t.endsWith('。')) return false;
-    return true;
-  }
-
-  function isCatalogEntry(text) {
-    var t = text.trim();
-    return /^\d+(?:-\d+)?\s*[.．：:]/.test(t) && !isItemHeading(t);
-  }
 
   function renderTableBlock(block) {
     var wrap = document.createElement('div');
@@ -57,136 +30,91 @@
     return wrap;
   }
 
-  function renderEssay(data) {
-    var container = document.getElementById('essayBody');
-    if (!container) return;
-    container.innerHTML = '';
+  function renderChapter(block) {
+    var heading = document.createElement('h2');
+    heading.className = 'essay-chapter-anchor';
+    heading.id = block.id;
+    heading.textContent = block.title;
+    return heading;
+  }
 
-    var anchorByBlock = Object.create(null);
-    CHAPTER_ANCHORS.forEach(function (ch) {
-      anchorByBlock[ch.blockIndex] = ch;
+  function renderEssayFigure(photo, photos) {
+    var item = {
+      src: './' + photo.src.replace(/^\.\//, ''),
+      caption: photo.caption || '',
+      alt: photo.alt || '收藏背后正文配图',
+      group: '正文配图'
+    };
+    var index = photos.length;
+    photos.push(item);
+
+    var figure = document.createElement('figure');
+    figure.className = 'essay-figure';
+    if (photo.width < photo.height) figure.classList.add('essay-figure--portrait');
+
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'essay-img-btn';
+    button.setAttribute('aria-label', '放大查看：' + item.alt);
+    button.addEventListener('click', function () {
+      openLightbox(photos, index, button);
     });
 
-    var embedList = [];
-    var blocks = Array.isArray(data.blocks) ? data.blocks : [];
+    var img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.alt;
+    if (photo.width && photo.height) {
+      img.width = photo.width;
+      img.height = photo.height;
+    }
+    img.loading = index === 0 ? 'eager' : 'lazy';
+    img.decoding = 'async';
+    button.appendChild(img);
+    figure.appendChild(button);
 
-    blocks.forEach(function (block, idx) {
-      if (anchorByBlock[idx]) {
-        var ch = anchorByBlock[idx];
-        var marker = document.createElement('div');
-        marker.className = 'essay-chapter-anchor';
-        marker.id = ch.id;
-        marker.setAttribute('data-chapter-anchor', ch.id);
+    if (item.caption) {
+      var caption = document.createElement('figcaption');
+      caption.className = 'essay-figure-caption';
+      caption.textContent = item.caption;
+      figure.appendChild(caption);
+    }
+    return figure;
+  }
 
-        var pill = document.createElement('span');
-        pill.className = 'chapter-pill';
-        pill.textContent = ch.title;
+  function renderEssay(blocks) {
+    var container = document.getElementById('essayBody');
+    if (!container) return;
+    container.textContent = '';
 
-        var rule = document.createElement('span');
-        rule.className = 'chapter-rule';
-        rule.setAttribute('aria-hidden', 'true');
-
-        marker.appendChild(pill);
-        marker.appendChild(rule);
-        container.appendChild(marker);
-      }
-
-      if (block.type === 'paragraph') {
-        var text = typeof block.text === 'string' ? block.text : '';
-        if (isFigureIndexText(text)) {
-          var keyEl = document.createElement('div');
-          keyEl.className = 'essay-fig-key';
-          keyEl.textContent = text;
-          container.appendChild(keyEl);
-        } else if (isItemHeading(text)) {
-          var h3 = document.createElement('h3');
-          h3.className = 'essay-item-heading';
-          h3.textContent = text;
-          container.appendChild(h3);
+    var photos = [];
+    blocks.forEach(function (block) {
+      if (block.type === 'chapter') {
+        container.appendChild(renderChapter(block));
+      } else if (block.type === 'paragraph' || block.type === 'item-heading') {
+        var isHeading = block.type === 'item-heading';
+        var paragraph = document.createElement(isHeading ? 'h3' : 'p');
+        paragraph.className = isHeading ? 'essay-item-heading' : 'essay-p';
+        if (block.leadLength) {
+          var lead = document.createElement('strong');
+          lead.textContent = block.text.slice(0, block.leadLength);
+          paragraph.appendChild(lead);
+          paragraph.appendChild(document.createTextNode(block.text.slice(block.leadLength)));
         } else {
-          var p = document.createElement('p');
-          p.className = 'essay-p' + (isCatalogEntry(text) ? ' is-catalog-entry' : '');
-          p.textContent = text;
-          container.appendChild(p);
+          paragraph.textContent = block.text;
         }
+        container.appendChild(paragraph);
       } else if (block.type === 'image' && block.src) {
-        var itemObj = {
-          src: './' + block.src.replace(/^\.\//, ''),
-          caption: '',
-          group: '正文配图'
-        };
-        var itemIdx = embedList.length;
-        embedList.push(itemObj);
-
-        var figure = document.createElement('figure');
-        figure.className = 'essay-figure';
-
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'essay-img-btn';
-        btn.setAttribute('aria-label', '放大查看正文配图');
-        btn.addEventListener('click', (function (list, i, trigger) {
-          return function () {
-            openLightbox(list, i, trigger);
-          };
-        })(embedList, itemIdx, btn));
-
-        var img = document.createElement('img');
-        img.src = itemObj.src;
-        img.alt = '收藏背后正文配图';
-        img.loading = itemIdx === 0 ? 'eager' : 'lazy';
-        img.decoding = 'async';
-        btn.appendChild(img);
-
-        figure.appendChild(btn);
-        container.appendChild(figure);
+        container.appendChild(renderEssayFigure(block, photos));
+      } else if (block.type === 'image-group') {
+        var group = document.createElement('div');
+        group.className = 'essay-figure-group';
+        block.images.forEach(function (photo) {
+          group.appendChild(renderEssayFigure(photo, photos));
+        });
+        container.appendChild(group);
       } else if (block.type === 'table') {
         container.appendChild(renderTableBlock(block));
       }
-    });
-  }
-
-  function renderGallery(data) {
-    var grid = document.getElementById('galleryGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    var gallery = Array.isArray(data.gallery) ? data.gallery : [];
-    var items = gallery.map(function (g) {
-      return {
-        src: './' + g.src.replace(/^\.\//, ''),
-        caption: /^收藏实拍\s*\d+$/.test(g.caption || '') ? '' : (g.caption || ''),
-        group: '实物实拍'
-      };
-    });
-
-    items.forEach(function (item, idx) {
-      var card = document.createElement('figure');
-      card.className = 'gallery-card';
-
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'gallery-card-btn';
-      btn.setAttribute('aria-label', '放大查看 ' + (item.caption || item.group));
-      btn.addEventListener('click', function () {
-        openLightbox(items, idx, btn);
-      });
-
-      var img = document.createElement('img');
-      img.src = item.src;
-      img.alt = item.caption || item.group;
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      btn.appendChild(img);
-
-      card.appendChild(btn);
-      if (item.caption) {
-        var meta = document.createElement('figcaption');
-        meta.className = 'gallery-card-meta';
-        meta.textContent = item.caption;
-        card.appendChild(meta);
-      }
-      grid.appendChild(card);
     });
   }
 
@@ -197,16 +125,12 @@
     if (authorEl && data.author) authorEl.textContent = data.author;
   }
 
-  function buildToc() {
+  function buildToc(chapters) {
     var list = document.getElementById('tocList');
     if (!list) return;
     list.innerHTML = '';
 
-    var entries = CHAPTER_ANCHORS.concat([
-      { id: 'gallery-section', title: '实物收藏实拍' }
-    ]);
-
-    entries.forEach(function (entry) {
+    chapters.forEach(function (entry) {
       var li = document.createElement('li');
       var a = document.createElement('a');
       a.className = 'toc-link';
@@ -231,7 +155,7 @@
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
 
-  function initProgressAndToc() {
+  function initProgressAndToc(chapters) {
     var bar = document.getElementById('readProgressBar');
     var fabPct = document.getElementById('tocFabPct');
     var textPct = document.getElementById('tocProgressText');
@@ -264,6 +188,7 @@
       }
     });
 
+    var anchorIds = chapters.map(function (chapter) { return chapter.id; });
     var ticking = false;
     function updateScroll() {
       ticking = false;
@@ -275,7 +200,6 @@
       if (fabPct) fabPct.textContent = pct + '%';
       if (textPct) textPct.textContent = '已读 ' + pct + '%';
 
-      var anchorIds = CHAPTER_ANCHORS.map(function (c) { return c.id; }).concat(['gallery-section']);
       var activeId = anchorIds[0];
       var offset = 160;
       for (var i = 0; i < anchorIds.length; i++) {
@@ -337,7 +261,7 @@
     var group = document.getElementById('lbGroup');
     if (img) {
       img.src = item.src;
-      img.alt = item.caption || item.group;
+      img.alt = item.alt;
     }
     if (cap) {
       cap.textContent = item.caption;
@@ -400,11 +324,14 @@
         return res.json();
       })
       .then(function (data) {
+        var blocks = Array.isArray(data.blocks) ? data.blocks : [];
+        var chapters = blocks.filter(function (block) { return block.type === 'chapter'; });
         renderHeader(data);
-        renderEssay(data);
-        renderGallery(data);
-        buildToc();
-        initProgressAndToc();
+        renderEssay(blocks);
+        buildToc(chapters);
+        var target = document.getElementById(window.location.hash.slice(1));
+        if (target && target.classList.contains('essay-chapter-anchor')) target.scrollIntoView();
+        initProgressAndToc(chapters);
       })
       .catch(function (err) {
         var body = document.getElementById('essayBody');

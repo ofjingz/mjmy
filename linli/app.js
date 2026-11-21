@@ -29,8 +29,10 @@
   const params = new URLSearchParams(window.location.search);
   const visitedFrom = params.get('via');
   const hubView = visitedFrom === 'hall' || visitedFrom === 'catalog' ? visitedFrom : null;
+  const roamSeed = hubView && params.get('roam');
   function carryHubView(url) {
     if (hubView) url.searchParams.set('via', hubView);
+    if (roamSeed) url.searchParams.set('roam', roamSeed);
     return url;
   }
 

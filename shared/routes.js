@@ -160,14 +160,22 @@
     return h === ROOT_DOMAIN || h.endsWith('.' + ROOT_DOMAIN);
   }
 
+  function parseRoamSeed(value) {
+    var seed = Number(value);
+    return Number.isInteger(seed) && seed > 0 && seed < 2147483647 ? seed : 0;
+  }
+
   function resolveUrl(id, hash) {
     var suffix = hash ? (hash.charAt(0) === '#' ? hash : '#' + hash) : '';
-    var item = SPECIALS[id] || MODULES.find(function (m) { return m.id === id; });
-    if (!item) return isProdHost() ? 'https://' + HUB_HOST + '/' + suffix : '/hub/' + suffix;
-    if (isProdHost()) {
-      return 'https://' + item.subdomain + '.' + ROOT_DOMAIN + '/' + suffix;
+    var item = SPECIALS[id] || MODULES.find(function (m) { return m.id === id; }) || SPECIALS.hub;
+    var path = isProdHost() ? 'https://' + item.subdomain + '.' + ROOT_DOMAIN + '/' : item.path;
+    if (id === 'hub' && typeof location !== 'undefined') {
+      var params = new URLSearchParams(location.search);
+      var via = params.get('via');
+      var seed = parseRoamSeed(params.get('roam'));
+      if (seed && (via === 'hall' || via === 'catalog')) path += '?roam=' + seed;
     }
-    return item.path + suffix;
+    return path + suffix;
   }
 
   function getEnabledModules() {
@@ -186,6 +194,7 @@
     SPECIALS: SPECIALS,
     isProdHost: isProdHost,
     resolveUrl: resolveUrl,
+    parseRoamSeed: parseRoamSeed,
     getEnabledModules: getEnabledModules,
     getModuleById: getModuleById
   };

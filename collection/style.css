@@ -1,13 +1,20 @@
 /* 幕间漫游 · 06 号展厅「收藏背后」· 还是黑
  * 视觉语汇：暗房序幕 (#0e1013) → 温暖档案书桌 (#f7f3eb) · 柔琥珀金 (#d9a962 / #9d6f2c)
  */
+@font-face {
+  font-family: 'Long Cang Collection';
+  src: url('./media/LongCang-collection.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --dark-bg: #0e1013;
   --dark-surface: #15181e;
   --dark-ink: #f3ede2;
   --dark-muted: #aba396;
   --amber: #d9a962;
-  --amber-deep: #996a26;
   --amber-soft: rgba(217, 169, 98, 0.16);
 
   --paper-bg: #f7f3eb;
@@ -81,7 +88,7 @@ button {
   position: relative;
   background: var(--dark-bg);
   color: var(--dark-ink);
-  padding: clamp(68px, 11vw, 128px) 24px clamp(68px, 10vw, 112px);
+  padding: clamp(32px, 5vw, 58px) 24px clamp(28px, 4.5vw, 48px);
   overflow: hidden;
 }
 
@@ -113,7 +120,7 @@ button {
   right: max(4%, calc(50% - 500px));
   top: 50%;
   transform: translateY(-48%);
-  width: clamp(210px, 28vw, 350px);
+  width: clamp(136px, 18vw, 232px);
   height: auto;
   opacity: 0.14;
   filter: drop-shadow(0 0 28px rgba(217, 169, 98, 0.25));
@@ -123,75 +130,26 @@ button {
 .hero-inner {
   position: relative;
   z-index: 2;
-  max-width: 780px;
+  max-width: 716px;
   margin: 0 auto;
 }
 
 .hero-title {
-  margin: 0 0 18px;
+  margin: 0 0 6px;
   font-family: var(--font-display);
-  font-size: clamp(38px, 6.8vw, 66px);
+  font-size: clamp(38px, 6.2vw, 62px);
   font-weight: 500;
   line-height: 1.16;
   letter-spacing: 0.06em;
   color: #faf5eb;
 }
 
-.hero-byline {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 245, 224, 0.12);
-}
-
 .byline-author {
+  margin: 0;
   font-family: var(--font-body);
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: 0.08em;
   color: var(--amber);
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.hero-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 22px;
-  border-radius: 999px;
-  font-size: 14px;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.hero-btn-primary {
-  background: var(--amber);
-  color: #16130e;
-  font-weight: 600;
-}
-
-.hero-btn-primary:hover {
-  background: #e5b873;
-  transform: translateY(-1px);
-}
-
-.hero-btn-ghost {
-  border: 1px solid rgba(255, 246, 227, 0.26);
-  color: #f3ede2;
-  background: rgba(255, 246, 227, 0.04);
-}
-
-.hero-btn-ghost:hover {
-  border-color: rgba(217, 169, 98, 0.65);
-  background: rgba(217, 169, 98, 0.1);
 }
 
 .hero-edge {
@@ -208,7 +166,7 @@ button {
   background:
     radial-gradient(ellipse 90% 420px at 50% 0, rgba(217, 169, 98, 0.08), transparent 72%),
     var(--paper-bg);
-  padding-top: clamp(36px, 6vw, 68px);
+  padding-top: clamp(25px, 4vw, 44px);
 }
 
 .essay-shell {
@@ -233,89 +191,65 @@ button {
 }
 
 .essay-chapter-anchor {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 52px 0 22px;
+  margin: 48px 0 16px;
+  font-family: 'Long Cang Collection', var(--font-display);
+  font-size: clamp(27px, 4.1vw, 36px);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.035em;
+  color: #75501f;
   scroll-margin-top: 28px;
 }
 
 .essay-chapter-anchor:first-child {
-  margin-top: 8px;
-}
-
-.chapter-pill {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  color: var(--amber-deep);
-  background: rgba(217, 169, 98, 0.14);
-  border: 1px solid rgba(153, 106, 38, 0.24);
-  padding: 3px 10px;
-  border-radius: 999px;
-  white-space: nowrap;
-}
-
-.chapter-rule {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(153, 106, 38, 0.28), rgba(153, 106, 38, 0.03));
+  margin-top: 0;
 }
 
 .essay-p {
   margin: 0 0 1.25em;
-  text-align: justify;
-  text-justify: inter-ideograph;
-}
-
-.essay-p.is-catalog-entry {
-  padding: 12px 16px;
-  margin: 0.9em 0 1.25em;
-  background: rgba(255, 253, 248, 0.78);
-  border-left: 2.5px solid var(--amber);
-  border-radius: 0 6px 6px 0;
 }
 
 .essay-item-heading {
-  margin: 2em 0 0.75em;
-  padding-bottom: 6px;
+  margin: 1.65em 0 0.4em;
   font-family: var(--font-body);
   font-size: clamp(18px, 2.6vw, 20.5px);
   font-weight: 600;
   line-height: 1.45;
   color: #181510;
-  border-bottom: 1px dashed rgba(153, 106, 38, 0.28);
-}
-
-.essay-fig-key {
-  margin: 2.1em 0 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  color: var(--ink-faint);
-  background: var(--paper-tint);
-  padding: 3px 10px;
-  border-radius: 4px;
-}
-
-.essay-fig-key::before {
-  content: "图注序号";
-  font-family: var(--font-body);
-  letter-spacing: 0.06em;
-  color: var(--amber-deep);
 }
 
 /* 嵌入式正文配图：原比例、不裁切 */
 .essay-figure {
-  margin: 12px 0 32px;
+  margin: 0 0 28px;
   padding: 12px;
   background: var(--paper-card);
   border: 1px solid var(--paper-border);
   border-radius: 10px;
   box-shadow: 0 12px 30px rgba(42, 32, 16, 0.07);
+}
+
+.essay-body > .essay-figure--portrait {
+  max-width: 500px;
+  margin-inline: auto;
+}
+
+.essay-figure-group {
+  display: grid;
+  align-items: start;
+  grid-template-columns: minmax(0, 16fr) minmax(0, 9fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.essay-figure-group .essay-figure {
+  margin: 0;
+}
+
+.essay-figure-caption {
+  margin: 8px 2px 0;
+  color: var(--ink-secondary);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .essay-img-btn {
@@ -372,82 +306,6 @@ button {
   background: var(--paper-tint);
   font-weight: 600;
   color: var(--ink);
-}
-
-/* ===== 实物实拍图集（11 张，全原比例不裁切） ===== */
-.gallery-band {
-  background: #121418;
-  color: var(--dark-ink);
-  padding: clamp(56px, 8vw, 96px) 22px clamp(64px, 8vw, 100px);
-  border-top: 1px solid rgba(217, 169, 98, 0.22);
-  scroll-margin-top: 12px;
-}
-
-.gallery-inner {
-  max-width: 1120px;
-  margin: 0 auto;
-}
-
-.gallery-header {
-  max-width: 680px;
-  margin-bottom: clamp(28px, 4vw, 44px);
-}
-
-.gallery-heading {
-  margin: 0 0 12px;
-  font-family: var(--font-display);
-  font-size: clamp(26px, 4vw, 38px);
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  color: #fbf6ec;
-}
-
-.gallery-masonry {
-  column-count: 2;
-  column-gap: 20px;
-}
-
-.gallery-card {
-  break-inside: avoid;
-  margin: 0 0 20px;
-  background: #191c22;
-  border: 1px solid rgba(255, 246, 227, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
-  transition: border-color 0.25s ease, transform 0.25s ease;
-}
-
-.gallery-card:hover {
-  border-color: rgba(217, 169, 98, 0.45);
-  transform: translateY(-2px);
-}
-
-.gallery-card-btn {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: #0f1115;
-  cursor: zoom-in;
-}
-
-.gallery-card-btn img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.gallery-card-meta {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 12px 14px;
-}
-
-.gallery-card-caption {
-  font-size: 13.5px;
-  color: #eae2d4;
-  line-height: 1.5;
 }
 
 /* 展厅尾注 */
@@ -750,21 +608,15 @@ button {
 }
 
 /* ===== 响应式适配（1440 / 390 / 320） ===== */
-@media (min-width: 1040px) {
-  .gallery-masonry {
-    column-count: 3;
-  }
-}
-
 @media (max-width: 640px) {
   .hero {
-    padding: 54px 18px 54px;
+    padding: 32px 16px 26px;
   }
 
   .hero-motif {
-    width: 190px;
-    right: -28px;
-    top: 20px;
+    width: 132px;
+    right: 2px;
+    top: 8px;
     transform: none;
     opacity: 0.1;
   }
@@ -782,12 +634,8 @@ button {
     padding: 8px;
   }
 
-  .gallery-band {
-    padding: 48px 16px 56px;
-  }
-
-  .gallery-masonry {
-    column-count: 1;
+  .essay-figure-group {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .toc-widget {

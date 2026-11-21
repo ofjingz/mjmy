@@ -80,10 +80,10 @@
     [36, 89, 0.75], [12, 94, 0.55], [84, 88, 0.8], [62, 94, 0.65], [37, 95, 0.8], [85, 95, 0.8], [88, 41, 0.65]
   ];
 
-  function shuffleArray(list) {
+  function shuffleArray(list, random) {
     var arr = list.slice();
     for (var i = arr.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
+      var j = Math.floor(random() * (i + 1));
       var tmp = arr[i];
       arr[i] = arr[j];
       arr[j] = tmp;
@@ -127,8 +127,6 @@
     var navInfo = document.getElementById('nav-info');
     var navThanks = document.getElementById('nav-thanks');
     var topNoteLink = document.getElementById('top-note-link');
-    updateSpecialLinks('hall');
-
     var reducedMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
     var mobileMedia = window.matchMedia('(max-width: 767px), (pointer: coarse)');
 
@@ -146,7 +144,29 @@
     var roamNodes = [];
     var roamCellOrder = [];
     var lastStageWidth = 0;
-    var layoutSeed = Math.floor(Math.random() * 2147483646) + 1;
+    var hubUrl = new URL(location.href);
+    var navigation = performance.getEntriesByType('navigation')[0];
+    var reloading = navigation && navigation.type === 'reload';
+    var historySeed = !reloading && history.state && history.state.mujianEnteredHall
+      ? Routes.parseRoamSeed(history.state.mujianRoamSeed) : 0;
+    // Some containers reopen the hall URL instead of restoring the history entry.
+    var lastArrival = Footprint && Footprint.takeRoamReturn && Footprint.takeRoamReturn();
+    var arrivalSeed = !reloading ? Routes.parseRoamSeed(lastArrival) : 0;
+    var returnedSeed = Routes.parseRoamSeed(hubUrl.searchParams.get('roam'));
+    var restoredHall = Boolean(returnedSeed || historySeed || arrivalSeed);
+    var layoutSeed = returnedSeed || historySeed || arrivalSeed || Math.floor(Math.random() * 2147483646) + 1;
+    var arrived = hubUrl.searchParams.get('arrived');
+    if (returnedSeed && enabledModules.some(function (module) { return module.id === arrived; })
+        && Footprint && Footprint.rememberRoamVisit) {
+      Footprint.rememberRoamVisit(arrived, returnedSeed);
+    }
+    // Keep Back stable without making a copied or reloaded hall URL carry a visit.
+    hubUrl.searchParams.delete('roam');
+    hubUrl.searchParams.delete('arrived');
+    try {
+      history.replaceState(Object.assign({}, history.state, { mujianRoamSeed: layoutSeed, mujianEnteredHall: false }), '', hubUrl);
+    } catch (_) {}
+    updateSpecialLinks('hall');
 
     var ticketCtrl = window.MujianTicket ? window.MujianTicket.createController(roamObjectPath) : null;
     rootEl.style.setProperty('--curtain-close', CURTAIN_CLOSE + 'ms');
@@ -378,6 +398,9 @@
 
       function showHall() {
         phase = 'hall';
+        try {
+          history.replaceState(Object.assign({}, history.state, { mujianEnteredHall: true }), '');
+        } catch (_) {}
         rootEl.classList.remove('is-opening-phase', 'is-opening-finale', 'is-transitioning');
         rootEl.classList.add('is-entered', 'is-ready');
         if (openingSec) {
@@ -392,7 +415,7 @@
         }
         setViewMode(targetView, { updateHash: !immediate && targetView === 'catalog' });
         refreshFootprintUI();
-        layoutRoamNodes({ reshuffle: !roamCellOrder.length });
+        layoutRoamNodes();
       }
 
       function finishEntry() {
@@ -426,7 +449,7 @@
     }
 
     function moduleUrl(id, view) {
-      return Routes.resolveUrl(id) + '?via=' + view;
+      return Routes.resolveUrl(id) + '?via=' + view + '&roam=' + layoutSeed;
     }
 
     function updateSpecialLinks(view) {
@@ -448,27 +471,24 @@
       same: { photo: '/same/media/same-01.jpg', glow: '116,158,240' }
     };
 
-    function buildHallMotifs() {
-      var layer = document.getElementById('hall-motifs');
+    function buildGalaxy() {
+      var layer = document.getElementById('hall-galaxy');
       if (!layer) return;
-      OPENING_ORDER.forEach(function (id, i) {
-        var spot = OPENING_DESKTOP[i];
-        var img = document.createElement('img');
-        img.src = MOTIF_BASE + id + '-outline.png';
-        img.alt = '';
-        img.draggable = false;
-        img.decoding = 'async';
-        img.style.left = spot[0] + '%';
-        img.style.top = spot[1] + '%';
-        img.style.setProperty('--motif-size', (34 + (i * 17 % 54)) + 'px');
-        img.style.setProperty('--motif-angle', ((i * 31 % 48) - 24) + 'deg');
-        var spin = i % 4 < 2;
-        img.style.setProperty('--motif-motion', spin ? 'motif-orbit' : i % 4 === 2 ? 'motif-sideways' : 'motif-vertical');
-        img.style.setProperty('--motif-turn', i % 2 ? '-360deg' : '360deg');
-        img.style.setProperty('--motif-direction', spin ? 'normal' : 'alternate');
-        img.style.setProperty('--motif-time', ((spin ? 78 : 30) + i % 7 * 3) + 's');
-        img.style.setProperty('--motif-delay', (-i * 2.3) + 's');
-        layer.appendChild(img);
+      var colors = ['156,201,255', '201,181,255', '255,207,163', '114,170,255'];
+      OPENING_DESKTOP.forEach(function (point, index) {
+        var light = document.createElement('span');
+        light.className = 'galaxy-light';
+        light.style.left = point[0] + '%';
+        light.style.top = point[1] + '%';
+        var accent = index % 4 === 0;
+        light.style.setProperty('--light-size', (accent ? 36 + index % 7 * 6 : 8 + index * 7 % 16) + 'px');
+        light.style.setProperty('--light-rgb', colors[(index * 3 + Math.floor(index / 4)) % colors.length]);
+        light.style.setProperty('--light-strength', accent ? '0.92' : '0.82');
+        light.style.setProperty('--light-x', (index % 2 ? 1 : -1) * (13 + index * 3 % 25) + 'px');
+        light.style.setProperty('--light-y', (index % 3 ? -1 : 1) * (10 + index * 7 % 29) + 'px');
+        light.style.setProperty('--light-duration', (11 + index % 7 * 2) + 's');
+        light.style.setProperty('--light-delay', (-index * 2.7) + 's');
+        layer.appendChild(light);
       });
     }
 
@@ -498,7 +518,6 @@
             '<img class="roam-object" src="' + roamObjectPath(mod.id) + '" width="512" height="512" alt="" draggable="false" decoding="async">' +
           '</span>' +
           '<span class="roam-caption"><span class="roam-title-row">' +
-            '<span class="roam-lit-dot" aria-hidden="true"></span>' +
             '<span class="roam-title">' + escapeHtml(mod.title) + '</span></span>' +
             '<span class="roam-contrib">' + escapeHtml(names.join(' · ')) + '</span></span>' +
           '<span class="roam-projection" aria-hidden="true"><span class="projection-perfs"></span>' +
@@ -510,9 +529,6 @@
         a.querySelector('.roam-projection img').addEventListener('error', function () {
           a.querySelector('.roam-projection').hidden = true;
         }, { once: true });
-        a.addEventListener('click', function () {
-          if (Footprint && typeof Footprint.recordVisit === 'function') Footprint.recordVisit(mod.id);
-        });
         a.addEventListener('pointerenter', updateProjectionPositions);
         a.addEventListener('focus', updateProjectionPositions);
         a.addEventListener('pointermove', function (ev) {
@@ -531,7 +547,9 @@
     }
 
     function syncExploreAxis() {
-      var horizontal = phase === 'hall' && viewMode === 'roam' && !mobileMedia.matches;
+      var roaming = phase === 'hall' && viewMode === 'roam';
+      var horizontal = roaming && !mobileMedia.matches;
+      document.documentElement.classList.toggle('is-roam-scene', roaming);
       rootEl.classList.toggle('is-horizontal-roam', horizontal);
       document.documentElement.classList.toggle('is-horizontal-roam', horizontal);
       if (horizontal) {
@@ -556,15 +574,15 @@
 
     // Continuous-space random packing. Measure the real text and reserve space for
     // drift. A fixed session seed keeps resizing, font loading and Back stable.
-    function layoutRoamNodes(opts) {
-      opts = opts || {};
+    function layoutRoamNodes() {
       var horizontal = syncExploreAxis();
       if (!roamStage || !roamNodes.length || roamView.hidden) return;
-      if (opts.reshuffle || !roamCellOrder.length) {
-        roamCellOrder = shuffleArray(roamNodes.map(function (_, i) { return i; }));
-      }
       var seed = layoutSeed;
       function random() { seed = seed * 16807 % 2147483647; return (seed - 1) / 2147483646; }
+      if (!roamCellOrder.length) {
+        roamCellOrder = shuffleArray(roamNodes.map(function (_, i) { return i; }), random);
+        seed = layoutSeed;
+      }
       var stageW = roamView.clientWidth || window.innerWidth;
       var desktopHeight = horizontal ? roamView.clientHeight : 0;
       roamStage.style.width = '100%';
@@ -706,19 +724,13 @@
           '</span>' +
           '<span class="catalog-arrow" aria-hidden="true">→</span>';
 
-        card.addEventListener('click', function () {
-          if (Footprint && typeof Footprint.recordVisit === 'function') {
-            Footprint.recordVisit(mod.id);
-          }
-        });
-
         list.appendChild(card);
       });
 
       catalogGroups.appendChild(list);
     }
 
-    // --- Footprint sync (lit badges across roam + catalog + top bar) ---
+    // Roaming light uses arrivals in this tour. Catalog badges use the saved footprint.
     function refreshFootprintUI() {
       var fp = Footprint && typeof Footprint.getFootprint === 'function'
         ? Footprint.getFootprint()
@@ -730,7 +742,7 @@
       // Update roaming nodes
       for (var r = 0; r < roamNodes.length; r++) {
         var rNode = roamNodes[r];
-        var rLit = !!litSet[rNode.dataset.moduleId];
+        var rLit = Boolean(Footprint && Footprint.hasRoamVisit && Footprint.hasRoamVisit(rNode.dataset.moduleId, layoutSeed));
         rNode.classList.toggle('is-lit', rLit);
       }
 
@@ -774,7 +786,7 @@
 
       if (!isCatalog) {
         requestAnimationFrame(function () {
-          layoutRoamNodes({ reshuffle: !roamCellOrder.length });
+          layoutRoamNodes();
         });
       } else {
         window.scrollTo({ top: 0, behavior: reducedMedia.matches ? 'auto' : 'smooth' });
@@ -783,7 +795,7 @@
       if (opts.updateHash) {
         var desired = isCatalog ? '#catalog' : '#hall';
         if (location.hash !== desired) {
-          try { history.replaceState(null, '', desired); } catch (_) {}
+          try { history.replaceState(history.state, '', desired); } catch (_) {}
         }
       }
     }
@@ -834,6 +846,7 @@
 
     function handleHashRoute(initialBoot) {
       var hash = (location.hash || '').toLowerCase();
+      if (initialBoot && !hash && restoredHall) hash = '#hall';
       var hasSkipHash = hash === '#hall' || hash === '#catalog' || hash === '#ticket';
       // The homepage and the explicit replay link both start with the opening.
       if (hash === '#opening' || !hash) {
@@ -991,7 +1004,7 @@
     if (mobileMedia.addEventListener) {
       mobileMedia.addEventListener('change', function () {
         setHallMenu(false);
-        if (phase === 'hall' && viewMode === 'roam') layoutRoamNodes({ reshuffle: false });
+        if (phase === 'hall' && viewMode === 'roam') layoutRoamNodes();
       });
     }
 
@@ -1002,7 +1015,7 @@
       resizeTimer = setTimeout(function () {
         var nextW = roamView ? roamView.clientWidth : window.innerWidth;
         if (Math.abs(nextW - lastStageWidth) > 0.5 || window.innerWidth >= 768) {
-          layoutRoamNodes({ reshuffle: false });
+          layoutRoamNodes();
         }
       }, 120);
     }, { passive: true });
@@ -1012,9 +1025,10 @@
     window.addEventListener('storage', refreshFootprintUI);
     window.addEventListener('focus', refreshFootprintUI);
     window.addEventListener('pageshow', function () {
+      if (Footprint && Footprint.takeRoamReturn) Footprint.takeRoamReturn();
       refreshFootprintUI();
       if (phase === 'hall' && viewMode === 'roam') {
-        layoutRoamNodes({ reshuffle: false });
+        layoutRoamNodes();
       }
     });
 
@@ -1034,14 +1048,14 @@
 
     // --- Boot ---
     applyMotionPreference();
-    buildHallMotifs();
+    buildGalaxy();
     buildRoamNodes();
     buildCatalog();
     refreshFootprintUI();
     handleHashRoute(true);
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () {
-        if (phase === 'hall' && viewMode === 'roam') layoutRoamNodes({ reshuffle: false });
+        if (phase === 'hall' && viewMode === 'roam') layoutRoamNodes();
       });
     }
   }

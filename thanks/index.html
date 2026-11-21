@@ -34,9 +34,9 @@
       }
     }
   </style>
-  <script src="/shared/routes.js" defer></script>
-  <script src="/shared/footprint.js" defer></script>
-  <script src="/shared/shell.js?v=exhibit-return-20261120" defer></script>
+  <script src="/shared/routes.js?v=roam-arrival-v4" defer></script>
+  <script src="/shared/footprint.js?v=roam-arrival-v4" defer></script>
+  <script src="/shared/shell.js?v=roam-arrival-v4" defer></script>
 </head>
 <body data-module="thanks" data-section="contributors" data-card-open="false">
   <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
@@ -45,12 +45,12 @@
     <p style="color:#FFF6E3;text-align:center;padding:3rem 1.5rem;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif;">请启用 JavaScript 查看共创者与特别鸣谢。</p>
   </noscript>
   <script type="module">
-    import { mountCredits } from './module/credits.js';
+    import { mountCredits } from './module/credits.js?v=round-glow-v2';
 
     const container = document.querySelector('#end-credits');
     const credits = mountCredits(container);
 
-    container.addEventListener('credits:select', () => {
+    container.addEventListener('credits:cardopen', () => {
       document.body.dataset.cardOpen = 'true';
     });
 
@@ -59,14 +59,18 @@
     });
 
     container.addEventListener('credits:sectionchange', (event) => {
-      const next = event && event.detail && event.detail.section ? event.detail.section : 'contributors';
+      const next = event.detail.section;
       document.body.dataset.section = next;
+      const url = new URL(window.location.href);
+      if (next === 'thanks') url.hash = '#thanks';
+      else if (url.hash === '#thanks') url.hash = '';
+      if (url.href !== window.location.href) history.replaceState(history.state, '', url);
     });
 
     credits.ready.then(() => {
-      if (window.location.hash === '#thanks') {
-        credits.showSection('thanks');
-      }
+      const syncSection = () => credits.showSection(window.location.hash === '#thanks' ? 'thanks' : 'contributors');
+      syncSection();
+      window.addEventListener('hashchange', syncSection);
     });
   </script>
 </body>

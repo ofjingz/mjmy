@@ -8,6 +8,9 @@
   'use strict';
 
   var COOKIE_NAME = 'mjmy_fp_v1';
+  var ROAM_RETURN_KEY = 'mujian.roam.return.v1';
+  var ROAM_VISIT_PREFIX = 'mjmy_roam_visit_';
+  var RECENT_ROAM_LIMIT = 16;
   var LS_KEY = 'mujian.footprint.v1';
   var NICKNAME_LIMIT = 40;
   var LOCAL_NOTE_KEY = 'mujian.note.demo.v1';
@@ -83,14 +86,14 @@
     };
   }
 
-  function readCookieRaw() {
+  function readCookieRaw(name) {
     try {
       var pairs = document.cookie ? document.cookie.split(';') : [];
       for (var i = 0; i < pairs.length; i++) {
         var idx = pairs[i].indexOf('=');
         if (idx === -1) continue;
         var k = pairs[i].slice(0, idx).trim();
-        if (k === COOKIE_NAME) {
+        if (k === name) {
           return decodeURIComponent(pairs[i].slice(idx + 1).trim());
         }
       }
@@ -98,15 +101,15 @@
     return null;
   }
 
-  function writeCookieRaw(jsonStr) {
+  function writeCookieRaw(name, value, maxAge) {
     try {
-      var encoded = encodeURIComponent(jsonStr);
+      var encoded = encodeURIComponent(value);
       var attrs = [
-        COOKIE_NAME + '=' + encoded,
+        name + '=' + encoded,
         'Path=/',
-        'Max-Age=' + MAX_AGE_SECONDS,
         'SameSite=Lax'
       ];
+      if (maxAge) attrs.push('Max-Age=' + maxAge);
       if (isProdHost()) {
         attrs.push('Domain=.' + ROOT_DOMAIN);
       }
@@ -149,7 +152,7 @@
 
   function getFootprint() {
     var fromCookie = null;
-    var rawC = readCookieRaw();
+    var rawC = readCookieRaw(COOKIE_NAME);
     if (rawC) {
       try { fromCookie = JSON.parse(rawC); } catch (_) {}
     }
@@ -199,7 +202,7 @@
     var clean = sanitize(state);
     clean.last = nowIso();
     var serialized = JSON.stringify(clean);
-    writeCookieRaw(serialized);
+    writeCookieRaw(COOKIE_NAME, serialized, MAX_AGE_SECONDS);
     writeLS(clean);
     try {
       window.dispatchEvent(new CustomEvent('mujian:footprint-change', { detail: clean }));
@@ -207,8 +210,43 @@
     return clean;
   }
 
-  function recordVisit(moduleId) {
+  function roamSeeds(moduleId) {
+    var key = ROAM_VISIT_PREFIX + moduleId;
+    var cookie = readCookieRaw(key) || '';
+    var session = '';
+    try { session = sessionStorage.getItem(key) || ''; } catch (_) {}
+    return uniqStrings(cookie.split(',').concat(session.split(',')));
+  }
+
+  function hasRoamVisit(moduleId, seed) {
+    return Boolean(seed) && roamSeeds(moduleId).includes(String(seed));
+  }
+
+  function rememberRoamVisit(moduleId, roamSeed) {
+    if (!Number.isInteger(roamSeed) || roamSeed <= 0 || !/^[a-z0-9-]+$/.test(moduleId)) return;
+    var seed = String(roamSeed);
+    var recent = roamSeeds(moduleId).filter(function (previous) { return previous !== seed; });
+    recent.push(seed);
+    var key = ROAM_VISIT_PREFIX + moduleId;
+    var value = recent.slice(-RECENT_ROAM_LIMIT).join(',');
+    writeCookieRaw(key, value);
+    try { sessionStorage.setItem(key, value); } catch (_) {}
+  }
+
+  function takeRoamReturn() {
+    try {
+      var seed = sessionStorage.getItem(ROAM_RETURN_KEY);
+      sessionStorage.removeItem(ROAM_RETURN_KEY);
+      return seed;
+    } catch (_) { return null; }
+  }
+
+  function recordVisit(moduleId, roamSeed) {
     if (!moduleId || typeof moduleId !== 'string') return getFootprint();
+    if (roamSeed) {
+      rememberRoamVisit(moduleId, roamSeed);
+      try { sessionStorage.setItem(ROAM_RETURN_KEY, String(roamSeed)); } catch (_) {}
+    }
     var state = getFootprint();
     if (state.mods.indexOf(moduleId) === -1) {
       state.mods.push(moduleId);
@@ -265,6 +303,9 @@
     COOKIE_NAME: COOKIE_NAME,
     getFootprint: getFootprint,
     recordVisit: recordVisit,
+    hasRoamVisit: hasRoamVisit,
+    rememberRoamVisit: rememberRoamVisit,
+    takeRoamReturn: takeRoamReturn,
     syncCinema: syncCinema,
     setNickname: setNickname,
     setNoteNickname: setNoteNickname,

@@ -32,6 +32,7 @@ button { font: inherit; }
 img { display: block; max-width: 100%; }
 h1, h2, p, figure, blockquote { margin: 0; }
 :focus-visible { outline: 2px solid #ffdc9a; outline-offset: 4px; }
+.exhibit-page :is(h1, h2)[tabindex="-1"]:focus { outline: none; }
 .wrap { width: min(calc(100% - var(--gutter) * 2), var(--width)); margin-inline: auto; }
 .display { font-family: var(--font-display); font-weight: 400; }
 .skip {

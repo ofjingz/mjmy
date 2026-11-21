@@ -12,8 +12,21 @@
   --surface-strong: #03132d;
 }
 
+/* Keep a painted canvas behind fixed layers while mobile browser chrome moves. */
+html.is-roam-scene, html.is-roam-scene body {
+  background-color: #2a1025;
+}
+#hub-root.is-entered:not(.is-catalog-mode) {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #03132d, #141c40 56%, #2a1025);
+}
+#hub-root.is-entered.is-horizontal-roam { min-height: 0; }
+
 .is-entered:not(.is-catalog-mode) .hub-backdrop {
   overflow: hidden;
+  min-height: 100vh;
+  min-height: 100lvh;
   background: linear-gradient(180deg, #03132d 0%, #041734 38%, #101630 68%, #2a1025 100%);
 }
 
@@ -48,8 +61,8 @@
   to { transform: translate(-7%, -4%) scale(1.11); opacity: .94; }
 }
 
-/* Pale opening motifs sit over a sparse layer of fine stars. */
-.hall-motifs {
+/* A field of defocused light and smaller stars, behind the objects. */
+.hall-galaxy {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -59,45 +72,34 @@
   opacity: 0;
   transition: opacity 1.2s ease;
 }
-.is-entered:not(.is-catalog-mode) .hall-motifs { visibility: visible; opacity: 1; }
-.hall-motifs::before {
+.is-entered:not(.is-catalog-mode) .hall-galaxy { visibility: visible; opacity: 1; }
+.hall-galaxy::before {
   content: "";
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 22px 38px, #fff 0.7px, transparent 1.3px),
-    radial-gradient(circle at 103px 163px, #fff 0.55px, transparent 1.2px),
-    radial-gradient(circle at 171px 76px, #fff 0.8px, transparent 1.4px),
-    radial-gradient(circle at 249px 231px, #fff 0.75px, transparent 1.35px),
+    radial-gradient(circle at 22px 38px, #d4e6ff 0.55px, transparent 1.2px),
+    radial-gradient(circle at 103px 163px, #b2c9f4 0.6px, transparent 1.2px),
+    radial-gradient(circle at 171px 76px, #fff6ec 0.8px, transparent 1.5px),
+    radial-gradient(circle at 249px 231px, #c6dfff 0.7px, transparent 1.35px),
     radial-gradient(circle at 286px 117px, #fff 0.5px, transparent 1.1px);
   background-size: 307px 263px;
-  opacity: .05;
+  opacity: .23;
 }
-.hall-motifs img {
+.galaxy-light {
   position: absolute;
-  width: var(--motif-size);
-  height: var(--motif-size);
-  object-fit: contain;
-  opacity: .085;
-  filter: brightness(1.6);
-  transform: translate(-50%, -50%) rotate(var(--motif-angle));
-  animation: var(--motif-motion, motif-sideways) var(--motif-time) ease-in-out var(--motif-delay) infinite var(--motif-direction, alternate) paused;
+  width: var(--light-size);
+  height: var(--light-size);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--light-rgb), .8), rgba(var(--light-rgb), .45) 12%, rgba(var(--light-rgb), .16) 31%, rgba(var(--light-rgb), .05) 52%, transparent 72%);
+  transform: translate(-50%, -50%);
+  opacity: calc(.64 * var(--light-strength));
+  animation: galaxy-drift var(--light-duration) ease-in-out var(--light-delay) infinite alternate paused;
 }
-.is-entered:not(.is-catalog-mode) .hall-motifs img { animation-play-state: running; }
-@keyframes motif-orbit {
-  0% { transform: translate(-50%, -50%) rotate(var(--motif-angle)); }
-  25% { transform: translate(calc(-50% + 14px), calc(-50% - 12px)) rotate(calc(var(--motif-angle) + var(--motif-turn) * .25)); }
-  50% { transform: translate(-50%, calc(-50% - 24px)) rotate(calc(var(--motif-angle) + var(--motif-turn) * .5)); }
-  75% { transform: translate(calc(-50% - 14px), calc(-50% - 12px)) rotate(calc(var(--motif-angle) + var(--motif-turn) * .75)); }
-  100% { transform: translate(-50%, -50%) rotate(calc(var(--motif-angle) + var(--motif-turn))); }
-}
-@keyframes motif-sideways {
-  from { transform: translate(calc(-50% - 24px), calc(-50% + 9px)) rotate(calc(var(--motif-angle) - 9deg)); }
-  to { transform: translate(calc(-50% + 28px), calc(-50% - 12px)) rotate(calc(var(--motif-angle) + 12deg)); }
-}
-@keyframes motif-vertical {
-  from { transform: translate(calc(-50% + 10px), calc(-50% + 24px)) rotate(calc(var(--motif-angle) + 8deg)); }
-  to { transform: translate(calc(-50% - 14px), calc(-50% - 28px)) rotate(calc(var(--motif-angle) - 14deg)); }
+.is-entered:not(.is-catalog-mode) .galaxy-light { animation-play-state: running; }
+@keyframes galaxy-drift {
+  from { transform: translate(-50%, -50%) scale(.86); opacity: calc(.57 * var(--light-strength)); }
+  to { transform: translate(calc(-50% + var(--light-x)), calc(-50% + var(--light-y))) scale(1.18); opacity: var(--light-strength); }
 }
 
 .is-entered:not(.is-catalog-mode) .hall-topbar {
@@ -222,7 +224,7 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
   position: relative;
   z-index: 2;
   transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateZ(18px);
-  filter: saturate(.9) drop-shadow(0 20px 22px #0006);
+  filter: saturate(.9) drop-shadow(0 20px 22px #0006) drop-shadow(0 0 12px rgb(244 92 150 / var(--roam-rim, 0)));
   transition: transform .5s ease, filter .5s ease;
   user-select: none;
   -webkit-user-drag: none;
@@ -233,7 +235,16 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
   filter: blur(16px);
   opacity: .38;
 }
-.roam-node.is-lit .roam-aura { opacity: .55; }
+.roam-node.is-lit { --roam-rim: .34; }
+.roam-node.is-lit .roam-aura {
+  inset: -16%;
+  background:
+    radial-gradient(circle at 48% 51%, #f275a9b0, #e44d8c80 23%, #bd2f6848 40%, #a8215019 55%, transparent 72%),
+    radial-gradient(circle at 35% 65%, #e9589560, #bd2a631f 24%, transparent 49%);
+  filter: blur(8px);
+  opacity: 1;
+}
+.roam-node.is-lit .roam-title { text-shadow: 0 0 16px #d94c8b90; }
 
 /* Short, translucent curves suggest an object's recent passage. */
 .roam-wake {
@@ -266,8 +277,6 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
 .roam-title { font-size: clamp(26px, 2.8vw, 36px); font-weight: 400; letter-spacing: .04em; }
 .roam-node[data-module-id="vibecoding"] .roam-title { font-size: 28px; letter-spacing: .015em; }
 .roam-contrib { font-size: 14px; line-height: 1.65; color: var(--fg-muted); }
-.roam-lit-dot { display: none; }
-.roam-node.is-lit .roam-lit-dot { display: block; width: 5px; height: 5px; animation: none; }
 
 .roam-projection {
   position: absolute;
@@ -304,7 +313,7 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
   .roam-node:hover .roam-art { animation-play-state: paused; }
   .roam-node:hover .roam-object {
     transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateZ(35px) scale(1.04);
-    filter: saturate(.94) brightness(1.06) drop-shadow(0 26px 28px #0008);
+    filter: saturate(.94) brightness(1.06) drop-shadow(0 26px 28px #0008) drop-shadow(0 0 12px rgb(244 92 150 / var(--roam-rim, 0)));
   }
   .roam-node:hover .roam-title { text-decoration: underline #a92050 1px; text-underline-offset: .2em; }
 }
@@ -335,8 +344,7 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
   .roam-contrib { font-size: 13px; line-height: 1.6; }
   .roam-projection { display: none; }
   .roam-wake { left: -8%; width: 100%; }
-  .hall-motifs img { opacity: .075; width: calc(var(--motif-size) * .75); height: calc(var(--motif-size) * .75); }
-  .hall-motifs img:nth-child(n + 18) { display: none; }
+  .galaxy-light { width: calc(var(--light-size) * .88); height: calc(var(--light-size) * .88); }
 }
 @media (max-width: 359px) {
   .roam-title { font-size: 25px; }
@@ -351,16 +359,16 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
 .is-background .roam-art,
 .is-background .roam-wake path,
 .is-background .brand-home > .mj-orbit-mark,
-.is-background .hall-motifs img,
+.is-background .galaxy-light,
 .is-background .hub-backdrop::before,
 .is-background .hub-backdrop::after { animation-play-state: paused !important; }
 .is-reduced .hub-backdrop::before, .is-reduced .hub-backdrop::after,
-.is-reduced .hall-motifs img, .is-reduced .roam-art,
+.is-reduced .galaxy-light, .is-reduced .roam-art,
 .is-reduced .roam-wake path, .is-reduced .brand-home > .mj-orbit-mark { animation: none !important; }
 .is-reduced .roam-wake { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .hub-backdrop::before, .hub-backdrop::after,
-  .hall-motifs img, .roam-art, .roam-wake path, .brand-home > .mj-orbit-mark { animation: none !important; }
+  .galaxy-light, .roam-art, .roam-wake path, .brand-home > .mj-orbit-mark { animation: none !important; }
   .roam-wake { display: none; }
   .roam-node, .roam-object, .roam-projection { transition: none; }
 }
