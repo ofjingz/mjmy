@@ -51,6 +51,9 @@
     return raw;
   }
 
+  var railYear = document.getElementById('railYear');
+  var gateTimer;
+
   function onScroll() {
     var y = window.scrollY || document.documentElement.scrollTop || 0;
     var h = document.documentElement.scrollHeight - window.innerHeight;
@@ -59,10 +62,8 @@
       progress.style.width = pct + '%';
     }
 
-    if (!reduceMotion && window.innerWidth > 760 && holesL && holesR) {
-      var shift = -(y % 36);
-      holesL.style.transform = 'translateX(-50%) translateY(' + shift + 'px)';
-      holesR.style.transform = 'translateX(-50%) translateY(' + shift + 'px)';
+    if (!reduceMotion && holesL && holesR) {
+      document.body.style.setProperty('--film-offset', -(y % 36) + 'px');
     }
 
     var active = sections[0];
@@ -75,6 +76,7 @@
     if (active && tbChapter) {
       tbChapter.textContent = formatChapterLabel(active.getAttribute('data-ch') || '');
     }
+    if (railYear) railYear.textContent = active ? active.dataset.year || "" : "";
     menuLinks.forEach(function (a) {
       var isActive = active && a.getAttribute('href') === '#' + active.id;
       a.classList.toggle('active', Boolean(isActive));
@@ -85,6 +87,11 @@
   }
 
   window.addEventListener('scroll', function () {
+    if (!reduceMotion) {
+      document.body.classList.remove('film-settle');
+      clearTimeout(gateTimer);
+      gateTimer = setTimeout(function () { document.body.classList.add('film-settle'); }, 135);
+    }
     if (!ticking) {
       window.requestAnimationFrame(onScroll);
       ticking = true;
@@ -102,12 +109,23 @@
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.04, rootMargin: '60px 0px -4px 0px' });
+    }, { threshold: 0, rootMargin: '210px 0px 260px 0px' });
     document.querySelectorAll('.reveal, .frame').forEach(function (el) {
       io.observe(el);
     });
   } else {
     revealAllImmediately();
+  }
+
+  var credits = document.getElementById('sources');
+  if (credits && 'IntersectionObserver' in window && !reduceMotion) {
+    var creditsObserver = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) {
+        credits.classList.add('rolling');
+        creditsObserver.disconnect();
+      }
+    }, { threshold: .5 });
+    creditsObserver.observe(credits);
   }
 
   /* ---------- 3. 目录菜单（键盘焦点闭环 + 触控友好） ---------- */

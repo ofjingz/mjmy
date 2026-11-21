@@ -226,6 +226,28 @@
 #hub-root.is-title-visible #opening .main-title span,
 #opening .title-trigger:focus-visible span { opacity: 1; filter: none; transform: none; }
 
+#opening .opening-subtitle {
+  margin: 12px 0 0;
+  color: rgba(233, 231, 226, 0.72);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(13px, 1.35vw, 15px);
+  line-height: 1.6;
+  letter-spacing: .12em;
+  text-shadow: 0 0 20px #03091399;
+  text-wrap: balance;
+  opacity: 0;
+  filter: blur(4px);
+  transform: translateY(7px);
+  transition: opacity .85s ease .36s, filter .85s ease .36s, transform .85s var(--opening-ease) .36s;
+}
+
+#hub-root.is-title-visible #opening .opening-subtitle {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
 #opening .skip {
   position: absolute;
   z-index: 12;
@@ -276,7 +298,8 @@
 #hub-root.is-reduced #opening .artifact .outline { opacity: .56; }
 #hub-root.is-reduced #opening .artifact-button,
 #hub-root.is-reduced #opening .artifact.is-active .gesture { animation: none !important; }
-#hub-root.is-reduced #opening .main-title span {
+#hub-root.is-reduced #opening .main-title span,
+#hub-root.is-reduced #opening .opening-subtitle {
   opacity: 1;
   filter: none;
   transform: none;
@@ -296,6 +319,7 @@
   #opening .artifact-button { min-width: 40px; min-height: 40px; }
   #opening .title-block { top: 43%; max-width: calc(100% - 40px); }
   #opening .main-title { font-size: clamp(45px, 11.8vw, 76px); gap: .12em; letter-spacing: 0; }
+  #opening .opening-subtitle { margin-top: 10px; font-size: 13px; letter-spacing: .06em; }
 }
 
 @media (max-height: 600px) and (min-width: 701px) {

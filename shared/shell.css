@@ -34,12 +34,17 @@
   box-shadow: 0 0 0 6px #201d22;
 }
 
-.mj-return--fixed {
-  position: fixed;
-  z-index: 9300;
-  left: max(12px, env(safe-area-inset-left));
-  bottom: max(12px, env(safe-area-inset-bottom));
-  box-shadow: 0 2px 14px #0003;
+.mj-exhibit-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  min-height: calc(52px + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+  background: var(--mj-return-bg, #161616);
+  color: #fff6e3;
+  box-sizing: border-box;
 }
 
 .mj-return--header {
@@ -60,7 +65,7 @@ body:has(dialog:modal, [role="dialog"][aria-modal="true"]:not([hidden], [aria-hi
 }
 
 @media print {
-  .mj-return { display: none; }
+  .mj-return, .mj-exhibit-bar { display: none; }
 }
 
 /* ============================================================
@@ -80,4 +85,10 @@ body:has(dialog:modal, [role="dialog"][aria-modal="true"]:not([hidden], [aria-hi
 :root {
   --font-display: 'Long Cang', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Inter', 'Microsoft YaHei', sans-serif;
+}
+
+/* 西文展名采用与龙藏中文搭配的打字机字形。 */
+.typewriter-title {
+  font-family: ui-monospace, "Courier New", monospace;
+  font-weight: 600;
 }

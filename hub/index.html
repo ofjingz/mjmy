@@ -4,13 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>幕间漫游 · 线上迷影展</title>
-  <meta name="description" content="幕间漫游 · 线上迷影展主大厅：暗房开场、随机漫游与传统目录三种观展方式，凭足迹生成专属漫游票根。">
+  <meta name="description" content="影史之外的影迷文化三两事">
+  <meta property="og:title" content="幕间漫游 · 线上迷影展">
+  <meta property="og:description" content="影史之外的影迷文化三两事">
+  <meta property="og:type" content="website">
   <meta name="theme-color" content="#03132d">
-  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="/shared/shell.css?v=projection-20261121">
   <link rel="stylesheet" href="./style.css?v=roam-light-20261121">
-  <link rel="stylesheet" href="./opening.css?v=opening-title-timing-20261120">
-  <link rel="stylesheet" href="./roam.css?v=rose-light-v3">
-  <link rel="stylesheet" href="./ticket.css?v=receipt-2">
+  <link rel="stylesheet" href="./opening.css?v=opening-subtitle-20261121">
+  <link rel="stylesheet" href="./roam.css?v=hall-motifs-20261121">
+  <link rel="stylesheet" href="./ticket.css?v=hall-menu-20261121">
 </head>
 <body data-module="hub">
   <div id="hub-root" class="is-opening-phase">
@@ -20,13 +23,14 @@
 
     <!-- 暗房光束氛围画布（z1，atmosphere.js 挂载） -->
     <canvas id="atmosphere" aria-hidden="true"></canvas>
-    <div id="hall-galaxy" class="hall-galaxy" aria-hidden="true"></div>
+    <div id="hall-motifs" class="hall-motifs" aria-hidden="true"></div>
 
     <!-- ===== 房间 1 · 序幕（暗房开场） ===== -->
     <section id="opening" class="opening" aria-label="幕间漫游互动开场">
       <div id="opening-objects" class="opening-objects objects" role="group" aria-label="触碰电影元素，让它们显影"></div>
       <div class="title-block">
         <h1 class="main-title" aria-label="幕间漫游"><button type="button" id="enter" class="title-trigger" aria-label="开启幕间漫游"><span>幕</span><span>间</span><span>漫</span><span>游</span></button></h1>
+        <p class="opening-subtitle">线上迷影展 · 影史之外的影迷文化三两事</p>
       </div>
       <button type="button" id="skip" class="skip">跳过</button>
     </section>
@@ -51,7 +55,6 @@
             </svg>
             票根 <span aria-hidden="true">↗</span>
           </button>
-          <button type="button" id="ticket-exit-btn" class="hall-nav-item">结束漫游</button>
         </nav>
       </header>
 
@@ -88,7 +91,6 @@
           <h2 id="ticket-title">漫游票根</h2>
           <div class="ticket-nav">
             <button type="button" id="ticket-close-btn" autofocus>继续漫游</button>
-            <button type="button" id="ticket-skip-btn" hidden>直接离开 <span aria-hidden="true">↗</span></button>
           </div>
         </header>
 
@@ -117,11 +119,6 @@
         </footer>
       </div>
 
-      <div id="ticket-farewell" class="ticket-farewell" hidden>
-        <span class="mj-orbit-mark" aria-hidden="true"></span>
-        <h2 id="ticket-farewell-title">散场了</h2>
-        <button type="button" id="ticket-return-btn">返回展厅</button>
-      </div>
     </dialog>
 
   </div>
@@ -132,8 +129,8 @@
 
   <script src="/shared/routes.js?v=roam-arrival-v4"></script>
   <script src="/shared/footprint.js?v=roam-arrival-v4"></script>
-  <script src="./atmosphere.js?v=opening-cues-20261120"></script>
-  <script src="./ticket.js?v=receipt-5"></script>
-  <script src="./hub.js?v=roam-arrival-v4"></script>
+  <script src="./atmosphere.js?v=hall-motifs-20261121"></script>
+  <script src="./ticket.js?v=hall-menu-20261121"></script>
+  <script src="./hub.js?v=hall-motifs-20261121"></script>
 </body>
 </html>

@@ -118,7 +118,6 @@
     var modeRoamBtn = document.getElementById('mode-roam-btn');
     var modeCatalogBtn = document.getElementById('mode-catalog-btn');
     var ticketOpenBtn = document.getElementById('ticket-open-btn');
-    var ticketExitBtn = document.getElementById('ticket-exit-btn');
     var brandHomeBtn = document.getElementById('brand-home-btn');
     var menuToggle = document.getElementById('hall-menu-toggle');
     var hallNavigation = document.getElementById('hall-navigation');
@@ -236,14 +235,6 @@
           var od = Math.hypot(x - or.x - or.width / 2, y - or.y - or.height / 2);
           var oe = Math.min(1, Math.max(0, 1 - od / radius) * amount);
           oEl.style.setProperty('--exposure', oe.toFixed(3));
-        }
-      } else if (phase === 'hall' && viewMode === 'roam' && roamNodes.length) {
-        for (var j = 0; j < roamNodes.length; j++) {
-          var rEl = roamNodes[j];
-          var rr = rEl.getBoundingClientRect();
-          var rd = Math.hypot(x - rr.x - rr.width / 2, y - rr.y - rr.height / 2);
-          var re = Math.min(1, Math.max(0, 1 - rd / (radius * 1.15)) * amount);
-          rEl.style.setProperty('--exposure', re.toFixed(3));
         }
       }
     }
@@ -411,6 +402,7 @@
         if (hallSec) {
           hallSec.hidden = false;
           hallSec.removeAttribute('aria-hidden');
+          if (!immediate && !reducedMedia.matches) hallSec.classList.add('screen-up');
           if ('inert' in hallSec) hallSec.inert = false;
         }
         setViewMode(targetView, { updateHash: !immediate && targetView === 'catalog' });
@@ -471,24 +463,23 @@
       same: { photo: '/same/media/same-01.jpg', glow: '116,158,240' }
     };
 
-    function buildGalaxy() {
-      var layer = document.getElementById('hall-galaxy');
+    function buildHallMotifs() {
+      var layer = document.getElementById('hall-motifs');
       if (!layer) return;
-      var colors = ['156,201,255', '201,181,255', '255,207,163', '114,170,255'];
-      OPENING_DESKTOP.forEach(function (point, index) {
-        var light = document.createElement('span');
-        light.className = 'galaxy-light';
-        light.style.left = point[0] + '%';
-        light.style.top = point[1] + '%';
-        var accent = index % 4 === 0;
-        light.style.setProperty('--light-size', (accent ? 36 + index % 7 * 6 : 8 + index * 7 % 16) + 'px');
-        light.style.setProperty('--light-rgb', colors[(index * 3 + Math.floor(index / 4)) % colors.length]);
-        light.style.setProperty('--light-strength', accent ? '0.92' : '0.82');
-        light.style.setProperty('--light-x', (index % 2 ? 1 : -1) * (13 + index * 3 % 25) + 'px');
-        light.style.setProperty('--light-y', (index % 3 ? -1 : 1) * (10 + index * 7 % 29) + 'px');
-        light.style.setProperty('--light-duration', (11 + index % 7 * 2) + 's');
-        light.style.setProperty('--light-delay', (-index * 2.7) + 's');
-        layer.appendChild(light);
+      OPENING_ORDER.forEach(function (id, i) {
+        var spot = OPENING_DESKTOP[i];
+        var img = document.createElement('img');
+        img.src = MOTIF_BASE + id + '-outline.png';
+        img.alt = '';
+        img.draggable = false;
+        img.decoding = 'async';
+        img.style.left = spot[0] + '%';
+        img.style.top = spot[1] + '%';
+        img.style.setProperty('--motif-size', (34 + (i * 17 % 54)) + 'px');
+        img.style.setProperty('--motif-angle', ((i * 31 % 48) - 24) + 'deg');
+        img.style.setProperty('--motif-time', (28 + i % 7 * 3) + 's');
+        img.style.setProperty('--motif-delay', (-i * 2.3) + 's');
+        layer.appendChild(img);
       });
     }
 
@@ -503,6 +494,7 @@
         a.href = moduleUrl(mod.id, 'hall');
         a.dataset.moduleId = mod.id;
         a.dataset.motif = mod.motif;
+        a.dataset.depth = String(idx % 3);
         var names = (mod.contributors && mod.contributors.length ? mod.contributors : [mod.contributor]).filter(Boolean);
         a.setAttribute('aria-label', mod.title + ' · ' + names.join('、'));
         var driftDuration = (9 + idx % 4 * 1.6) / 1.5;
@@ -518,10 +510,11 @@
             '<img class="roam-object" src="' + roamObjectPath(mod.id) + '" width="512" height="512" alt="" draggable="false" decoding="async">' +
           '</span>' +
           '<span class="roam-caption"><span class="roam-title-row">' +
-            '<span class="roam-title">' + escapeHtml(mod.title) + '</span></span>' +
+            '<span class="roam-title">' + titleMarkup(mod.title) + '</span></span>' +
             '<span class="roam-contrib">' + escapeHtml(names.join(' · ')) + '</span></span>' +
-          '<span class="roam-projection" aria-hidden="true"><span class="projection-perfs"></span>' +
+          '<span class="roam-projection"><span class="projection-perfs"></span>' +
             '<img src="' + art.photo + '" width="480" height="320" alt="" loading="lazy">' +
+            '<span class="roam-description">' + escapeHtml(mod.tagline) + '</span>' +
           '</span>';
         a.querySelector('.roam-object').addEventListener('error', function () {
           this.src = MOTIF_BASE + mod.motif + '-outline.png';
@@ -561,10 +554,20 @@
     }
 
     function updateProjectionPositions() {
-      if (!rootEl.classList.contains('is-horizontal-roam')) return;
+      if (!rootEl.classList.contains('is-horizontal-roam')) {
+        roamNodes.forEach(function (node) { node.style.removeProperty('--parallax'); });
+        return;
+      }
       var view = roamView.getBoundingClientRect();
       roamNodes.forEach(function (el) {
         var rect = el.getBoundingClientRect();
+        if (!reducedMedia.matches) {
+          var depth = Number(el.dataset.depth) - 1;
+          var distance = rect.left + rect.width / 2 - view.left - view.width / 2;
+          el.style.setProperty('--parallax', Math.max(-27, Math.min(27, distance * depth * .075)) + 'px');
+        } else {
+          el.style.removeProperty('--parallax');
+        }
         el.classList.toggle('projects-left', rect.left + rect.width / 2 > view.left + view.width / 2);
         var card = el.querySelector('.roam-projection');
         var top = Math.max(12 - (rect.top - view.top), Math.min(20, view.bottom - rect.top - card.offsetHeight - 14));
@@ -704,7 +707,6 @@
       list.className = 'catalog-list';
 
       enabledModules.forEach(function (mod) {
-        var meta = OPENING_META[mod.motif] || { w: 740, h: 740 };
         var card = document.createElement('a');
         card.className = 'catalog-card';
         card.href = moduleUrl(mod.id, 'catalog');
@@ -713,12 +715,12 @@
 
         card.innerHTML =
           '<span class="catalog-thumb" aria-hidden="true">' +
-            '<img class="thumb-outline" src="' + MOTIF_BASE + mod.motif + '-outline.png" alt="" width="' + meta.w + '" height="' + meta.h + '" loading="lazy">' +
-            '<img class="thumb-grain" src="' + MOTIF_BASE + mod.motif + '-grain.png" alt="" width="' + meta.w + '" height="' + meta.h + '" loading="lazy">' +
+            '<img class="thumb-outline" src="./preview-assets/catalog/' + mod.motif + '.png" alt="" width="256" height="256" loading="lazy">' +
+            '<img class="thumb-object" src="' + roamObjectPath(mod.id) + '" alt="" width="512" height="512" loading="lazy">' +
           '</span>' +
           '<span class="catalog-body">' +
             '<span class="catalog-top-row">' +
-              '<span class="catalog-title">' + escapeHtml(mod.title) + '</span>' +
+              '<span class="catalog-title">' + titleMarkup(mod.title) + '</span>' +
               '<span class="catalog-contrib">' + escapeHtml(names.join(' · ')) + '</span>' +
             '</span>' +
           '</span>' +
@@ -760,6 +762,7 @@
     // --- View mode toggle (Roam vs Catalog) ---
     function setViewMode(mode, opts) {
       opts = opts || {};
+      var previous = viewMode;
       viewMode = mode === 'catalog' ? 'catalog' : 'roam';
       var isCatalog = viewMode === 'catalog';
       updateSpecialLinks(isCatalog ? 'catalog' : 'hall');
@@ -781,7 +784,11 @@
       inactiveMode.removeAttribute('aria-current');
 
       if (phase === 'hall') {
-        atmosphere.setMode(isCatalog ? 'quiet' : 'hall');
+        var destination = isCatalog ? catalogView : roamView;
+        if (previous !== viewMode && !reducedMedia.matches && destination && destination.animate) {
+          destination.animate([{ opacity: .3, filter: 'brightness(.72)' }, { opacity: 1, filter: 'brightness(1)' }], { duration: 380, easing: 'ease-out' });
+        }
+        atmosphere.setMode('quiet');
       }
 
       if (!isCatalog) {
@@ -800,6 +807,12 @@
       }
     }
 
+    function titleMarkup(title) {
+      return title.split(/([a-z]+)/i).map(function (part, index) {
+        return index % 2 ? '<span class="typewriter-title">' + part + '</span>' : escapeHtml(part);
+      }).join('');
+    }
+
     function escapeHtml(str) {
       return String(str || '')
         .replace(/&/g, '&amp;')
@@ -811,7 +824,7 @@
     // --- Pointer & parallax interaction ---
     function onPointerMove(ev) {
       if (mobileMedia.matches || ev.pointerType === 'touch') return;
-      if (phase !== 'opening' && !(phase === 'hall' && viewMode === 'roam')) return;
+      if (phase !== 'opening') return;
       lastPoint = { x: ev.clientX, y: ev.clientY };
       atmosphere.setPointer(ev.clientX, ev.clientY, true);
       if (!pointerFrame && !reducedMedia.matches) {
@@ -988,13 +1001,10 @@
         if (rootEl.classList.contains('is-horizontal-roam')) roamView.scrollTo({ left: 0, behavior: reducedMedia.matches ? 'auto' : 'smooth' });
       });
     }
-    if (ticketCtrl) {
-      [ticketOpenBtn, ticketExitBtn].forEach(function (button) {
-        button.addEventListener('click', function () {
-          var returnFocus = mobileMedia.matches ? menuToggle : button;
-          setHallMenu(false);
-          ticketCtrl.open(returnFocus, { leaving: button === ticketExitBtn });
-        });
+    if (ticketCtrl && ticketOpenBtn) {
+      ticketOpenBtn.addEventListener('click', function () {
+        setHallMenu(false);
+        ticketCtrl.open(mobileMedia.matches ? menuToggle : ticketOpenBtn);
       });
     }
     rootEl.addEventListener('pointermove', onPointerMove, { passive: true });
@@ -1048,7 +1058,7 @@
 
     // --- Boot ---
     applyMotionPreference();
-    buildGalaxy();
+    buildHallMotifs();
     buildRoamNodes();
     buildCatalog();
     refreshFootprintUI();

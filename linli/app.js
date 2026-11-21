@@ -54,6 +54,17 @@
     });
   });
 
+  const mobileBars = window.matchMedia('(max-width: 760px)');
+  let lastScroll = window.scrollY;
+  window.addEventListener('scroll', function () {
+    const nextScroll = Math.max(0, window.scrollY);
+    if (nextScroll < 48 || !mobileBars.matches) page.classList.remove('nav-retracted');
+    else if (Math.abs(nextScroll - lastScroll) >= 5) {
+      page.classList.toggle('nav-retracted', nextScroll > lastScroll);
+    }
+    if (Math.abs(nextScroll - lastScroll) >= 5) lastScroll = nextScroll;
+  }, { passive: true });
+
   const resume = params.get('resume');
   let saved = null;
   if (exhibit && allowedStops.has(resume)) {
@@ -67,11 +78,23 @@
 
   if (opening && exhibit && timeline && stations.size) {
     const links = Array.from(timeline.querySelectorAll('[data-stop]'));
+    const leader = document.createElement('span');
+    leader.className = 'timeline-leader';
+    leader.setAttribute('aria-hidden', 'true');
+    timeline.appendChild(leader);
+    function placeLeader() {
+      const link = links.find(item => item.getAttribute('aria-current') === 'location');
+      if (!link) return;
+      leader.style.width = Math.max(6, link.offsetWidth - 6) + 'px';
+      leader.style.transform = 'translateX(' + (link.offsetLeft + 3) + 'px)';
+    }
+    window.addEventListener('resize', placeLeader, { passive: true });
     let cancelMotion = null;
 
     function showScene(station) {
       if (cancelMotion) cancelMotion();
       current = station || null;
+      exhibit.dataset.light = current ? current.id : '';
       opening.hidden = Boolean(current);
       exhibit.hidden = !current;
       page.classList.toggle('scene-open', Boolean(current));
@@ -90,6 +113,7 @@
           link.removeAttribute('aria-current');
         }
       });
+      placeLeader();
       const nextLink = current.querySelector('.frame-far');
       const next = nextLink && stations.get(nextLink.hash.slice(1));
       const incomingPhoto = next && next.querySelector('.frame-main img');
@@ -102,7 +126,7 @@
       if (reduced.matches || typeof face.animate !== 'function') return;
       const end = face.getBoundingClientRect();
       if (!source || !end.width || !end.height) {
-        const fade = frame.animate([{ opacity: .28 }, { opacity: 1 }], { duration: 280, easing: 'ease-out' });
+        const fade = frame.animate([{ opacity: .08, filter: 'brightness(.25)' }, { opacity: .1, offset: .22 }, { opacity: 1, filter: 'brightness(1)' }], { duration: 420, easing: 'ease-out' });
         cancelMotion = function () { fade.cancel(); cancelMotion = null; };
         return;
       }
@@ -121,10 +145,10 @@
       const timing = { duration: 510, easing: 'cubic-bezier(.23,.67,.31,1)' };
       const flight = layer.animate([
         { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-        { opacity: 1, offset: .65 },
+        { opacity: .48, offset: .35 },
         { transform: translation + ' ' + scale, opacity: 0 }
       ], timing);
-      const arrival = frame.animate([{ opacity: 0 }, { opacity: 0, offset: .63 }, { opacity: 1 }], timing);
+      const arrival = frame.animate([{ opacity: 0 }, { opacity: 0, offset: .42 }, { opacity: 1 }], timing);
       cancelMotion = function () {
         flight.cancel();
         arrival.cancel();

@@ -50,11 +50,11 @@ def head(title, css_class, description):
   <title>{html(title)}</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/shared/shell.css">
-  <link rel="stylesheet" href="style.css?v=hub-20261120">
+  <link rel="stylesheet" href="style.css?v=projection-20261121">
   <script defer src="/shared/routes.js"></script>
   <script defer src="/shared/footprint.js"></script>
   <script defer src="/shared/shell.js"></script>
-  <script defer src="app.js?v=hub-20261120"></script>
+  <script defer src="app.js?v=projection-20261121"></script>
 </head>
 <body class="{css_class}" data-module="linli">'''
 
@@ -145,7 +145,8 @@ sections = '\n'.join(
 page = head(source['title']+' · 幕间漫游','exhibit-page', '从海边银幕出发，沿着林立的策展手记，看人们如何在影像中相遇。') + f'''
   <a class="skip" href="#seaside" data-scene-link>跳到活动手记</a>
   <header class="site-header wrap">
-    <div class="wordmark"><a href="/hub/#catalog" class="brand-name display" data-hub-link aria-label="返回幕间漫游展厅"><span class="hub-arrow" aria-hidden="true">←</span> 幕间漫游</a> <span class="wordmark-divider" aria-hidden="true">/</span> 林立的活动手记</div>
+    <a class="mj-return mj-return--header" href="/hub/#catalog" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+    <div class="wordmark">{html(source['title'])}</div>
     <a href="./essay.html?from=opening" class="text-link" data-essay>完整手记 <span aria-hidden="true">↗</span></a>
   </header>
   <main id="main">
@@ -179,18 +180,20 @@ article = ''.join(
     f'{" class=guest-label" if i in (29,32,36) else ""}>{html(b)}</p>\n'
     for i,b in enumerate(blocks[4:],4)
 )
+essay_title = html(blocks[0]).replace('——我的', '——<br><span class="keep-phrase">我的</span>', 1)
 nav = ''.join(f'<a href="#{key}">{name}</a>' for key,name,_ in outline)
 essay = head(source['essayTitle']+' · 林立', 'reading-page', '林立《在影像中相遇——我的欧洲电影策展叙事》完整手记。') + f'''
   <a class="skip" href="#paper">跳到文章正文</a>
   <header class="reading-header wrap">
-    <a href="./#opening" class="text-link" data-back>← 返回活动手记</a>
+    <a class="mj-return mj-return--header" href="./#opening" data-back><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回活动手记</span></a>
     <span>林立 · 完整手记</span>
   </header>
+  <div class="reading-coast" aria-hidden="true"></div>
   <main class="reader-layout wrap" id="paper">
     <aside class="reader-aside"><nav aria-label="段落导航"><span>段落导航</span>{nav}</nav></aside>
     <article class="paper">
       <header class="paper-title">
-        <h1 class="display" data-source-index="0">{html(blocks[0])}</h1>
+        <h1 class="display" data-source-index="0">{essay_title}</h1>
         <p class="author">林立</p>
         <p class="subtitle" data-source-index="1">{html(blocks[1])}</p>
       </header>

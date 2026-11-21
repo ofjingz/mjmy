@@ -25,8 +25,6 @@ html.is-roam-scene, html.is-roam-scene body {
 
 .is-entered:not(.is-catalog-mode) .hub-backdrop {
   overflow: hidden;
-  min-height: 100vh;
-  min-height: 100lvh;
   background: linear-gradient(180deg, #03132d 0%, #041734 38%, #101630 68%, #2a1025 100%);
 }
 
@@ -61,8 +59,8 @@ html.is-roam-scene, html.is-roam-scene body {
   to { transform: translate(-7%, -4%) scale(1.11); opacity: .94; }
 }
 
-/* A field of defocused light and smaller stars, behind the objects. */
-.hall-galaxy {
+/* 开场轮廓在漫游背景中缓慢浮动。 */
+.hall-motifs {
   position: fixed;
   inset: 0;
   z-index: 1;
@@ -72,34 +70,29 @@ html.is-roam-scene, html.is-roam-scene body {
   opacity: 0;
   transition: opacity 1.2s ease;
 }
-.is-entered:not(.is-catalog-mode) .hall-galaxy { visibility: visible; opacity: 1; }
-.hall-galaxy::before {
-  content: "";
+.is-entered:not(.is-catalog-mode) .hall-motifs { visibility: visible; opacity: 1; }
+.hall-motifs img {
   position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 22px 38px, #d4e6ff 0.55px, transparent 1.2px),
-    radial-gradient(circle at 103px 163px, #b2c9f4 0.6px, transparent 1.2px),
-    radial-gradient(circle at 171px 76px, #fff6ec 0.8px, transparent 1.5px),
-    radial-gradient(circle at 249px 231px, #c6dfff 0.7px, transparent 1.35px),
-    radial-gradient(circle at 286px 117px, #fff 0.5px, transparent 1.1px);
-  background-size: 307px 263px;
-  opacity: .23;
+  width: var(--motif-size);
+  height: var(--motif-size);
+  object-fit: contain;
+  opacity: .12;
+  filter: brightness(1.6);
+  transform: translate(-50%, -50%) rotate(var(--motif-angle));
+  animation: motif-drift var(--motif-time) ease-in-out var(--motif-delay) infinite alternate paused;
 }
-.galaxy-light {
-  position: absolute;
-  width: var(--light-size);
-  height: var(--light-size);
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(var(--light-rgb), .8), rgba(var(--light-rgb), .45) 12%, rgba(var(--light-rgb), .16) 31%, rgba(var(--light-rgb), .05) 52%, transparent 72%);
-  transform: translate(-50%, -50%);
-  opacity: calc(.64 * var(--light-strength));
-  animation: galaxy-drift var(--light-duration) ease-in-out var(--light-delay) infinite alternate paused;
+.is-entered:not(.is-catalog-mode) .hall-motifs img { animation-play-state: running; }
+@keyframes motif-drift {
+  from { transform: translate(-50%, -50%) rotate(var(--motif-angle)); }
+  to { transform: translate(calc(-50% + var(--motif-x, 12px)), calc(-50% + var(--motif-y, -18px))) rotate(calc(var(--motif-angle) + var(--motif-turn, 8deg))); }
 }
-.is-entered:not(.is-catalog-mode) .galaxy-light { animation-play-state: running; }
-@keyframes galaxy-drift {
-  from { transform: translate(-50%, -50%) scale(.86); opacity: calc(.57 * var(--light-strength)); }
-  to { transform: translate(calc(-50% + var(--light-x)), calc(-50% + var(--light-y))) scale(1.18); opacity: var(--light-strength); }
+
+.hall-motifs img:nth-child(3n + 2) { --motif-x: -19px; --motif-y: 5px; --motif-turn: 0deg; }
+.hall-motifs img:nth-child(3n + 3) { --motif-x: 0px; --motif-y: 20px; --motif-turn: -13deg; }
+
+@media (max-width: 767px), (pointer: coarse) {
+  .hall-motifs img { width: calc(var(--motif-size) * .78); height: calc(var(--motif-size) * .78); opacity: .11; }
+  .hall-motifs img:nth-child(even) { display: none; }
 }
 
 .is-entered:not(.is-catalog-mode) .hall-topbar {
@@ -344,7 +337,6 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
   .roam-contrib { font-size: 13px; line-height: 1.6; }
   .roam-projection { display: none; }
   .roam-wake { left: -8%; width: 100%; }
-  .galaxy-light { width: calc(var(--light-size) * .88); height: calc(var(--light-size) * .88); }
 }
 @media (max-width: 359px) {
   .roam-title { font-size: 25px; }
@@ -359,16 +351,82 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
 .is-background .roam-art,
 .is-background .roam-wake path,
 .is-background .brand-home > .mj-orbit-mark,
-.is-background .galaxy-light,
+.is-background .hall-motifs img,
 .is-background .hub-backdrop::before,
 .is-background .hub-backdrop::after { animation-play-state: paused !important; }
 .is-reduced .hub-backdrop::before, .is-reduced .hub-backdrop::after,
-.is-reduced .galaxy-light, .is-reduced .roam-art,
+.is-reduced .hall-motifs img, .is-reduced .roam-art,
 .is-reduced .roam-wake path, .is-reduced .brand-home > .mj-orbit-mark { animation: none !important; }
 .is-reduced .roam-wake { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .hub-backdrop::before, .hub-backdrop::after,
-  .galaxy-light, .roam-art, .roam-wake path, .brand-home > .mj-orbit-mark { animation: none !important; }
+  .hall-motifs img, .roam-art, .roam-wake path, .brand-home > .mj-orbit-mark { animation: none !important; }
   .roam-wake { display: none; }
   .roam-node, .roam-object, .roam-projection { transition: none; }
+}
+
+/* 放映、漫游与票形目录 */
+.hall.screen-up .hall-main { animation: screen-up .6s ease-out; }
+@keyframes screen-up { from { filter: brightness(0); } to { filter: brightness(1); } }
+/* 颗粒与暗角共用覆盖整个画面的背景层，漫游和底部导览自然衔接。 */
+.hall-motifs::before, .hall-motifs::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+}
+.hall-motifs::before { background: radial-gradient(ellipse at center, #0000 42%, #02030b73 100%); }
+.hall-motifs::after {
+  opacity: .037;
+  background: url("./preview-assets/film-grain.png") repeat 0 0 / 87px;
+  animation: hall-grain .9s steps(4, end) infinite paused;
+}
+.is-entered:not(.is-catalog-mode) .hall-motifs::after { animation-play-state: running; }
+.is-background .hall-motifs::after { animation-play-state: paused !important; }
+@keyframes hall-grain { 40% { background-position: 19px 32px; } 80% { background-position: 63px 9px; } }
+.is-horizontal-roam .roam-object { translate: var(--parallax, 0) 0; }
+.is-horizontal-roam .roam-node[data-depth="0"] .roam-object { scale: .92; filter: saturate(.75) brightness(.92); }
+.is-horizontal-roam .roam-node[data-depth="2"] .roam-object { scale: 1.045; }
+.roam-description {
+  display: block;
+  padding: 8px 12px 10px;
+  color: #f9e1c9;
+  font: .72rem/1.55 var(--font-body);
+}
+.catalog-card {
+  position: relative;
+  padding-inline-start: 26px;
+  border: 1px solid #8564513d;
+  border-radius: 4px;
+  background: linear-gradient(110deg, #f9efdb, #f0e5d3);
+}
+.catalog-card::before {
+  content: "";
+  position: absolute;
+  left: -1px; top: 6px; bottom: 6px; width: 10px;
+  background: radial-gradient(circle at 0 5px, var(--bg-2) 4px, transparent 4.5px) 0 0 / 10px 15px;
+}
+.catalog-card .catalog-thumb { isolation: isolate; }
+.catalog-card .thumb-outline, .catalog-card .thumb-object { transition: opacity .25s ease; }
+.catalog-card .thumb-object {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  opacity: 0;
+}
+.catalog-card:is(:hover,:focus-visible) .thumb-object { opacity: 1; }
+.catalog-card:is(:hover,:focus-visible) .thumb-outline { opacity: 0; }
+@media (max-width: 767px), (pointer: coarse) {
+  #hub-root.is-entered .hall-topbar {
+    background: #08162cf5;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 3px 14px #0003;
+  }
+  #hub-root.is-entered .hall-topbar::before { display: none; }
+  #hub-root.is-catalog-mode .hall-topbar { background: #f2e9dcf5; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hall.screen-up .hall-main, .hall-motifs::after { animation: none; }
+  .catalog-card img { transition: none; }
 }

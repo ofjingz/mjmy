@@ -143,3 +143,61 @@ dialog{background:#12151a;border-color:#8a88822b}dialog::backdrop{background:#07
 /* Preserve the shared title and body font roles in the cinema module. */
 .entrance h1,.dialog-header h2,.cinema-preview h2,.detail-copy h2{font-weight:400}
 .directory-item strong,.story h3,.ticket-lists h3{font-weight:600}
+
+/* 图像采用固定画幅，文字和键盘焦点独立于星球画布。 */
+.planet-stage:focus:not(:focus-visible) { outline: none; }
+.planet-stage:focus-visible { outline: 1px solid #bca27e; outline-offset: -7px; }
+.cinema-preview { z-index: 8; }
+.cinema-preview #preview-original { position: relative; z-index: 2; }
+.preview-image-button, .gallery-image-button {
+  position: relative;
+  isolation: isolate;
+  min-height: 0;
+  max-height: none;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+.preview-image-button::before, .gallery-image-button::before {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  z-index: -1;
+  background: var(--photo-fill, none) center / cover;
+  filter: blur(17px) brightness(.45);
+}
+.preview-image-button img, .gallery-image-button img {
+  width: 100%; height: 100%; max-height: none; object-fit: contain;
+}
+#tour-caption {
+  display: none;
+  position: absolute;
+  inset: auto 0 0;
+  padding: .5em;
+  color: #f9e9ce;
+  background: #0b0e16dd;
+  font: 500 clamp(.53rem, 1.25vw, .82rem)/1.38 ui-monospace, monospace;
+  text-align: center;
+}
+.is-touring #tour-caption { display: block; }
+@media (min-width:701px) {
+  .planet-stage { clip-path: inset(0 max(23%, 270px) 0 0); }
+  .planet-stage:focus-visible { clip-path: inset(0 max(23%, 270px) 0 0); outline: none; }
+  .planet-stage:focus-visible::after {
+    content: "";
+    position: absolute; inset: 7px calc(max(23%, 270px) + 7px) 7px 7px;
+    border: 1px solid #bca27e;
+    pointer-events: none;
+  }
+}
+@media (max-width:700px) {
+  .preview-image-button { align-self: start; }
+  .gallery-image-button { aspect-ratio: 4 / 3; }
+}
+.universe .masthead {
+  inset: 0 0 auto;
+  min-height: calc(52px + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+  background: #101420f5;
+  backdrop-filter: blur(14px);
+}

@@ -7,15 +7,15 @@
   <meta name="description" content="幕间漫游 · 影院星球。沿着投稿者留下的图文，走进一间影院。">
   <title>影院星球 · 幕间漫游</title>
   <link rel="icon" href="assets/planet-icon.svg?v=film-v3" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=submissions-20261120">
-  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="style.css?v=projection-20261121">
+  <link rel="stylesheet" href="/shared/shell.css?v=projection-20261121">
   <script src="/shared/routes.js?v=roam-arrival-v4" defer></script>
   <script src="/shared/footprint.js?v=roam-arrival-v4" defer></script>
   <script src="/shared/shell.js?v=roam-arrival-v4" defer></script>
   <script src="data.js" defer></script>
   <script src="record.js" defer></script>
   <script src="planet.js?v=film-101-v9" defer></script>
-  <script src="app.js?v=submissions-20261120" defer></script>
+  <script src="app.js?v=projection-20261121" defer></script>
 </head>
 <body data-module="cinema">
   <div class="grain" aria-hidden="true"></div>
@@ -74,7 +74,7 @@
     <header class="detail-header"><span id="detail-city"></span><div><button class="quiet" id="detail-tour" aria-pressed="false">▷ 继续漫游</button><button class="quiet" id="copy-link">复制链接</button><button class="close-button" data-close="detail-dialog" aria-label="关闭影院图文">×</button></div></header>
     <div class="detail-layout">
       <section class="gallery" aria-label="影院照片">
-        <button class="gallery-image-button" id="gallery-open" aria-label="放大查看影院照片"><img id="gallery-image" alt="" decoding="async"><span class="enlarge-hint" aria-hidden="true">↗</span></button>
+        <button class="gallery-image-button" id="gallery-open" aria-label="放大查看影院照片"><img id="gallery-image" alt="" decoding="async"><span class="enlarge-hint" aria-hidden="true">↗</span><span id="tour-caption" aria-hidden="true"></span></button>
         <div class="gallery-toolbar"><p id="gallery-credit"></p><div><button class="gallery-step" id="gallery-prev" aria-label="上一张影院照片">←</button><button class="gallery-step" id="gallery-next" aria-label="下一张影院照片">→</button></div></div>
         <div class="gallery-thumbs" id="gallery-thumbs" aria-label="选择照片"></div>
       </section>

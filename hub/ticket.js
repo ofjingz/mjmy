@@ -377,14 +377,10 @@
     const modal = byId('ticket-modal');
     if (!modal) return null;
 
-    const room = byId('ticket-room');
     const sheet = byId('ticket-sheet');
     const scroll = byId('ticket-scroll');
     const preview = byId('ticket-preview-img');
-    const skip = byId('ticket-skip-btn');
     const closeButton = byId('ticket-close-btn');
-    const farewell = byId('ticket-farewell');
-    const returnButton = byId('ticket-return-btn');
     const download = byId('ticket-download-btn');
     const edit = byId('ticket-edit');
     const nickname = byId('ticket-nickname');
@@ -443,12 +439,12 @@
         loadPosterArt('fish'),
         document.fonts.load('400 ' + TITLE_SIZE + 'px ' + displayFont, TITLE).catch(() => [])
       ]);
-      if (version !== renderVersion || !modal.open || room.hidden) return;
+      if (version !== renderVersion || !modal.open) return;
       try {
         const ticket = paintTicket({ canvas, footprint, nick, time, theme, seed, marks, fish, bodyFont, displayFont });
         preview.src = ticket.source;
         await preview.decode();
-        if (version !== renderVersion || !modal.open || room.hidden) return;
+        if (version !== renderVersion || !modal.open) return;
         printedNickname = nick;
         preview.alt = ticket.alt;
         preview.hidden = false;
@@ -462,15 +458,12 @@
       }
     }
 
-    function open(trigger, { leaving = false } = {}) {
+    function open(trigger) {
       if (modal.open) return;
       focusReturn = trigger || byId('ticket-open-btn');
       seed = Math.floor(Math.random() * 4294967296);
       time = formatTimestamp(new Date());
       printing = true;
-      room.hidden = false;
-      farewell.hidden = true;
-      skip.hidden = !leaving;
       preview.hidden = true;
       edit.open = false;
       const footprint = window.MujianFootprint.getFootprint();
@@ -480,7 +473,7 @@
       modal.showModal();
       document.body.classList.add('is-ticket-open');
       scroll.scrollTop = 0;
-      (leaving ? skip : closeButton).focus({ preventScroll: true });
+      closeButton.focus({ preventScroll: true });
       render();
     }
 
@@ -494,22 +487,13 @@
       focusReturn?.focus({ preventScroll: true });
     }
 
-    skip.addEventListener('click', () => {
-      ++renderVersion;
-      stopPrinting();
-      room.hidden = true;
-      farewell.hidden = false;
-      modal.setAttribute('aria-labelledby', 'ticket-farewell-title');
-      returnButton.focus({ preventScroll: true });
-    });
     closeButton.addEventListener('click', close);
-    returnButton.addEventListener('click', close);
     modal.addEventListener('cancel', event => {
       event.preventDefault();
       close();
     });
     modal.addEventListener('click', event => {
-      if (event.target === modal && !room.hidden) close();
+      if (event.target === modal) close();
     });
     reduced.addEventListener('change', () => { if (reduced.matches) stopPrinting(); });
 
@@ -528,7 +512,7 @@
       showStatus('已开始下载，也可长按图片保存。');
     });
     function refreshOpenTicket() {
-      if (modal.open && !room.hidden) render();
+      if (modal.open) render();
     }
 
     window.addEventListener('mujian:footprint-change', refreshOpenTicket);

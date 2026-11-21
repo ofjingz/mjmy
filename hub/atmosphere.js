@@ -1,7 +1,6 @@
 /**
  * 幕间漫游 · 暗房光束氛围画布
  * - opening 模式：配合显影序列的淡蓝感应光晕
- * - hall 模式：冷蓝环境光晕，随指针轻柔漫游
  */
 (function (root) {
   'use strict';
@@ -25,9 +24,8 @@
     var dpr = 1;
     var frame = 0;
     var lastTime = 0;
-    var time = 0;
     var destroyed = false;
-    var mode = 'opening'; // 'opening' | 'hall' | 'quiet'
+    var mode = 'opening'; // 'opening' | 'quiet'
     var reduced = !!opts.reducedMotion;
     var rect = canvas.getBoundingClientRect();
     var pointer = { x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5, amount: 0, targetAmount: 0 };
@@ -55,44 +53,21 @@
       var pointed = pointer.amount > 0.04;
       var minDim = Math.min(width, height);
 
-      if (mode === 'opening') {
-        var ox = pointer.x * width;
-        var oy = pointer.y * height;
-        var oradius = minDim * 0.23;
-        var opower = pointed ? pointer.amount : 0;
-        glow(ox, oy, oradius, 0.10 * opower, '104,160,231');
-        onLight(ox + rect.left, oy + rect.top, oradius, opower * 2);
+      var ox = pointer.x * width;
+      var oy = pointer.y * height;
+      var oradius = minDim * 0.23;
+      var opower = pointed ? pointer.amount : 0;
+      glow(ox, oy, oradius, 0.10 * opower, '104,160,231');
+      onLight(ox + rect.left, oy + rect.top, oradius, opower * 2);
 
-        for (var i = blooms.length - 1; i >= 0; i--) {
-          var b = blooms[i];
-          b.age += dt;
-          if (b.age >= 2.8) {
-            blooms.splice(i, 1);
-            continue;
-          }
-          glow(b.x, b.y, minDim * 0.18, 0.12 * Math.sin(Math.PI * b.age / 2.8), '104,160,231');
+      for (var i = blooms.length - 1; i >= 0; i--) {
+        var b = blooms[i];
+        b.age += dt;
+        if (b.age >= 2.8) {
+          blooms.splice(i, 1);
+          continue;
         }
-      } else if (mode === 'hall') {
-        // 展厅漫游模式：低强度冷蓝环境光
-        var hx = pointed ? pointer.x * width : width * (0.5 + 0.26 * Math.sin(time * 0.11));
-        var hy = pointed ? pointer.y * height : height * (0.48 + 0.22 * Math.cos(time * 0.15 + 0.4));
-        var hradius = Math.max(240, minDim * 0.34);
-        var hpower = pointed ? pointer.amount : (reduced ? 0.28 : 0.42);
-        glow(hx, hy, hradius, 0.085 * hpower, '6,69,162');
-        if (pointed) {
-          glow(hx, hy, minDim * 0.52, 0.036 * pointer.amount, '104,160,231');
-        }
-        onLight(hx + rect.left, hy + rect.top, hradius * 0.88, hpower * 1.45);
-
-        for (var j = blooms.length - 1; j >= 0; j--) {
-          var hb = blooms[j];
-          hb.age += dt;
-          if (hb.age >= 1.8) {
-            blooms.splice(j, 1);
-            continue;
-          }
-          glow(hb.x, hb.y, minDim * 0.2, 0.09 * Math.sin(Math.PI * hb.age / 1.8), '6,69,162');
-        }
+        glow(b.x, b.y, minDim * 0.18, 0.12 * Math.sin(Math.PI * b.age / 2.8), '104,160,231');
       }
     }
 
@@ -101,7 +76,6 @@
       if (destroyed || document.hidden || reduced || mode === 'quiet') return;
       var dt = lastTime ? Math.min((now - lastTime) / 1000, 0.05) : 1 / 60;
       lastTime = now;
-      time += dt;
       draw(dt);
       frame = requestAnimationFrame(tick);
     }

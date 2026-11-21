@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#6E123B">
   <meta name="description" content="共创者与特别鸣谢 · 幕间漫游">
   <title>共创者与特别鸣谢 · 幕间漫游</title>
-  <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="stylesheet" href="/shared/shell.css?v=projection-20261121">
   <link rel="preload" as="style" href="./module/credits.css?v=round-glow-v2">
   <style>
     html,
@@ -26,14 +26,10 @@
       --credits-height: 100svh;
     }
 
-    .mj-return {
+    .mj-exhibit-bar {
       --mj-return-bg: #410d28;
-    }
-
-    @media (max-width: 720px) {
-      body[data-section="contributors"] .mj-return {
-        bottom: calc(68px + env(safe-area-inset-bottom));
-      }
+      position: fixed;
+      inset: 0 0 auto;
     }
   </style>
   <script src="/shared/routes.js?v=roam-arrival-v4" defer></script>
@@ -41,7 +37,9 @@
   <script src="/shared/shell.js?v=roam-arrival-v4" defer></script>
 </head>
 <body data-module="thanks" data-section="contributors" data-card-open="false">
-  <a class="mj-return mj-return--fixed" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <header class="mj-exhibit-bar">
+    <a class="mj-return mj-return--header" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  </header>
   <main id="end-credits"></main>
   <noscript>
     <p style="color:#FFF6E3;text-align:center;padding:3rem 1.5rem;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif;">请启用 JavaScript 查看共创者与特别鸣谢。</p>

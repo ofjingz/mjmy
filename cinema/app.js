@@ -47,6 +47,10 @@
   }
 
   function tourControls() {
+    const detail = $('detail-dialog');
+    const started = playing && !detail.classList.contains('is-touring');
+    detail.classList.toggle('is-touring', playing);
+    if (started) renderTourCaption();
     $('tour').setAttribute('aria-pressed', String(playing));
     $('tour-label').textContent = playing ? '暂停漫游' : '自动漫游';
     $('tour-symbol').textContent = playing ? 'Ⅱ' : '▷';
@@ -142,7 +146,10 @@
       imageElement.hidden = true;
       notify('这张照片暂时无法打开，请切换另一张');
     };
-    if (image) imageElement.src = useThumbnail ? image.thumb || image.src : image.src;
+    if (!image) return;
+    imageElement.src = useThumbnail ? image.thumb || image.src : image.src;
+    const frame = imageElement.closest('.preview-image-button, .gallery-image-button');
+    if (frame) frame.style.setProperty('--photo-fill', 'url(' + JSON.stringify(image.thumb || image.src) + ')');
   }
 
   function renderPreview() {
@@ -207,7 +214,6 @@
     planet?.select(selected.id, { animate: false });
     planet?.setRunning(!motion.matches);
     planet?.revealNearby?.();
-    $('planet-stage').focus({ preventScroll: true });
     syncPlanet();
   }
 
@@ -270,7 +276,18 @@
     renderGallery();
   }
 
+  function renderTourCaption() {
+    const caption = $('tour-caption');
+    caption.textContent = selected.city + ' · ' + selected.name;
+    if (playing && !motion.matches && caption.animate) {
+      caption.animate([{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], {
+        duration: 670, easing: 'steps(' + Array.from(caption.textContent).length + ', end)'
+      });
+    }
+  }
+
   function renderDetail() {
+    renderTourCaption();
     $('detail-city').textContent = selected.city;
     $('detail-name').textContent = `${selected.city} ${selected.name}`;
     $('detail-original').textContent = selected.originalName ? `（${selected.originalName}）` : '';

@@ -131,7 +131,7 @@ button{font:inherit;color:inherit;background:none;border:0}
 .rail.l{left:0}
 .rail.r{right:0}
 .rail .holes{
-  position:absolute;left:50%;top:-60px;transform:translateX(-50%);
+  position:absolute;left:50%;top:-60px;transform:translate(-50%, var(--film-offset, 0px));
   width:14px;height:calc(100% + 120px);
   background:repeating-linear-gradient(180deg,var(--paper) 0 18px,transparent 18px 36px);
   will-change:transform;
@@ -186,10 +186,9 @@ button{font:inherit;color:inherit;background:none;border:0}
   position:fixed;
   top:calc(var(--topbar-h) + var(--safe-top));
   left:var(--rail);right:var(--rail);bottom:0;
-  background:rgba(22,22,22,.98);z-index:54;
+  background:rgba(19,19,19,.97);backdrop-filter:blur(18px);z-index:54;
   display:flex;align-items:center;justify-content:center;
-  opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity .32s ease,visibility .32s ease;
+  visibility:hidden;pointer-events:none;
   overflow-y:auto;-webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
 }
@@ -313,8 +312,8 @@ section:last-child{border-bottom:0}
 .frame img{
   display:block;width:100%;height:auto;
   background:var(--paper-deep);
-  opacity:0;transform:scale(1.03);
-  transition:opacity .65s ease,transform .85s ease;
+  opacity:.58;transform:scale(1.03);
+  transition:opacity .44s ease-out,transform .48s ease-out;
 }
 .frame.in img{opacity:1;transform:scale(1)}
 .frame:hover{
@@ -387,12 +386,11 @@ section:last-child{border-bottom:0}
 /* ---------- 15. 灯箱（高于全局浮条，不裁切原图，完整展签） ---------- */
 .lb{
   position:fixed;inset:0;
-  background:rgba(12,12,12,.96);
+  background:#080808;
   z-index:9800;
   display:flex;flex-direction:column;
   padding:calc(12px + var(--safe-top)) max(16px,var(--safe-right)) calc(16px + var(--safe-bottom)) max(16px,var(--safe-left));
-  opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity .24s ease,visibility .24s ease;
+  visibility:hidden;pointer-events:none;
   overscroll-behavior:contain;
 }
 .lb.show{opacity:1;visibility:visible;pointer-events:auto}
@@ -445,7 +443,7 @@ section:last-child{border-bottom:0}
 .lb-cap-meta:empty{display:none}
 
 /* ---------- 16. 滚动渐显 ---------- */
-.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal{opacity:.72;transform:translateY(10px);transition:opacity .42s ease-out,transform .48s ease-out}
 .reveal.in{opacity:1;transform:none}
 
 /* ---------- 17. 平板过渡（≤900px） ---------- */
@@ -534,4 +532,96 @@ section:last-child{border-bottom:0}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .reveal,.frame img{opacity:1!important;transform:none!important}
+}
+
+.menu.show .menu-inner { animation: menu-appear .2s ease-out both; }
+.lb.show #lbimg { animation: menu-appear .27s ease-out 45ms both; }
+@keyframes menu-appear { from { opacity: 0; } to { opacity: 1; } }
+.quote::before { display: none; }
+
+.rail-year {
+  position: absolute;
+  top: 43%;
+  left: 50%;
+  padding: 9px 3px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 10px/1 var(--mono);
+  letter-spacing: .15em;
+  writing-mode: vertical-rl;
+  transform: translateX(-50%);
+}
+.rail-year:empty { display: none; }
+
+section:has(.reel-card) { padding-top: 0; }
+.reel-card {
+  min-height: calc(100svh - var(--topbar-h) - var(--safe-top));
+  margin: 0 -6vw clamp(40px, 7vw, 82px);
+  padding: 36px 7vw;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 18px;
+  text-align: center;
+  color: var(--paper);
+  background: radial-gradient(ellipse, #25221e, #090909 75%);
+}
+.reel-card h2 { font: 400 clamp(32px, 6vw, 78px)/1.22 var(--font-display); }
+.reel-card p, .reel-card time { font: 400 14px/1.6 var(--mono); letter-spacing: .22em; color: #d4bf9d; }
+
+.fitem figure {
+  position: relative;
+  background: repeating-linear-gradient(12deg, #946f4211 0 1px, transparent 1px 4px), #ede0c4;
+  padding: clamp(6px, 1.1vw, 14px);
+  box-shadow: 0 4px 13px #432c171b;
+  rotate: -.65deg;
+  transition: rotate .38s ease, translate .38s ease, box-shadow .38s ease;
+}
+.fitem:nth-child(3n+2) figure { rotate: .85deg; }
+.fitem:nth-child(3n+3) figure { rotate: -.25deg; }
+.fitem figure:has(img:is([src*="program"], [src*="magazine"], [src*="press"]))::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 39%;
+  width: 22%;
+  height: 14px;
+  background: #d7bc7a80;
+  box-shadow: 0 2px 4px #2a1b1836;
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .fitem figure:hover, .fitem figure:focus-within { rotate: 0deg; translate: 0 -4px; box-shadow: 0 13px 24px #2b1c2330; }
+}
+
+#sources, .credits-end { background: #090909; color: var(--paper); }
+#sources { min-height: 80svh; overflow: clip; }
+.sources-box { border: 0; }
+.sources-box :is(a, .desc, .src-foot) { color: #dad0c2; }
+.credits-end { min-height: 100svh; display: grid; place-items: center; }
+.credits-end p { font: 400 clamp(38px, 7vw, 90px)/1 var(--font-display); letter-spacing: .1em; }
+@media (prefers-reduced-motion: no-preference) {
+  #sources.rolling .sources-box:not(:focus-within):not(:hover) { animation: credit-roll 12s ease-out both; }
+  @keyframes credit-roll { from { translate: 0 24vh; } to { translate: 0 0; } }
+  .film-settle main { animation: gate-settle .18s ease-out; }
+  @keyframes gate-settle { 40% { translate: 0 1px; } 72% { translate: 0 -.45px; } }
+}
+@media (max-width: 760px) {
+  .reel-card { margin-inline: -18px; }
+  .fitem figure { rotate: 0deg; }
+}
+@media (max-width: 360px) {
+  .reel-card { margin-inline: -14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu.show .menu-inner, .lb.show #lbimg { animation: none; }
+  .fitem figure { transition: none; }
+}
+@media (max-width: 760px) {
+  :root { --rail: 5px; }
+  .rail { display: block; }
+  .rail .holes { width: 3px; opacity: .6; }
+  .rail-year { display: none; }
+  main { margin-inline: var(--rail); }
 }
