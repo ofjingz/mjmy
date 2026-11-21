@@ -105,13 +105,15 @@
     for (let i = 0; i < image.data.length; i += 4) {
       const alpha = image.data[i + 3];
       if (!alpha) continue;
+      const aNorm = alpha / 255;
       const value = (.2126 * image.data[i] + .7152 * image.data[i + 1] + .0722 * image.data[i + 2]) / 255;
+      const tone = value * (0.38 + 0.62 * aNorm);
       const grain = ((Math.imul(i, 113) ^ (i >>> 3)) % 13) / 200;
-      const density = Math.min(1, .18 + .89 * Math.pow(value, .73) - grain);
+      const density = Math.min(1, .16 + .92 * Math.pow(tone, .78) - grain);
       for (let channel = 0; channel < 3; channel++) {
         print.data[i + channel] = shadow[channel] + (highlight[channel] - shadow[channel]) * density;
       }
-      print.data[i + 3] = alpha;
+      print.data[i + 3] = Math.min(255, Math.round(Math.pow(aNorm, .78) * 255));
     }
     context.putImageData(print, 0, 0);
 

@@ -90,6 +90,7 @@ button {
   padding: clamp(76px, 11vw, 132px) 24px clamp(68px, 9vw, 112px);
   overflow: hidden;
   background: linear-gradient(180deg, #0b0d10 0%, #111419 100%);
+  scroll-margin-top: calc(52px + env(safe-area-inset-top));
 }
 
 .hero-backdrop {
@@ -168,8 +169,8 @@ button {
 /* ===== 粘性分区快捷导航 ===== */
 .section-tabs {
   position: sticky;
-  top: 0;
-  z-index: 9000;
+  top: calc(52px + env(safe-area-inset-top));
+  z-index: 40;
   background: rgba(14, 16, 19, 0.86);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -250,7 +251,7 @@ button {
 
 /* ===== 01 团长手记 ===== */
 .notes-section {
-  scroll-margin-top: 72px;
+  scroll-margin-top: calc(128px + env(safe-area-inset-top));
 }
 
 .notes-body {
@@ -359,7 +360,7 @@ button {
 
 /* ===== 02 放映现场档案 ===== */
 .archive-section {
-  scroll-margin-top: 72px;
+  scroll-margin-top: calc(128px + env(safe-area-inset-top));
 }
 
 .filter-bar-wrap {

@@ -90,6 +90,7 @@ button {
   color: var(--dark-ink);
   padding: clamp(32px, 5vw, 58px) 24px clamp(28px, 4.5vw, 48px);
   overflow: hidden;
+  scroll-margin-top: calc(52px + env(safe-area-inset-top));
 }
 
 .hero-backdrop {
@@ -198,7 +199,7 @@ button {
   line-height: 1.35;
   letter-spacing: 0.035em;
   color: #75501f;
-  scroll-margin-top: 28px;
+  scroll-margin-top: calc(72px + env(safe-area-inset-top));
 }
 
 .essay-chapter-anchor:first-child {

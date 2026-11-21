@@ -1,8 +1,10 @@
 import { contributors, acknowledgments, exhibition } from './data.js';
-import { renderPoster } from './poster.js?v=20261121';
+import { renderPoster } from './poster.js?v=polish-20261122';
 
-const styleURL = new URL('./credits.css?v=round-glow-v2', import.meta.url).href;
+const styleURL = new URL('./credits.css?v=polish-20261122', import.meta.url).href;
 const assetRoot = new URL('./assets/', import.meta.url);
+const CARD_OPEN_DELAY_MS = 2000;
+const TWINKLE_RESUME_DELAY_MS = 500;
 let instanceCount = 0;
 
 export function shuffleNames(names, random = Math.random) {
@@ -265,22 +267,28 @@ export function mountCredits(container, options = {}) {
     nameBeam.style.setProperty('--beam-y', `${box.top + box.height / 2 - frame.top}px`);
   }
 
-  function lightName(button) {
-    if (litButton !== button) litButton?.classList.remove('is-lit');
-    litButton = button;
-    litButton?.classList.add('is-lit');
-    shell.dataset.spotlight = String(Boolean(button));
-    if (button) positionNameLight();
-  }
-
-  function clearTwinkles() {
+  function clearTwinkles(resumeDelay = 0) {
     twinkling.forEach(button => button.classList.remove('is-twinkling'));
     twinkling = [];
-    nextTwinkle = 0;
+    nextTwinkle = resumeDelay > 0 ? performance.now() + resumeDelay : 0;
+  }
+
+  function lightName(button) {
+    const wasLit = Boolean(litButton);
+    if (litButton !== button) litButton?.classList.remove('is-lit');
+    litButton = button;
+    if (litButton) {
+      clearTwinkles();
+      litButton.classList.add('is-lit');
+    } else if (wasLit && !cardActive) {
+      clearTwinkles(TWINKLE_RESUME_DELAY_MS);
+    }
+    shell.dataset.spotlight = String(Boolean(litButton));
+    if (litButton) positionNameLight();
   }
 
   function twinkleNames(time) {
-    if (cardActive || time < nextTwinkle) return;
+    if (cardActive || litButton || time < nextTwinkle) return;
     clearTwinkles();
     nextTwinkle = time + 3000;
     const random = options.random ?? Math.random;
@@ -549,17 +557,27 @@ export function mountCredits(container, options = {}) {
     lightName(null);
     resume('card');
     if (keyboardMode && selectedButton) {
+      resume('hover');
       revealFocused(selectedButton);
       selectedButton.focus({ preventScroll: true });
       lightName(selectedButton);
+    } else {
+      resume('focus');
+      const hovered = flow.querySelector('.cm-name:hover');
+      if (hovered) {
+        pause('hover');
+        lightName(hovered);
+      } else {
+        resume('hover');
+      }
     }
-    if (!keyboardMode) resume('focus');
     emit('close', { name: selectedName });
   }
 
   function openContributor(name, button = null) {
     if (destroyed || section !== 'contributors' || !names.includes(name)) return false;
     clearTimeout(openingTimer);
+    openingTimer = 0;
     clearTwinkles();
     resetPoster();
     root.querySelectorAll('.cm-name.is-selected').forEach(item => item.classList.remove('is-selected'));
@@ -584,7 +602,7 @@ export function mountCredits(container, options = {}) {
         closeButton.focus({ preventScroll: true });
       }
       if (dialog.open) preparePoster(name);
-    }, reduced ? 0 : 4000);
+    }, reduced ? 0 : CARD_OPEN_DELAY_MS);
     return true;
   }
 
@@ -632,21 +650,30 @@ export function mountCredits(container, options = {}) {
   listen(flow, 'pointerdown', event => {
     keyboardMode = false;
     const button = event.target.closest('.cm-name');
-    if (button && !cardActive) {
+    if (!button || dialog.open) return;
+    // Loop copies remain pointer targets but never steal accessible focus.
+    if (button.closest('[aria-hidden="true"]')) event.preventDefault();
+    if (!cardActive) {
       pause('press');
       lightName(button);
-      // Loop copies remain pointer targets but never steal accessible focus.
-      if (button.closest('[aria-hidden="true"]')) event.preventDefault();
     }
   });
-  listen(window, 'pointerup', () => resume('press'));
+  listen(window, 'pointerup', event => {
+    if (!pauses.has('press')) return;
+    resume('press');
+    if (!cardActive && !pauses.has('hover') && !pauses.has('focus')) {
+      if (event.pointerType === 'mouse' || !litButton?.contains(event.target)) lightName(null);
+    }
+  });
   listen(window, 'pointercancel', () => {
     resume('press');
     if (!cardActive && !pauses.has('hover') && !pauses.has('focus')) lightName(null);
   });
   listen(flow, 'click', event => {
     const button = event.target.closest('.cm-name');
-    if (button && !cardActive) openContributor(button.dataset.name, button);
+    if (!button || dialog.open) return;
+    if (cardActive && button === selectedButton) return;
+    openContributor(button.dataset.name, button);
   });
   listen(flow, 'pointerover', event => {
     const button = event.target.closest('.cm-name');
@@ -655,7 +682,10 @@ export function mountCredits(container, options = {}) {
   listen(flow, 'pointerout', event => {
     if (!event.relatedTarget?.closest?.('.cm-name')) {
       resume('hover');
-      if (!cardActive && !pauses.has('focus') && !pauses.has('press')) lightName(null);
+      if (!cardActive && !pauses.has('press')) {
+        const focused = pauses.has('focus') && root.activeElement?.matches?.('.cm-name') ? root.activeElement : null;
+        lightName(focused);
+      }
     }
   });
   listen(root, 'keydown', event => {
@@ -663,7 +693,8 @@ export function mountCredits(container, options = {}) {
     if (event.key === 'Escape' && openingTimer) closeCard();
   });
   listen(flow, 'focusin', event => {
-    if (!cardActive && keyboardMode && event.target.matches('.cm-name')) {
+    if (!cardActive && event.target.matches('.cm-name') && (keyboardMode || event.target.matches(':focus-visible'))) {
+      keyboardMode = true;
       pause('focus');
       revealFocused(event.target);
       lightName(event.target);
@@ -672,7 +703,7 @@ export function mountCredits(container, options = {}) {
   listen(flow, 'focusout', event => {
     if (!flow.contains(event.relatedTarget)) {
       resume('focus');
-      if (!cardActive && !pauses.has('hover')) lightName(null);
+      if (!cardActive && !pauses.has('hover') && !pauses.has('press')) lightName(null);
     }
   });
   listen(document, 'visibilitychange', syncMotion);

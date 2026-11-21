@@ -7,15 +7,15 @@
   <meta name="description" content="幕间漫游 · 影院星球。沿着投稿者留下的图文，走进一间影院。">
   <title>影院星球 · 幕间漫游</title>
   <link rel="icon" href="assets/planet-icon.svg?v=film-v3" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=projection-20261121">
+  <link rel="stylesheet" href="style.css?v=ticket-20261121">
   <link rel="stylesheet" href="/shared/shell.css?v=projection-20261121">
   <script src="/shared/routes.js?v=roam-arrival-v4" defer></script>
   <script src="/shared/footprint.js?v=roam-arrival-v4" defer></script>
   <script src="/shared/shell.js?v=roam-arrival-v4" defer></script>
   <script src="data.js" defer></script>
   <script src="record.js" defer></script>
-  <script src="planet.js?v=film-101-v9" defer></script>
-  <script src="app.js?v=projection-20261121" defer></script>
+  <script src="planet.js?v=nuit101-a-20261122" defer></script>
+  <script src="app.js?v=ticket-20261121" defer></script>
 </head>
 <body data-module="cinema">
   <div class="grain" aria-hidden="true"></div>
@@ -89,12 +89,40 @@
     <footer><button class="gallery-step" id="lightbox-prev" aria-label="上一张大图">←</button><p id="lightbox-credit"></p><button class="gallery-step" id="lightbox-next" aria-label="下一张大图">→</button></footer>
   </dialog>
 
-  <dialog class="ticket-dialog" id="ticket-dialog" aria-labelledby="ticket-title">
-    <header class="dialog-header"><div><p class="overline">幕间漫游</p><h2 id="ticket-title">我的影院票根</h2></div><button class="close-button" data-close="ticket-dialog" aria-label="关闭观展票根">×</button></header>
-    <div class="ticket" id="ticket-content"><div class="ticket-top"><span>影院星球</span><span id="ticket-date"></span></div><div class="ticket-counts"><div><strong id="visited-count">0</strong><span>去过</span></div><span class="ticket-cross" aria-hidden="true">↗</span><div><strong id="wishlist-count">0</strong><span>想去</span></div></div><div class="ticket-lists"><section><h3>去过的影院</h3><ol id="visited-list"></ol></section><section><h3>想去的影院</h3><ol id="wishlist-list"></ol></section></div><div class="ticket-bottom"><span id="ticket-number"></span><span>本次观展记录</span></div></div>
-    <p class="record-note" id="record-note">选择保存在当前浏览器。去过与想去可同时标记。</p>
-    <div class="ticket-actions"><button class="primary-button" id="save-ticket">保存票根图片 ↓</button><button class="quiet" id="export-record">导出影院记录</button></div>
-    <details class="reset-section"><summary>开始新的观展</summary><p>重新开始后，当前选择将清空。已保存的票根不受影响。</p><button class="quiet" id="reset-visit">清空选择，重新开始 →</button></details>
+  <dialog class="ticket-dialog ticket-modal" id="ticket-dialog" aria-labelledby="ticket-title" data-theme="dark">
+    <div class="ticket-room">
+      <header class="ticket-head">
+        <h2 id="ticket-title">影院票根</h2>
+        <div class="ticket-nav">
+          <button type="button" id="ticket-close-btn" data-close="ticket-dialog" autofocus>继续漫游</button>
+        </div>
+      </header>
+
+      <div class="ticket-stage">
+        <div class="ticket-printer" aria-hidden="true"><i></i><span></span></div>
+        <div id="ticket-scroll" class="ticket-scroll" tabindex="0" role="region" aria-label="影院票根预览">
+          <div id="ticket-sheet" class="ticket-sheet">
+            <img id="ticket-preview-img" alt="" draggable="false" hidden>
+          </div>
+        </div>
+      </div>
+
+      <footer class="ticket-toolbar">
+        <p class="ticket-note" id="record-note">去过与想去可同时标记</p>
+        <div class="ticket-actions">
+          <details id="ticket-edit">
+            <summary>改昵称</summary>
+            <form id="ticket-nickname-form" class="ticket-field">
+              <label for="ticket-nickname">观展昵称</label>
+              <input id="ticket-nickname" maxlength="40" placeholder="一位迷影者" autocomplete="off">
+              <button type="submit">完成</button>
+            </form>
+          </details>
+          <button type="button" id="save-ticket" disabled>保存票根 <span aria-hidden="true">↓</span></button>
+        </div>
+        <p id="ticket-status" class="ticket-status" role="status"></p>
+      </footer>
+    </div>
   </dialog>
   <p class="toast" id="toast" role="status" aria-live="polite"></p>
   <noscript><p class="no-script">请启用 JavaScript 进入影院星球。</p></noscript>

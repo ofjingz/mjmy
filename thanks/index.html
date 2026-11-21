@@ -7,7 +7,7 @@
   <meta name="description" content="共创者与特别鸣谢 · 幕间漫游">
   <title>共创者与特别鸣谢 · 幕间漫游</title>
   <link rel="stylesheet" href="/shared/shell.css?v=projection-20261121">
-  <link rel="preload" as="style" href="./module/credits.css?v=round-glow-v2">
+  <link rel="preload" as="style" href="./module/credits.css?v=polish-20261122">
   <style>
     html,
     body {
@@ -19,17 +19,31 @@
       overflow-x: hidden;
     }
 
-    #end-credits {
+    body {
+      display: flex;
+      flex-direction: column;
       height: 100svh;
       min-height: 100svh;
-      background: radial-gradient(ellipse at 50% 43%, #b82e6b 0%, #961e53 48%, #6e123b 100%);
-      --credits-height: 100svh;
     }
 
     .mj-exhibit-bar {
       --mj-return-bg: #410d28;
-      position: fixed;
-      inset: 0 0 auto;
+      flex: 0 0 auto;
+    }
+
+    #end-credits {
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(ellipse at 50% 43%, #b82e6b 0%, #961e53 48%, #6e123b 100%);
+      --credits-height: 100%;
+      --credits-min-height: 0;
+    }
+
+    #end-credits > .mujian-credits {
+      flex: 1 1 0;
+      min-height: 0;
     }
   </style>
   <script src="/shared/routes.js?v=roam-arrival-v4" defer></script>
@@ -45,7 +59,7 @@
     <p style="color:#FFF6E3;text-align:center;padding:3rem 1.5rem;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif;">请启用 JavaScript 查看共创者与特别鸣谢。</p>
   </noscript>
   <script type="module">
-    import { mountCredits } from './module/credits.js?v=credits-first-paint-v1';
+    import { mountCredits } from './module/credits.js?v=polish-20261122';
 
     const container = document.querySelector('#end-credits');
     const credits = mountCredits(container);

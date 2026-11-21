@@ -180,7 +180,7 @@ body {
 
 .article-rail {
   position: sticky;
-  top: 24px;
+  top: calc(76px + env(safe-area-inset-top));
 }
 
 .rail-heading {
@@ -285,6 +285,7 @@ body {
 /* Warm Archival Paper Sheet */
 .reading-stage {
   min-width: 0;
+  scroll-margin-top: calc(68px + env(safe-area-inset-top));
 }
 
 .letter-sheet {

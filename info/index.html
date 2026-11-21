@@ -2,47 +2,358 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0e1013">
-  <meta name="description" content="超人、木乃伊与桃花源：影史之外的影迷文化三两事 · 2026年11月21日 — 11月28日线下展览信息与官方推文入口。">
-  <title>线下展览信息 · 幕间漫游</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#2455a3">
+  <link rel="icon" href="assets/lamp.svg" type="image/svg+xml">
+  <title>线下展览信息｜超人、木乃伊与桃花源 · 幕间漫游</title>
+  <meta name="description" content="2026年11月21日至28日，北京溪言书店。影迷文化展、开幕对谈与《101夜》放映，一起在线下相遇。">
   <link rel="stylesheet" href="/shared/shell.css?v=projection-20261121">
-  <link rel="stylesheet" href="./style.css?v=submissions-20261120">
+  <link rel="stylesheet" href="./styles.css?v=offline-info-20261121">
   <script src="/shared/routes.js?v=roam-arrival-v4" defer></script>
   <script src="/shared/footprint.js?v=roam-arrival-v4" defer></script>
-  <script src="/shared/qrcode.js" defer></script>
   <script src="/shared/shell.js?v=roam-arrival-v4" defer></script>
-  <script src="./app.js?v=submissions-20261120" defer></script>
+  <script src="./app.js?v=offline-info-20261121" defer></script>
 </head>
 <body data-module="info">
-  <header class="mj-exhibit-bar">
-    <a class="mj-return mj-return--header" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+  <a class="skip" href="#main">跳至正文</a>
+
+  <header class="site-header">
+    <div class="header-lead">
+      <a class="mj-return mj-return--header info-return" href="/hub/#hall" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
+      <a class="brand" href="#top" aria-label="线下相遇首页">
+        <span class="brand-symbol" aria-hidden="true">✳</span>
+        <span><span class="brand-name">幕间漫游</span><small>线下相遇</small></span>
+      </a>
+    </div>
+    <nav aria-label="页面导航">
+      <a href="#exhibition">展览</a>
+      <a href="#opening">对谈</a>
+      <a href="#screening">放映</a>
+      <a href="#visit">到场指南</a>
+    </nav>
+    <a class="header-date" href="#schedule">11.21—11.28 <span>北京</span></a>
   </header>
-  <div class="film-grain" aria-hidden="true"></div>
-  <div class="page-wrap">
-    <header class="info-masthead">
-      <div class="masthead-eyebrow">
-        <span class="masthead-dot" aria-hidden="true"></span>
-        <span>幕间漫游 · 线下展览信息</span>
+
+  <main id="main">
+    <section class="hero grid-paper" id="top">
+      <div class="hero-inner wrap">
+        <div class="hero-copy">
+          <p class="eyebrow">从银幕出发，在这里相遇</p>
+          <h1>超人、木乃伊<br><span class="title-last">与桃花源<span class="title-star" aria-hidden="true">✳</span></span></h1>
+          <p class="hero-subtitle">影史之外的影迷文化三两事</p>
+          <p class="hero-intro">随心所欲的人们，<br>用理想和浪漫，书写属于自己的“桃花源记”</p>
+          <div class="hero-info">
+            <p><strong>2026.11.21 — 11.28</strong><span>每日 10:00—19:00 · 免票免预约</span></p>
+            <p><strong>北京 · 溪言书店</strong><span>新街口外大街34号 · 金尚城溪2层</span></p>
+          </div>
+          <div class="actions">
+            <a class="button red" href="#schedule">查看活动安排</a>
+            <a class="text-link" href="#visit">怎样到达</a>
+          </div>
+        </div>
+        <figure class="hero-art">
+          <img class="hanging-lamp" src="assets/lamp.svg" alt="" aria-hidden="true">
+          <a href="assets/A2_01.png" data-lightbox data-caption="超人、木乃伊与桃花源 · 展览主海报" class="poster-link" aria-label="放大展览主海报">
+            <img src="assets/exhibition-poster.png" alt="展览主海报：红蓝线条、方格纸、吊灯和小鱼" width="950" height="1312" fetchpriority="high">
+            <span class="image-label">展览主海报 ＋</span>
+          </a>
+          <figcaption>用一段幕间休息的时间，开启一场“共创”的电影航程。</figcaption>
+        </figure>
       </div>
-    </header>
+      <div class="hero-foot wrap">
+        <span>公益展览</span>
+        <span>影迷 · 电影 · 展览空间</span>
+        <span>电影不散，期待相遇</span>
+      </div>
+    </section>
 
-    <main id="info-app">
-      <p class="loading-state">正在读取展览信息…</p>
-    </main>
+    <section class="about section wrap" id="exhibition">
+      <div class="section-kicker">关于展览 <span>THE EXHIBITION</span></div>
+      <div class="about-grid">
+        <h2>属于我们的<br><span>影迷史碎片</span><img class="about-fish" src="assets/fish-grain.png" alt="" loading="lazy" aria-hidden="true"></h2>
+        <div class="prose">
+          <p class="lead">“超人、木乃伊与桃花源”，分别对应我们心中的影迷、电影，以及展览空间。</p>
+          <p>从8月正式进入筹备期至今，我们共计征集到70位影迷伙伴提供的材料。在此，我们要诚恳地感谢所有热情参与活动的影迷朋友，是你们为展览的骨架填充了血肉。参与投稿的小伙伴，都可以在主视觉海报中寻到自己的名字～</p>
+          <p>对于一个小型展览而言，这些材料已足够丰富；但若想呈现一个鲜明的迷影文化成长脉络，这样的体量又太小太小。我们只能尽力为这个巨大的版图提供一点点碎片。这种展览模式，也许感兴趣朋友们可以接力来做，一起为书写属于我们的影迷史作出一点努力。</p>
+        </div>
+      </div>
+    </section>
 
-    <footer class="info-footer">
-      <span>幕间漫游 · 影迷线上展</span>
-      <nav class="info-footer-links" aria-label="相关展区">
-        <a id="footer-note-link" href="/note/">留言板</a>
-        <a id="footer-thanks-link" href="/thanks/">共创者与特别鸣谢</a>
-      </nav>
-    </footer>
-  </div>
+    <section class="schedule-section blue" id="schedule">
+      <div class="wrap section">
+        <div class="section-top">
+          <div>
+            <p class="section-kicker">相遇的时间 <span>WHEN WE MEET</span></p>
+            <h2>把这几段时间，<br>留给电影。</h2>
+          </div>
+          <p class="schedule-note">2026年11月 · 北京<br>所有时间均为北京时间</p>
+        </div>
+        <div class="schedule-list">
+          <a href="#screening" class="schedule-row">
+            <div class="schedule-time"><span>11月21日</span><strong>15:00</strong></div>
+            <div>
+              <p class="schedule-tag">开幕影片</p>
+              <h3>《101夜》<span>1995 · 阿涅斯·瓦尔达</span></h3>
+              <p>中国电影资料馆 · 小西天2号厅</p>
+            </div>
+            <span class="schedule-status">官方渠道购票</span>
+          </a>
+          <a href="#opening" class="schedule-row">
+            <div class="schedule-time"><span>11月21日</span><strong>18:30—20:30</strong></div>
+            <div>
+              <p class="schedule-tag">开幕对谈</p>
+              <h3>爱电影，然后呢？</h3>
+              <p>城溪剧场 · 18:00—18:30 签到入场</p>
+            </div>
+            <span class="schedule-status">扫码免费预约</span>
+          </a>
+          <a href="#exhibition" class="schedule-row">
+            <div class="schedule-time"><span>11月21日—28日</span><strong>10:00—19:00</strong></div>
+            <div>
+              <p class="schedule-tag">影迷文化展</p>
+              <h3>超人、木乃伊与桃花源</h3>
+              <p>金尚城溪2层 · 溪言书店</p>
+            </div>
+            <span class="schedule-status">免票免预约</span>
+          </a>
+        </div>
+      </div>
+    </section>
 
-  <p class="toast" id="toast" role="status" aria-live="polite"></p>
-  <noscript>
-    <p style="color:#f4efe6;text-align:center;padding:2rem;">请启用 JavaScript 查看线下展览信息与二维码。</p>
-  </noscript>
+    <section class="opening section wrap" id="opening">
+      <p class="section-kicker">开幕对谈 <span>THE CONVERSATION</span></p>
+      <div class="opening-top">
+        <div>
+          <p class="quote-mark" aria-hidden="true">“</p>
+          <h2>爱电影，<br><span>然后呢？</span></h2>
+          <p class="opening-subtitle">迷影文化、影迷实践与电影的多重生命</p>
+        </div>
+        <div class="opening-details">
+          <div>
+            <span>活动时间</span>
+            <strong>11月21日 18:30—20:30</strong>
+            <p>18:00—18:30 签到入场</p>
+          </div>
+          <div>
+            <span>活动地点</span>
+            <strong>金尚城溪2层 · 城溪剧场</strong>
+            <p>北京市西城区新街口外大街34号</p>
+          </div>
+          <div class="actions">
+            <a href="assets/A1_02.png" class="text-link" data-lightbox data-caption="爱电影，然后呢？ · 活动海报">活动海报 ＋</a>
+          </div>
+          <p class="small">该活动为公益展览「超人、木乃伊与桃花源：影史之外的影迷文化三两事」配套对谈沙龙。</p>
+        </div>
+      </div>
+
+      <div class="guest-heading">
+        <h2>一起聊电影。</h2>
+        <span>对谈嘉宾</span>
+      </div>
+
+      <article class="guest" id="guest-沙丹">
+        <div class="guest-identity">
+          <a class="portrait-link" href="assets/A1_04.jpg" data-lightbox data-caption="沙丹 · 嘉宾介绍原图" aria-label="查看沙丹介绍原图">
+            <img class="portrait" src="assets/shadan.jpg" alt="沙丹" loading="lazy" width="350" height="350">
+            <span>查看介绍原图 ＋</span>
+          </a>
+          <h3>沙丹</h3>
+          <p class="guest-role">电影策展人</p>
+        </div>
+        <div class="guest-copy">
+          <p>中国电影资料馆节目策划、北京国际电影节展映策展人。长期从事艺术影院管理与电影策展工作，学术研究偏重华语电影历史批评与电影节研究。</p>
+          <p>著有《幕味：重访影史与策展实践》，翻译《银幕艳史：都市文化与上海电影(1896—1937)》。</p>
+          <p>常把自己比作电影与观众之间的“摆渡人”，核心理念是“为观众找电影，为电影找观众”。</p>
+        </div>
+      </article>
+
+      <article class="guest" id="guest-蔡文晟">
+        <div class="guest-identity">
+          <a class="portrait-link" href="assets/A1_05.png" data-lightbox data-caption="蔡文晟 · 嘉宾介绍原图" aria-label="查看蔡文晟介绍原图">
+            <img class="portrait" src="assets/caiwensheng.png" alt="蔡文晟" loading="lazy" width="350" height="350">
+            <span>查看介绍原图 ＋</span>
+          </a>
+          <h3>蔡文晟</h3>
+          <p class="guest-role">电影学者、译者、教授</p>
+        </div>
+        <div class="guest-copy">
+          <p>全职影迷，业余影评。巴黎第三大学电影学硕士，巴黎第十大学电影学博士，巴黎高等师范学院青年客座教授，“安托万·德巴克中国行”总策划，现为湖北经济学院新媒体系教授，重点研究王家卫、荣格与法国迷影暨影评史。</p>
+          <p>译有《迷影：创发一种观看的方法，书写一段文化的历史 1944—1968》《新浪潮：一代年轻人的肖像》《蔡明亮的十三张脸：华语电影研究的当代面孔》《电影导演的电影理论》《吻：唇与身体之密语》《电影编剧：来自法国的锦囊妙计》等书。</p>
+        </div>
+      </article>
+
+      <article class="guest" id="guest-林立">
+        <div class="guest-identity">
+          <a class="portrait-link" href="assets/A1_06.jpg" data-lightbox data-caption="林立 · 嘉宾介绍原图" aria-label="查看林立介绍原图">
+            <img class="portrait" src="assets/linli.jpg" alt="林立" loading="lazy" width="350" height="350">
+            <span>查看介绍原图 ＋</span>
+          </a>
+          <h3>林立</h3>
+          <p class="guest-role">艺术影像策展人</p>
+        </div>
+        <div class="guest-copy">
+          <p>拥有十几年国际文化交流经验和国际视野，常年与众多公益机构、欧盟、各使馆、电影节/展合作，担任2025-2026 EUNIC FILM FESTIVAL电影策展人。</p>
+          <p>曾举办过上千场活动，放映过上万部电影，主题涉及艺术家影像、女性与性别平等、多元与包容、科技与生态、可持续与绿色环保、残障与艺术无障碍、AI与艺术疗愈、老龄化与弱势群体、新锐青年导演等。</p>
+          <p>希望以影像艺术为媒介，以东方西方为经纬，以人文关怀为灵魂，推动中外文化交流，探索先锋影像在当今世界的呈现及未来可能性；致力于消除偏见，架起中国与世界对话的桥梁。</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="film-section varda-collage" id="screening">
+      <div class="wrap section">
+        <p class="section-kicker">开幕影片 <span>THE OPENING FILM · NIGHT 101</span></p>
+        <div class="film-grid">
+          <figure class="film-collage-stage">
+            <div class="collage-frame">
+              <span class="collage-tape tape-left" aria-hidden="true"></span>
+              <span class="collage-tape tape-right" aria-hidden="true"></span>
+              <a href="assets/A2_04.png" data-lightbox data-caption="《101夜》 · 开幕影片原图" class="film-poster" aria-label="查看101夜电影海报原图">
+                <img src="assets/film-poster.png" alt="《101夜》原版电影海报" width="648" height="874" loading="lazy">
+                <span class="image-label">电影海报 ＋</span>
+              </a>
+            </div>
+            <figcaption class="collage-stub">
+              <span class="stub-year">1995 · LES CENT ET UNE NUITS</span>
+              <span class="stub-note">第 101 夜 · 电影百年后的影迷派对</span>
+            </figcaption>
+          </figure>
+          <div class="film-copy">
+            <p class="eyebrow">LES CENT ET UNE NUITS · 瓦尔达的电影先生庄园</p>
+            <h2>101夜<span>1995</span></h2>
+            <p class="film-director">阿涅斯·瓦尔达（法）</p>
+            <p class="lead">既然展览迷影文化，那不配合一部迷影电影放映，是不完整的。</p>
+            <p>由此，我们选择了一部和展览主题十分契合的电影——瓦尔达为电影诞生100周年拍摄的《101夜》，作为本次活动的“开幕影片”。</p>
+            <p>本片集结了马塞洛·马斯楚安尼、罗伯特·德尼罗、伊莎贝尔·阿佳妮、阿兰·德龙、凯瑟琳·德纳芙、让娜·莫罗、简·伯金等电影大咖。巧的是，本片还cue到了11月资料馆瓦伊达大展中即将放映的电影《丹东》，大家可以在《101夜》中惊喜抓住“丹东”——热拉尔·德帕迪约。</p>
+            <div class="cameo-wall" aria-label="片中推门客串的影史来客">
+              <p class="cameo-label">推门客串 · 片中来客签条</p>
+              <ul class="cameo-tickets">
+                <li class="cameo-tag is-blue">马塞洛·马斯楚安尼</li>
+                <li class="cameo-tag is-red">罗伯特·德尼罗</li>
+                <li class="cameo-tag is-cream">伊莎贝尔·阿佳妮</li>
+                <li class="cameo-tag is-blue">阿兰·德龙</li>
+                <li class="cameo-tag is-red">凯瑟琳·德纳芙</li>
+                <li class="cameo-tag is-cream">让娜·莫罗</li>
+                <li class="cameo-tag is-blue">简·伯金</li>
+                <li class="cameo-tag is-danton">热拉尔·德帕迪约<em>抓一只「丹东」</em></li>
+              </ul>
+            </div>
+            <dl class="film-info">
+              <div><dt>放映时间</dt><dd>11月21日 15:00</dd></div>
+              <div><dt>放映地点</dt><dd>中国电影资料馆小西天2号厅</dd></div>
+              <div><dt>购票方式</dt><dd>淘票票 / 资料馆APP</dd></div>
+              <div><dt>交流场地</dt><dd>溪言剧场</dd></div>
+            </dl>
+            <p class="small">请以官方售票渠道为准。</p>
+            <p class="film-invitation">大家也许可以先看完这部迷影电影，再带着被点燃的激情，走进我们“共创”的迷影展览。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="visit section wrap" id="visit">
+      <p class="section-kicker">到场指南 <span>FIND US HERE</span></p>
+      <div class="visit-heading">
+        <h2>把银幕里的相遇，<br>带到线下。</h2>
+        <div class="address">
+          <p id="venue-address">北京市西城区新街口外大街34号<br>金尚城溪2层</p>
+          <button class="text-link" type="button" id="copy-address">复制地址</button>
+          <span id="copy-status" role="status"></span>
+        </div>
+      </div>
+      <div class="venue-grid">
+        <figure>
+          <img src="assets/bookstore.png" alt="溪言书店内部：书架、桌椅和阅读空间" width="307" height="204" loading="lazy">
+          <figcaption><strong>溪言书店</strong><span>BrookTale Library · 主展场地</span></figcaption>
+        </figure>
+        <figure>
+          <img src="assets/theatre.png" alt="剧场内部：红色帷幕与环形舞台" width="312" height="204" loading="lazy">
+          <figcaption><strong>溪言剧场</strong><span>Streamline Theatre · 活动场地</span></figcaption>
+        </figure>
+      </div>
+      <p class="venue-note">开幕对谈海报将活动场地标为“城溪剧场”；场地方交通图标为“溪言剧场”。两份资料均标注金尚城溪2层，请结合原图路线到场。</p>
+      <div class="route-box">
+        <div class="route-header">
+          <h3>最后一段路，怎么走？</h3>
+          <div class="route-tabs" role="tablist" aria-label="选择交通路线">
+            <button type="button" role="tab" id="tab-bookstore" aria-controls="route-bookstore" aria-selected="true" tabindex="0">去书店看展</button>
+            <button type="button" role="tab" id="tab-theatre" aria-controls="route-theatre" aria-selected="false" tabindex="-1">去剧场对谈</button>
+          </div>
+        </div>
+        <div class="route-panel" role="tabpanel" id="route-bookstore" aria-labelledby="tab-bookstore">
+          <p class="route-summary">从新街口外大街34号进入，直行至电梯，前往2层溪言书店。</p>
+          <a href="assets/A1_08.jpg" data-lightbox data-caption="溪言书店 · 完整交通路线图" aria-label="放大溪言书店完整路线图">
+            <img src="assets/venue-entry.jpg" alt="金尚城溪临街入口，进入后直行至电梯，前往二层溪言书店" loading="lazy">
+            <span class="route-zoom">查看从入口到场地的完整路线图 ＋</span>
+          </a>
+        </div>
+        <div class="route-panel" role="tabpanel" id="route-theatre" aria-labelledby="tab-theatre">
+          <p class="route-summary">从新街口外大街34号进入，直行至电梯，上2层后右转，进入溪言剧场。</p>
+          <a href="assets/A1_07.jpg" data-lightbox data-caption="溪言剧场 · 完整交通路线图" aria-label="放大溪言剧场完整路线图">
+            <img src="assets/venue-entry.jpg" alt="金尚城溪临街入口，进入后直行至电梯，二层右转前往剧场" loading="lazy">
+            <span class="route-zoom">查看从入口到场地的完整路线图 ＋</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="reservation-section red-section" id="reservation">
+      <div class="section wrap reservation-grid">
+        <div>
+          <p class="section-kicker">预约开幕对谈 <span>JOIN THE CONVERSATION</span></p>
+          <h2>电影不散，<br>期待相遇<span aria-hidden="true">✳</span></h2>
+          <p class="reservation-time">11月21日 · 18:30—20:30</p>
+          <p>扫描“金尚 JinShang”小程序码免费预约入场。<br>席位有限，先到先得～</p>
+          <p class="reservation-separate">主展免票免预约；《101夜》请通过淘票票 / 资料馆APP购票。</p>
+        </div>
+        <figure class="qr">
+          <img src="assets/A1_09.jpg" alt="金尚 JinShang 微信小程序码，用于免费预约开幕对谈" width="800" height="800" loading="lazy">
+          <figcaption>
+            <strong>金尚 JinShang · 对谈预约</strong>
+            <span>手机端可保存图片后，在微信中识别小程序码</span>
+            <a href="assets/A1_09.jpg" download="金尚-开幕对谈预约码.jpg">保存预约码</a>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer wrap">
+    <div class="footer-top">
+      <a class="brand" href="#top">
+        <span class="brand-symbol" aria-hidden="true">✳</span>
+        <span><span class="brand-name">幕间漫游</span><small>电影不散，期待相遇</small></span>
+      </a>
+      <div class="footer-links-group">
+        <nav class="site-links" aria-label="线上展相关入口">
+          <a href="/hub/#hall" data-site-route="hub" data-site-hash="#hall">返回展厅</a>
+          <a href="/note/" data-site-route="note">留言板</a>
+          <a href="/thanks/" data-site-route="thanks">共创者与特别鸣谢</a>
+        </nav>
+        <div class="source-links">
+          <a href="https://mp.weixin.qq.com/s/zxXjgAm4OsAo1OX5HtGSLg" target="_blank" rel="noopener noreferrer">展览原文</a>
+          <a href="https://mp.weixin.qq.com/s/K5UcAHkesr7hG4KOCGxLWA" target="_blank" rel="noopener noreferrer">对谈原文</a>
+          <a href="assets/A2_08.png" data-lightbox data-caption="展览邀请函原图">展览邀请函 ＋</a>
+        </div>
+      </div>
+    </div>
+    <p class="statement">本次展览为学生自发组织，不代表资料馆官方立场。展览内容由学生团队负责。特别感谢沙丹老师及其同事们的支持。</p>
+    <p class="footer-bottom">
+      <span>超人、木乃伊与桃花源：影史之外的影迷文化三两事</span>
+      <span>2026.11.21—11.28 · 北京</span>
+    </p>
+  </footer>
+
+  <dialog class="lightbox" id="image-dialog" aria-labelledby="image-caption">
+    <div class="lightbox-bar">
+      <p id="image-caption"></p>
+      <div>
+        <a id="image-original" target="_blank" rel="noopener">打开原图</a>
+        <button type="button" id="image-close" aria-label="关闭图片">关闭 ×</button>
+      </div>
+    </div>
+    <div class="lightbox-scroll">
+      <img id="lightbox-image" alt="">
+    </div>
+  </dialog>
 </body>
 </html>

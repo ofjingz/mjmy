@@ -143,7 +143,7 @@ sections = '\n'.join(
     for i, s in enumerate(stations)
 )
 page = head(source['title']+' · 幕间漫游','exhibit-page', '从海边银幕出发，沿着林立的策展手记，看人们如何在影像中相遇。') + f'''
-  <a class="skip" href="#seaside" data-scene-link>跳到活动手记</a>
+  <a class="skip" href="#seaside" data-scene-link>跳到林立的活动手记</a>
   <header class="site-header wrap">
     <a class="mj-return mj-return--header" href="/hub/#catalog" data-exhibit-return><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回展厅</span></a>
     <div class="wordmark">{html(source['title'])}</div>
@@ -185,7 +185,7 @@ nav = ''.join(f'<a href="#{key}">{name}</a>' for key,name,_ in outline)
 essay = head(source['essayTitle']+' · 林立', 'reading-page', '林立《在影像中相遇——我的欧洲电影策展叙事》完整手记。') + f'''
   <a class="skip" href="#paper">跳到文章正文</a>
   <header class="reading-header wrap">
-    <a class="mj-return mj-return--header" href="./#opening" data-back><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回活动手记</span></a>
+    <a class="mj-return mj-return--header" href="./#opening" data-back><span aria-hidden="true">←</span><span class="mj-orbit-mark" aria-hidden="true"></span><span>返回林立的活动手记</span></a>
     <span>林立 · 完整手记</span>
   </header>
   <div class="reading-coast" aria-hidden="true"></div>
@@ -206,7 +206,7 @@ essay = head(source['essayTitle']+' · 林立', 'reading-page', '林立《在影
           <a href="{html(source['portrait'])}"><img src="{html(source['portrait'])}" width="675" height="1200" loading="lazy" decoding="async" alt="林立肖像、艺术影像策展经历与自述"></a>
         </details>
         <div class="station-actions">
-          <a href="./#opening" class="text-link" data-back>← 返回活动手记</a>
+          <a href="./#opening" class="text-link" data-back>← 返回林立的活动手记</a>
           <a href="/hub/#catalog" class="text-link" data-hub-link>返回幕间漫游展厅</a>
         </div>
       </footer>

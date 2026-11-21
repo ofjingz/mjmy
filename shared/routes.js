@@ -25,7 +25,7 @@
       id: 'linli',
       subdomain: 'mjmy-linli',
       path: '/linli/',
-      title: '活动手记',
+      title: '林立的活动手记',
       contributor: '林立',
       contributors: ['林立'],
       category: 'behind-screen',

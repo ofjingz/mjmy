@@ -1,6 +1,6 @@
 /**
  * 幕间漫游 · 留言板前台（site/note/）
- * - 浏览为主：纸笺墙 + 片单筛选 + 点击放大细读（支持左右翻页/随机抽签）+ 「记住了」本地印章
+ * - 浏览为主：纸笺墙 + 片单筛选 + 「记住了」本地印章
  * - 书写弹层：原生 <dialog> 模态弹窗，不展示字数上限，超长时显式拦截并报错提示
  * - 后端契约：GET / POST /api/notes；无后端/D1 时自动落入本地演示兜底
  * - 安全底线：所有用户内容一律 textContent 渲染，绝不 innerHTML 拼接
@@ -52,25 +52,13 @@
     demoBanner: document.getElementById('demo-banner'),
     toast: document.getElementById('toast'),
     announcer: document.getElementById('sr-announcer'),
-    template: document.getElementById('note-card-template'),
-    readerDialog: document.getElementById('reader-dialog'),
-    readerCloseBtn: document.getElementById('reader-close-btn'),
-    readerWatermark: document.getElementById('reader-watermark'),
-    readerNickname: document.getElementById('reader-nickname'),
-    readerTime: document.getElementById('reader-time'),
-    readerContent: document.getElementById('reader-content'),
-    readerMovie: document.getElementById('reader-movie'),
-    readerKeepBtn: document.getElementById('reader-keep-btn'),
-    readerPrevBtn: document.getElementById('reader-prev-btn'),
-    readerRandomBtn: document.getElementById('reader-random-btn'),
-    readerNextBtn: document.getElementById('reader-next-btn')
+    template: document.getElementById('note-card-template')
   };
 
   var state = {
     allNotes: [],
     filteredNotes: [],
     activeMovie: '',
-    readerIndex: -1,
     keptMap: Object.create(null),
     demoMode: false,
     freshKey: ''
@@ -397,13 +385,13 @@
 
   /* ---------- 同频「记住了」小印章 ---------- */
 
-  function applyKeepButtonUI(btn, kept, isReader) {
+  function applyKeepButtonUI(btn, kept) {
     if (!btn) return;
     btn.classList.toggle('is-kept', kept);
     btn.setAttribute('aria-pressed', kept ? 'true' : 'false');
     var label = btn.querySelector('.stamp-label');
     if (label) {
-      label.textContent = kept ? '已替他记住' : (isReader ? '记住这一句' : '记住了');
+      label.textContent = kept ? '已替他记住' : '记住了';
     }
   }
 
@@ -427,14 +415,7 @@
     var cardBtns = els.list ? els.list.querySelectorAll('.card-keep-btn') : [];
     for (var i = 0; i < cardBtns.length; i++) {
       if (cardBtns[i].getAttribute('data-note-key') === key) {
-        applyKeepButtonUI(cardBtns[i], next, false);
-      }
-    }
-
-    // 同步细读弹层按钮
-    if (state.readerIndex >= 0 && state.filteredNotes[state.readerIndex]) {
-      if (noteKey(state.filteredNotes[state.readerIndex]) === key) {
-        applyKeepButtonUI(els.readerKeepBtn, next, true);
+        applyKeepButtonUI(cardBtns[i], next);
       }
     }
 
@@ -538,20 +519,11 @@
       ? '🎞 留住电影 · 《' + cleanMovie + '》'
       : '';
 
-    var openBtn = node.querySelector('.card-open-hit');
-    if (openBtn) {
-      openBtn.setAttribute('aria-label', '展开细读 ' + String(note.nickname || '观众') + ' 的留言');
-      openBtn.addEventListener('click', function () {
-        openReaderAt(index);
-      });
-    }
-
     var keepBtn = node.querySelector('.card-keep-btn');
     if (keepBtn) {
       keepBtn.setAttribute('data-note-key', key);
-      applyKeepButtonUI(keepBtn, !!state.keptMap[key], false);
-      keepBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
+      applyKeepButtonUI(keepBtn, !!state.keptMap[key]);
+      keepBtn.addEventListener('click', function () {
         toggleKeepNote(note, keepBtn);
       });
     }
@@ -594,63 +566,6 @@
     if (els.demoBanner) {
       els.demoBanner.hidden = !state.demoMode;
     }
-  }
-
-  /* ---------- 细读纸笺弹层（上下翻页 + 随机推门） ---------- */
-
-  function renderReaderContent(index) {
-    var list = state.filteredNotes.length ? state.filteredNotes : state.allNotes;
-    if (!list.length) return;
-    var safeIdx = ((index % list.length) + list.length) % list.length;
-    state.readerIndex = safeIdx;
-    var note = list[safeIdx];
-    var cleanMovie = normalizeMovieName(note.favorite_movie);
-
-    if (els.readerNickname) {
-      els.readerNickname.textContent = String(note.nickname || '');
-    }
-    if (els.readerTime) {
-      els.readerTime.textContent = formatTime(note.created_at);
-    }
-    if (els.readerContent) {
-      els.readerContent.textContent = String(note.content || '');
-    }
-    if (els.readerMovie) {
-      if (cleanMovie) {
-        els.readerMovie.textContent = '🎞 替电影先生留住：《' + cleanMovie + '》';
-        els.readerMovie.hidden = false;
-      } else {
-        els.readerMovie.textContent = '';
-        els.readerMovie.hidden = true;
-      }
-    }
-    if (els.readerWatermark) {
-      els.readerWatermark.src = CARD_MOTIFS[safeIdx % CARD_MOTIFS.length];
-    }
-    if (els.readerKeepBtn) {
-      applyKeepButtonUI(els.readerKeepBtn, !!state.keptMap[noteKey(note)], true);
-    }
-
-    var multi = list.length > 1;
-    if (els.readerPrevBtn) els.readerPrevBtn.disabled = !multi;
-    if (els.readerNextBtn) els.readerNextBtn.disabled = !multi;
-    if (els.readerRandomBtn) els.readerRandomBtn.disabled = !multi;
-  }
-
-  function openReaderAt(index) {
-    if (!state.filteredNotes.length && !state.allNotes.length) return;
-    renderReaderContent(index);
-    openDialog(els.readerDialog);
-  }
-
-  function openRandomNote() {
-    var list = state.filteredNotes.length ? state.filteredNotes : state.allNotes;
-    if (!list.length) return;
-    var nextIdx = Math.floor(Math.random() * list.length);
-    if (list.length > 1 && nextIdx === state.readerIndex) {
-      nextIdx = (nextIdx + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
-    }
-    openReaderAt(nextIdx);
   }
 
   /* ---------- 加载与提交 ---------- */
@@ -798,7 +713,6 @@
 
   function bindEvents() {
     enableLightDismissFallback(els.composerDialog);
-    enableLightDismissFallback(els.readerDialog);
 
     function openComposer() {
       clearAllFormErrors();
@@ -824,46 +738,6 @@
     if (els.cancelComposerBtn) {
       els.cancelComposerBtn.addEventListener('click', function () {
         closeDialog(els.composerDialog);
-      });
-    }
-
-    if (els.readerCloseBtn) {
-      els.readerCloseBtn.addEventListener('click', function () {
-        closeDialog(els.readerDialog);
-      });
-    }
-    if (els.readerPrevBtn) {
-      els.readerPrevBtn.addEventListener('click', function () {
-        renderReaderContent(state.readerIndex - 1);
-      });
-    }
-    if (els.readerNextBtn) {
-      els.readerNextBtn.addEventListener('click', function () {
-        renderReaderContent(state.readerIndex + 1);
-      });
-    }
-    if (els.readerRandomBtn) {
-      els.readerRandomBtn.addEventListener('click', openRandomNote);
-    }
-    if (els.readerKeepBtn) {
-      els.readerKeepBtn.addEventListener('click', function () {
-        var list = state.filteredNotes.length ? state.filteredNotes : state.allNotes;
-        if (state.readerIndex >= 0 && list[state.readerIndex]) {
-          toggleKeepNote(list[state.readerIndex], els.readerKeepBtn);
-        }
-      });
-    }
-
-    if (els.readerDialog) {
-      els.readerDialog.addEventListener('keydown', function (e) {
-        if (!els.readerDialog.open) return;
-        if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          renderReaderContent(state.readerIndex - 1);
-        } else if (e.key === 'ArrowRight') {
-          e.preventDefault();
-          renderReaderContent(state.readerIndex + 1);
-        }
       });
     }
 

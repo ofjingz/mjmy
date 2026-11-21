@@ -92,7 +92,7 @@
   }
 
   function roamObjectPath(moduleId) {
-    return './preview-assets/obj-' + moduleId + '.png';
+    return './preview-assets/obj-' + moduleId + '.png?v=pastel-v2';
   }
 
   function initHub() {
@@ -732,7 +732,7 @@
       catalogGroups.appendChild(list);
     }
 
-    // Roaming light uses arrivals in this tour. Catalog badges use the saved footprint.
+    // Roaming light, catalog badges, and ticket stub share the exact same saved footprint (WYSIWYG).
     function refreshFootprintUI() {
       var fp = Footprint && typeof Footprint.getFootprint === 'function'
         ? Footprint.getFootprint()
@@ -744,7 +744,7 @@
       // Update roaming nodes
       for (var r = 0; r < roamNodes.length; r++) {
         var rNode = roamNodes[r];
-        var rLit = Boolean(Footprint && Footprint.hasRoamVisit && Footprint.hasRoamVisit(rNode.dataset.moduleId, layoutSeed));
+        var rLit = !!litSet[rNode.dataset.moduleId];
         rNode.classList.toggle('is-lit', rLit);
       }
 

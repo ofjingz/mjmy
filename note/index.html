@@ -7,7 +7,7 @@
   <meta name="description" content="留言板 · 幕间漫游">
   <meta name="theme-color" content="#FCFCFB">
   <link rel="stylesheet" href="/shared/shell.css?v=projection-20261121">
-  <link rel="stylesheet" href="./style.css?v=submissions-20261120">
+  <link rel="stylesheet" href="./style.css?v=no-reader-20261121">
 </head>
 <body class="note-front" data-module="note">
   <header class="mj-exhibit-bar">
@@ -133,40 +133,6 @@
     </div>
   </dialog>
 
-  <!-- 原生模态弹窗：放大细读纸笺（支持左右翻页与随机漫游） -->
-  <dialog id="reader-dialog" class="note-dialog reader-dialog" closedby="any" aria-labelledby="reader-nickname">
-    <div class="dialog-shell reader-shell">
-      <span class="reader-tape" aria-hidden="true"></span>
-      <img class="reader-watermark" id="reader-watermark" src="/shared/motifs/moon-outline.png" alt="" aria-hidden="true" width="160" height="160">
-
-      <header class="dialog-head reader-head">
-        <div>
-          <h2 class="reader-author" id="reader-nickname"></h2>
-          <time class="reader-time" id="reader-time"></time>
-        </div>
-        <button type="button" class="dialog-close" id="reader-close-btn" aria-label="关闭细读窗口">✕</button>
-      </header>
-
-      <div class="reader-body">
-        <p class="reader-content" id="reader-content"></p>
-        <p class="reader-movie" id="reader-movie" hidden></p>
-      </div>
-
-      <footer class="reader-foot">
-        <button type="button" class="stamp-btn" id="reader-keep-btn" aria-pressed="false">
-          <span class="stamp-star" aria-hidden="true">✦</span>
-          <span class="stamp-label">记住这一句</span>
-        </button>
-
-        <div class="reader-nav">
-          <button type="button" class="c-btn c-btn--secondary reader-nav-btn" id="reader-prev-btn" aria-label="上一张纸笺">← 上一张</button>
-          <button type="button" class="c-btn c-btn--paper reader-nav-btn" id="reader-random-btn">随机翻一张</button>
-          <button type="button" class="c-btn c-btn--secondary reader-nav-btn" id="reader-next-btn" aria-label="下一张纸笺">下一张 →</button>
-        </div>
-      </footer>
-    </div>
-  </dialog>
-
   <noscript>
     <p class="noscript-note">留言板需启用 JavaScript 才能提交与显示留言，请在浏览器中开启后刷新。</p>
   </noscript>
@@ -182,16 +148,15 @@
     <article class="note-card">
       <span class="card-tape" aria-hidden="true"></span>
       <img class="card-motif" src="/shared/motifs/moon-outline.png" alt="" aria-hidden="true" width="110" height="110" loading="lazy" decoding="async">
-      <button type="button" class="card-open-hit" aria-label="展开细读这条留言">
+      <div class="card-content">
         <header class="note-head">
           <span class="note-nickname"></span>
           <time class="note-time"></time>
         </header>
         <p class="note-content"></p>
         <p class="note-movie"></p>
-      </button>
+      </div>
       <footer class="card-foot">
-        <span class="card-open-hint" aria-hidden="true">轻触展开细读 ↗</span>
         <button type="button" class="stamp-btn card-keep-btn" aria-pressed="false">
           <span class="stamp-star" aria-hidden="true">✦</span>
           <span class="stamp-label">记住了</span>
@@ -203,6 +168,6 @@
   <script src="/shared/routes.js?v=roam-arrival-v4"></script>
   <script src="/shared/footprint.js?v=roam-arrival-v4"></script>
   <script src="/shared/shell.js?v=roam-arrival-v4"></script>
-  <script src="./app.js?v=ticket-nickname-1"></script>
+  <script src="./app.js?v=no-reader-20261121"></script>
 </body>
 </html>

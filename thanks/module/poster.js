@@ -56,9 +56,10 @@ function measureText(element, bounds) {
     else lines.push({ text: piece, x: box.left - bounds.left, top, height: box.height });
   }
   const style = getComputedStyle(element);
+  const weight = element.classList.contains('cm-exhibition-subtitle') ? '400' : style.fontWeight;
   return {
     lines, color: style.color, spacing: style.letterSpacing,
-    font: `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`,
+    font: `${weight} ${style.fontSize} ${style.fontFamily}`,
   };
 }
 
