@@ -39,10 +39,9 @@ export function mountCredits(container, options = {}) {
   const stylesheet = create('link');
   stylesheet.rel = 'stylesheet';
   stylesheet.href = styleURL;
-  root.append(stylesheet);
-  container.append(host);
-
   const shell = create('section', 'cm-shell');
+  // A shadow-root stylesheet can finish loading after the browser's first paint.
+  shell.hidden = true;
   shell.setAttribute('aria-label', '幕间漫游 共创者与特别鸣谢');
   shell.dataset.section = 'contributors';
   root.append(shell);
@@ -58,7 +57,9 @@ export function mountCredits(container, options = {}) {
   let lanes = [];
   let laneLayout = '';
   let destroyed = false;
+  let styleReady = false;
   let raf = 0;
+  let resizeFrame = 0;
   let lastTime = 0;
   let openingTimer = 0;
   let cardActive = false;
@@ -254,7 +255,7 @@ export function mountCredits(container, options = {}) {
     return pauses.size > 0 || section !== 'contributors' || reduced || !intersecting || document.hidden;
   }
 
-  function canAnimate() { return !destroyed && !reduced && intersecting && !document.hidden; }
+  function canAnimate() { return styleReady && !destroyed && !reduced && intersecting && !document.hidden; }
 
   function positionNameLight() {
     if (!litButton?.isConnected) return;
@@ -424,6 +425,7 @@ export function mountCredits(container, options = {}) {
   }
 
   function buildFlow(force = false) {
+    if (!styleReady) return;
     const width = shell.clientWidth;
     const vertical = width < 760;
     const count = Math.min(names.length, vertical ? 3 : 6);
@@ -685,10 +687,12 @@ export function mountCredits(container, options = {}) {
   };
   media.addEventListener('change', changeMotion);
   const resize = new ResizeObserver(() => {
-    if (!destroyed) {
+    if (!styleReady || destroyed || resizeFrame) return;
+    resizeFrame = requestAnimationFrame(() => {
+      resizeFrame = 0;
       if (section === 'contributors') buildFlow();
       else positionThanksSpotlight();
-    }
+    });
   });
   resize.observe(shell);
   const visibility = new IntersectionObserver(entries => {
@@ -698,14 +702,20 @@ export function mountCredits(container, options = {}) {
   visibility.observe(host);
   const ready = new Promise(resolve => {
     resolveReady = resolve;
-    const finish = () => {
-      if (destroyed) return resolve();
+    listen(stylesheet, 'load', () => {
+      styleReady = true;
+      shell.hidden = false;
       buildFlow(true);
       emit('ready', { contributors: names.length, acknowledgments: thanks.length });
       resolve();
-    };
-    stylesheet.addEventListener('load', finish, { once: true });
-    stylesheet.addEventListener('error', finish, { once: true });
+    }, { once: true });
+    listen(stylesheet, 'error', () => {
+      const message = create('p', 'cm-load-error', '名单暂时无法显示，请刷新重试。');
+      message.setAttribute('role', 'status');
+      message.style.cssText = 'margin:0;padding:3rem 1.5rem;color:#fff6e3;text-align:center;font:16px/1.6 var(--font-body,system-ui,sans-serif)';
+      root.append(message);
+      resolve();
+    }, { once: true });
   });
   document.fonts?.ready.then(() => { if (!destroyed) { measureLanes(); positionThanksSpotlight(); } });
   const api = {
@@ -719,6 +729,7 @@ export function mountCredits(container, options = {}) {
       destroyed = true;
       clearTimeout(openingTimer);
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(resizeFrame);
       if (dialog.open) dialog.close();
       abort.abort();
       resize.disconnect();
@@ -730,5 +741,7 @@ export function mountCredits(container, options = {}) {
       resolveReady?.();
     },
   };
+  root.prepend(stylesheet);
+  container.append(host);
   return api;
 }

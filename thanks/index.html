@@ -7,6 +7,7 @@
   <meta name="description" content="共创者与特别鸣谢 · 幕间漫游">
   <title>共创者与特别鸣谢 · 幕间漫游</title>
   <link rel="stylesheet" href="/shared/shell.css?v=exhibit-return-20261120">
+  <link rel="preload" as="style" href="./module/credits.css?v=round-glow-v2">
   <style>
     html,
     body {
@@ -21,6 +22,7 @@
     #end-credits {
       height: 100svh;
       min-height: 100svh;
+      background: radial-gradient(ellipse at 50% 43%, #b82e6b 0%, #961e53 48%, #6e123b 100%);
       --credits-height: 100svh;
     }
 
@@ -45,7 +47,7 @@
     <p style="color:#FFF6E3;text-align:center;padding:3rem 1.5rem;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC','Microsoft YaHei',sans-serif;">请启用 JavaScript 查看共创者与特别鸣谢。</p>
   </noscript>
   <script type="module">
-    import { mountCredits } from './module/credits.js?v=round-glow-v2';
+    import { mountCredits } from './module/credits.js?v=credits-first-paint-v1';
 
     const container = document.querySelector('#end-credits');
     const credits = mountCredits(container);
