@@ -1,5 +1,5 @@
 /* 幕间漫游 · 06 号展厅「收藏背后」· 还是黑
- * 视觉语汇：暗房序幕 (#0e1013) → 温暖档案书桌 (#f7f3eb) · 柔琥珀金 (#d9a962 / #9d6f2c)
+ * 视觉语汇：暗房序幕 (#061022 → #0c1830 / #191026) → 温暖档案书桌 (#f7f3eb) · 丝绒玫瑰 (#e05887 / #9e2c56)
  */
 @font-face {
   font-family: 'Long Cang Collection';
@@ -10,17 +10,28 @@
 }
 
 :root {
-  --dark-bg: #0e1013;
-  --dark-surface: #15181e;
-  --dark-ink: #f3ede2;
-  --dark-muted: #aba396;
-  --amber: #d9a962;
-  --amber-soft: rgba(217, 169, 98, 0.16);
+  --mj-return-bg: #061022;
+  --dark-bg: #061022;
+  --dark-elevated: #0c1830;
+  --dark-surface: #101d37;
+  --dark-ink: #f3f1f6;
+  --dark-muted: #a9b9d2;
+  --dark-subtle: #788aa8;
+  --dark-line: rgba(186, 206, 238, 0.14);
+  --accent: #e05887;
+  --accent-bright: #f282a8;
+  --accent-soft: rgba(224, 88, 135, 0.16);
+  --accent-border: rgba(224, 88, 135, 0.58);
+  --cool-highlight: #8ab4f8;
 
   --paper-bg: #f7f3eb;
   --paper-card: #fffdf8;
   --paper-tint: #efe8da;
   --paper-border: rgba(58, 48, 34, 0.12);
+  --paper-accent: #9e2c56;
+  --paper-accent-hover: #7d1e42;
+  --paper-accent-soft: rgba(158, 44, 86, 0.08);
+  --paper-accent-border: rgba(158, 44, 86, 0.42);
   --ink: #221f1a;
   --ink-secondary: #5e564a;
   --ink-faint: #8f8576;
@@ -46,8 +57,13 @@ body {
   font-family: var(--font-body);
   color: var(--ink);
   background: var(--paper-bg);
-  line-height: 1.85;
+  line-height: 1.82;
   overflow-x: clip;
+}
+
+.mj-exhibit-bar {
+  background: #061022;
+  color: var(--dark-ink);
 }
 
 a {
@@ -60,7 +76,7 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -71,7 +87,7 @@ button {
   left: 0;
   right: 0;
   height: 2.5px;
-  background: rgba(217, 169, 98, 0.12);
+  background: rgba(224, 88, 135, 0.14);
   z-index: 9200;
   pointer-events: none;
 }
@@ -79,14 +95,14 @@ button {
 .read-progress-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #b88437 0%, #e7be7c 100%);
+  background: linear-gradient(90deg, #b83366 0%, #e46b98 100%);
   transition: width 0.08s linear;
 }
 
 /* ===== 暗房序幕 Hero ===== */
 .hero {
   position: relative;
-  background: var(--dark-bg);
+  background: linear-gradient(180deg, #061022 0%, #0c1830 68%, #191026 100%);
   color: var(--dark-ink);
   padding: clamp(32px, 5vw, 58px) 24px clamp(28px, 4.5vw, 48px);
   overflow: hidden;
@@ -104,15 +120,15 @@ button {
   inset: -20% -10% auto;
   height: 130%;
   background:
-    radial-gradient(ellipse 56% 58% at 76% 36%, rgba(217, 169, 98, 0.16), transparent 68%),
-    radial-gradient(ellipse 46% 52% at 18% 82%, rgba(140, 108, 64, 0.11), transparent 72%);
+    radial-gradient(ellipse 56% 58% at 76% 36%, rgba(44, 106, 218, 0.16), transparent 68%),
+    radial-gradient(ellipse 46% 52% at 18% 82%, rgba(192, 56, 101, 0.12), transparent 72%);
 }
 
 .hero-grain {
   position: absolute;
   inset: 0;
   opacity: 0.06;
-  background-image: radial-gradient(rgba(255, 248, 232, 0.5) 0.55px, transparent 0.55px);
+  background-image: radial-gradient(rgba(220, 232, 255, 0.45) 0.55px, transparent 0.55px);
   background-size: 6px 6px;
 }
 
@@ -124,7 +140,7 @@ button {
   width: clamp(136px, 18vw, 232px);
   height: auto;
   opacity: 0.14;
-  filter: drop-shadow(0 0 28px rgba(217, 169, 98, 0.25));
+  filter: drop-shadow(0 0 28px rgba(138, 180, 248, 0.22));
   user-select: none;
 }
 
@@ -138,11 +154,11 @@ button {
 .hero-title {
   margin: 0 0 6px;
   font-family: var(--font-display);
-  font-size: clamp(38px, 6.2vw, 62px);
-  font-weight: 500;
-  line-height: 1.16;
+  font-size: clamp(42px, 6.4vw, 64px);
+  font-weight: 400;
+  line-height: 1.18;
   letter-spacing: 0.06em;
-  color: #faf5eb;
+  color: var(--dark-ink);
 }
 
 .byline-author {
@@ -150,7 +166,7 @@ button {
   font-family: var(--font-body);
   font-size: 16px;
   letter-spacing: 0.08em;
-  color: var(--amber);
+  color: var(--accent-bright);
 }
 
 .hero-edge {
@@ -159,13 +175,13 @@ button {
   right: 0;
   bottom: 0;
   height: 22px;
-  background: linear-gradient(to bottom, rgba(14, 16, 19, 0), rgba(14, 16, 19, 0.35));
+  background: linear-gradient(to bottom, rgba(6, 16, 34, 0), rgba(6, 16, 34, 0.36));
 }
 
 /* ===== 温暖档案书桌正文 ===== */
 .desk-surface {
   background:
-    radial-gradient(ellipse 90% 420px at 50% 0, rgba(217, 169, 98, 0.08), transparent 72%),
+    radial-gradient(ellipse 90% 420px at 50% 0, rgba(158, 44, 86, 0.06), transparent 72%),
     var(--paper-bg);
   padding-top: clamp(25px, 4vw, 44px);
 }
@@ -186,7 +202,7 @@ button {
 /* 正文排版 */
 .essay-body {
   font-size: 16.5px;
-  line-height: 1.95;
+  line-height: 1.82;
   color: var(--ink);
   word-break: break-word;
 }
@@ -194,11 +210,12 @@ button {
 .essay-chapter-anchor {
   margin: 48px 0 16px;
   font-family: 'Long Cang Collection', var(--font-display);
-  font-size: clamp(27px, 4.1vw, 36px);
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: 0.035em;
-  color: #75501f;
+  font-size: clamp(30px, 4.4vw, 42px);
+  font-weight: 400;
+  line-height: 1.34;
+  letter-spacing: 0.03em;
+  text-wrap: balance;
+  color: var(--paper-accent);
   scroll-margin-top: calc(72px + env(safe-area-inset-top));
 }
 
@@ -207,7 +224,7 @@ button {
 }
 
 .essay-p {
-  margin: 0 0 1.25em;
+  margin: 0 0 1.05em;
 }
 
 .essay-item-heading {
@@ -311,7 +328,7 @@ button {
 
 /* 展厅尾注 */
 .exhibit-footer {
-  background: #0e1013;
+  background: linear-gradient(180deg, #0c1830 0%, #061022 100%);
   color: var(--dark-muted);
   text-align: center;
   padding: 40px 20px 98px;
@@ -321,21 +338,24 @@ button {
   width: 48px;
   height: 1px;
   margin: 0 auto 18px;
-  background: rgba(217, 169, 98, 0.4);
+  background: rgba(224, 88, 135, 0.45);
 }
 
 .footer-top-link {
   display: inline-block;
   font-size: 12.5px;
-  color: var(--amber);
+  color: var(--accent-bright);
   text-decoration: none;
   padding: 6px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(217, 169, 98, 0.28);
+  border: 1px solid rgba(224, 88, 135, 0.36);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .footer-top-link:hover {
-  background: rgba(217, 169, 98, 0.12);
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: #ffffff;
 }
 
 /* ===== 浮动目录与阅读进度胶囊 ===== */
@@ -357,23 +377,23 @@ button {
   min-height: 36px;
   padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 246, 227, 0.18);
-  background: rgba(16, 17, 21, 0.84);
+  border: 1px solid var(--dark-line);
+  background: rgba(10, 20, 42, 0.86);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: #f4efe6;
+  color: var(--dark-ink);
   font-size: 12px;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 8px 24px rgba(3, 8, 22, 0.38);
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .toc-fab:hover {
-  border-color: rgba(217, 169, 98, 0.55);
+  border-color: var(--accent-border);
 }
 
 .toc-fab-icon {
-  color: var(--amber);
+  color: var(--accent);
   font-size: 12px;
 }
 
@@ -382,8 +402,8 @@ button {
   font-size: 11px;
   padding: 2px 6px;
   border-radius: 999px;
-  background: rgba(217, 169, 98, 0.22);
-  color: #f6d39c;
+  background: var(--accent-soft);
+  color: #ffd4e3;
 }
 
 .toc-drawer {
@@ -391,13 +411,13 @@ button {
   max-height: min(62vh, 420px);
   display: flex;
   flex-direction: column;
-  background: rgba(18, 20, 25, 0.94);
+  background: rgba(12, 24, 48, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 246, 227, 0.16);
+  border: 1px solid var(--dark-line);
   border-radius: 14px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
-  color: #f4efe6;
+  box-shadow: 0 18px 48px rgba(3, 8, 22, 0.52);
+  color: var(--dark-ink);
   overflow: hidden;
 }
 
@@ -410,14 +430,14 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(255, 246, 227, 0.1);
+  border-bottom: 1px solid var(--dark-line);
 }
 
 .toc-drawer-title {
   font-family: var(--font-body);
   font-size: 14px;
   letter-spacing: 0.06em;
-  color: #f7e4c4;
+  color: var(--dark-ink);
 }
 
 .toc-close-btn {
@@ -425,8 +445,8 @@ button {
   height: 28px;
   border: 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #e6dfd2;
+  background: rgba(186, 206, 238, 0.1);
+  color: var(--dark-ink);
   cursor: pointer;
 }
 
@@ -446,19 +466,19 @@ button {
   border-radius: 8px;
   font-size: 13px;
   line-height: 1.45;
-  color: #d6cec0;
+  color: var(--dark-muted);
   text-decoration: none;
   transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .toc-link:hover {
-  background: rgba(255, 246, 227, 0.08);
-  color: #fff;
+  background: rgba(186, 206, 238, 0.1);
+  color: #ffffff;
 }
 
 .toc-link.is-active {
-  background: rgba(217, 169, 98, 0.18);
-  color: #f8dfb5;
+  background: var(--accent-soft);
+  color: #ffd4e3;
 }
 
 .toc-drawer-foot {
@@ -466,15 +486,15 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  border-top: 1px solid rgba(255, 246, 227, 0.1);
+  border-top: 1px solid var(--dark-line);
   font-size: 11.5px;
-  color: var(--dark-muted);
+  color: var(--dark-subtle);
 }
 
 .toc-top-btn {
   border: 0;
   background: transparent;
-  color: var(--amber);
+  color: var(--accent-bright);
   cursor: pointer;
   padding: 4px 0;
 }
@@ -496,7 +516,7 @@ button {
 .lightbox-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(8, 10, 13, 0.94);
+  background: rgba(4, 10, 24, 0.94);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -517,7 +537,7 @@ button {
   justify-content: space-between;
   gap: 12px;
   padding: 4px 6px 10px;
-  color: #ece4d6;
+  color: var(--dark-ink);
   font-size: 13px;
 }
 
@@ -530,11 +550,16 @@ button {
   width: 40px;
   height: 40px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 246, 227, 0.22);
-  background: rgba(255, 255, 255, 0.06);
-  color: #f6efe2;
+  border: 1px solid rgba(186, 206, 238, 0.22);
+  background: rgba(16, 29, 55, 0.72);
+  color: var(--dark-ink);
   font-size: 16px;
   cursor: pointer;
+}
+
+.lightbox-close:hover {
+  border-color: var(--accent-border);
+  background: rgba(224, 88, 135, 0.22);
 }
 
 .lightbox-viewport {
@@ -570,7 +595,7 @@ button {
 
 .lightbox-caption {
   font-size: 13.5px;
-  color: #dfd6c7;
+  color: #dce4f2;
   text-align: center;
   max-width: 680px;
   line-height: 1.55;
@@ -583,9 +608,9 @@ button {
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 246, 227, 0.22);
-  background: rgba(15, 17, 21, 0.72);
-  color: #f7efe2;
+  border: 1px solid rgba(186, 206, 238, 0.22);
+  background: rgba(12, 24, 48, 0.76);
+  color: var(--dark-ink);
   font-size: 26px;
   line-height: 1;
   display: inline-flex;
@@ -604,8 +629,8 @@ button {
 }
 
 .lightbox-nav:hover {
-  border-color: var(--amber);
-  color: var(--amber);
+  border-color: var(--accent);
+  color: var(--accent-bright);
 }
 
 /* ===== 响应式适配（1440 / 390 / 320） ===== */
@@ -628,7 +653,7 @@ button {
 
   .essay-body {
     font-size: 16px;
-    line-height: 1.88;
+    line-height: 1.82;
   }
 
   .essay-figure {

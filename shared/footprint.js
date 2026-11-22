@@ -15,7 +15,11 @@
   var NICKNAME_LIMIT = 40;
   var LOCAL_NOTE_KEY = 'mujian.note.demo.v1';
   var ROOT_DOMAIN = 'ofjing.com';
-  var MAX_AGE_SECONDS = 60 * 60 * 24 * 180; // 180 天
+  var KNOWN_MODULES = ['101', 'cinema', 'collection', 'letter', 'linli', 'next', 'same', 'vibecoding', 'note', 'info', 'thanks'];
+
+  function makeSessionId() {
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+  }
 
   function isProdHost() {
     try {
@@ -30,10 +34,11 @@
     return new Date().toISOString();
   }
 
-  function emptyState() {
+  function emptyState(sid) {
     var t = nowIso();
     return {
       v: 1,
+      sid: sid || makeSessionId(),
       nick: '',       // 手动设置的票根昵称
       noteNick: '',   // 本人最近一次提交留言时使用的昵称
       mods: [],      // 已点亮的模块 id 列表（去重保序）
@@ -72,10 +77,11 @@
   }
 
   function sanitize(raw) {
-    var base = emptyState();
+    var base = emptyState('');
     if (!raw || typeof raw !== 'object') return base;
     return {
       v: 1,
+      sid: typeof raw.sid === 'string' ? raw.sid.slice(0, 32) : '',
       nick: cleanNickname(raw.nick),
       noteNick: cleanNickname(raw.noteNick),
       mods: uniqStrings(raw.mods),
@@ -150,6 +156,15 @@
     };
   }
 
+  function clearCookieRaw(name) {
+    try {
+      var attrs = [name + '=', 'Path=/', 'Max-Age=0', 'SameSite=Lax'];
+      if (isProdHost()) attrs.push('Domain=.' + ROOT_DOMAIN);
+      if (location.protocol === 'https:') attrs.push('Secure');
+      document.cookie = attrs.join('; ');
+    } catch (_) {}
+  }
+
   function getFootprint() {
     var fromCookie = null;
     var rawC = readCookieRaw(COOKIE_NAME);
@@ -159,12 +174,16 @@
     var fromLS = readLS();
     var state;
     if (fromCookie && fromLS) {
-      // Cookie 为跨子域权威，但合并 mods 并集
+      // Cookie 为跨子域权威；仅当 session ID 一致时才合并 localStorage 的 mods，防止旧会话复活
       state = sanitize(fromCookie);
-      state.mods = uniqStrings(state.mods.concat(sanitize(fromLS).mods));
-      // Older cookies may have no nickname fields yet. Do not revive a cleared override.
-      if (!Object.prototype.hasOwnProperty.call(fromCookie, 'nick')) state.nick = cleanNickname(fromLS.nick);
-      if (!state.noteNick) state.noteNick = cleanNickname(fromLS.noteNick);
+      var lsState = sanitize(fromLS);
+      if (state.sid && lsState.sid && state.sid === lsState.sid) {
+        state.mods = uniqStrings(state.mods.concat(lsState.mods));
+      } else {
+        writeLS(state);
+      }
+      if (!Object.prototype.hasOwnProperty.call(fromCookie, 'nick')) state.nick = lsState.nick;
+      if (!state.noteNick) state.noteNick = lsState.noteNick;
     } else if (fromCookie) {
       state = sanitize(fromCookie);
     } else if (fromLS) {
@@ -200,9 +219,11 @@
 
   function save(state) {
     var clean = sanitize(state);
+    if (!clean.sid) clean.sid = makeSessionId();
     clean.last = nowIso();
     var serialized = JSON.stringify(clean);
-    writeCookieRaw(COOKIE_NAME, serialized, MAX_AGE_SECONDS);
+    // Session cookie (no Max-Age): shared across *.ofjing.com during the visit, cleared on browser exit.
+    writeCookieRaw(COOKIE_NAME, serialized);
     writeLS(clean);
     try {
       window.dispatchEvent(new CustomEvent('mujian:footprint-change', { detail: clean }));
@@ -276,8 +297,27 @@
     return save(state);
   }
 
+  function clearRoamVisits() {
+    for (var i = 0; i < KNOWN_MODULES.length; i++) {
+      var key = ROAM_VISIT_PREFIX + KNOWN_MODULES[i];
+      clearCookieRaw(key);
+      try { sessionStorage.removeItem(key); } catch (_) {}
+    }
+    try { sessionStorage.removeItem(ROAM_RETURN_KEY); } catch (_) {}
+  }
+
+  function startFreshSession() {
+    var prev = getFootprint();
+    clearRoamVisits();
+    var fresh = emptyState(makeSessionId());
+    fresh.nick = prev.nick;
+    fresh.noteNick = prev.noteNick;
+    return save(fresh);
+  }
+
   function resetFootprint() {
-    var fresh = emptyState();
+    clearRoamVisits();
+    var fresh = emptyState(makeSessionId());
     return save(fresh);
   }
 
@@ -309,6 +349,7 @@
     syncCinema: syncCinema,
     setNickname: setNickname,
     setNoteNickname: setNoteNickname,
+    startFreshSession: startFreshSession,
     resetFootprint: resetFootprint
   };
 })(typeof globalThis !== 'undefined' ? globalThis : window);

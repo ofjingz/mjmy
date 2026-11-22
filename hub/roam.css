@@ -12,20 +12,22 @@
   --surface-strong: #03132d;
 }
 
-/* Keep a painted canvas behind fixed layers while mobile browser chrome moves. */
+/* Keep a painted canvas behind fixed layers while mobile browser chrome moves.
+   Match top sky color (#03132d) so iOS Safari status bar and top chrome stay seamless. */
 html.is-roam-scene, html.is-roam-scene body {
-  background-color: #2a1025;
+  background-color: #03132d;
 }
 #hub-root.is-entered:not(.is-catalog-mode) {
   min-height: 100vh;
   min-height: 100dvh;
-  background: linear-gradient(180deg, #03132d, #141c40 56%, #2a1025);
+  background: linear-gradient(180deg, #03132d 0%, #071939 38%, #121936 74%, #211026 100%);
 }
 #hub-root.is-entered.is-horizontal-roam { min-height: 0; }
 
 .is-entered:not(.is-catalog-mode) .hub-backdrop {
   overflow: hidden;
-  background: linear-gradient(180deg, #03132d 0%, #041734 38%, #101630 68%, #2a1025 100%);
+  min-height: 100lvh;
+  background: linear-gradient(180deg, #03132d 0%, #071939 38%, #121936 74%, #211026 100%);
 }
 
 .hub-backdrop::before,
@@ -327,10 +329,20 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
   .hall-navigation {
     display: none;
     position: absolute;
-    top: 100%;
-    right: 0;
-    padding: 10px 20px 16px;
-    background: var(--surface-strong);
+    top: calc(100% + 4px);
+    right: 14px;
+    padding: 10px 22px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(169, 185, 210, 0.16);
+    background: rgba(5, 19, 43, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+  }
+  #hub-root.is-catalog-mode .hall-navigation {
+    background: rgba(244, 237, 224, 0.96);
+    border-color: rgba(71, 90, 116, 0.18);
+    box-shadow: 0 12px 30px rgba(23, 37, 58, 0.14);
   }
   .hall-menu-toggle[aria-expanded="true"] + .hall-navigation {
     display: flex;
@@ -342,16 +354,22 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
   .hall-ticket-link { margin-left: 0; }
 }
 @media (max-width: 767px) {
-  .hall-topbar { padding: max(12px, env(safe-area-inset-top)) 16px 14px; gap: 8px; }
+  .hall-topbar { padding: max(12px, env(safe-area-inset-top)) 16px 12px; gap: 8px; }
   .brand-home { font-size: 25px; }
   .roam-title { font-size: 27px; }
+  .roam-node[data-module-id="linli"] .roam-title { font-size: 21px; letter-spacing: 0; white-space: nowrap; }
   .roam-node[data-module-id="vibecoding"] .roam-title { font-size: 24px; }
   .roam-contrib { font-size: 13px; line-height: 1.6; }
   .roam-projection { display: none; }
   .roam-wake { left: -8%; width: 100%; }
+  .hub-nav {
+    padding: 6px max(24px, env(safe-area-inset-right))
+      calc(30px + env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  }
 }
 @media (max-width: 359px) {
   .roam-title { font-size: 25px; }
+  .roam-node[data-module-id="linli"] .roam-title { font-size: 19px; }
   .roam-node[data-module-id="vibecoding"] .roam-title { font-size: 22px; }
   .roam-contrib { font-size: 12px; }
 }
@@ -433,13 +451,23 @@ html.is-horizontal-roam body { height: 100%; overflow: hidden; }
 .catalog-card:is(:hover,:focus-visible) .thumb-object { opacity: 1; }
 .catalog-card:is(:hover,:focus-visible) .thumb-outline { opacity: 0; }
 @media (max-width: 767px), (pointer: coarse) {
-  #hub-root.is-entered .hall-topbar {
-    background: #08162cf5;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 3px 14px #0003;
+  #hub-root.is-entered:not(.is-catalog-mode) .hall-topbar {
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
   }
-  #hub-root.is-entered .hall-topbar::before { display: none; }
-  #hub-root.is-catalog-mode .hall-topbar { background: #f2e9dcf5; }
+  #hub-root.is-entered:not(.is-catalog-mode) .hall-topbar::before {
+    display: block;
+    inset: calc(-1 * env(safe-area-inset-top, 0px) - 10px) 0 -30px;
+    background: linear-gradient(180deg, rgba(3, 19, 45, 0.94) 0%, rgba(3, 19, 45, 0.56) 54%, rgba(3, 19, 45, 0) 100%);
+  }
+  #hub-root.is-catalog-mode .hall-topbar {
+    background: rgba(242, 233, 220, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 2px 12px rgba(23, 37, 58, 0.08);
+  }
+  #hub-root.is-catalog-mode .hall-topbar::before { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hall.screen-up .hall-main, .hall-motifs::after { animation: none; }

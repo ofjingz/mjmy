@@ -19,7 +19,11 @@
     if (returnLink && routes) {
       var view = cameFromHall ? '#' + via : returnLink.hash;
       var destination = new URL(routes.resolveUrl('hub', view), location.href);
-      if (roamSeed) destination.searchParams.set('arrived', moduleId);
+      if (moduleId && moduleId !== 'hub') destination.searchParams.set('from', moduleId);
+      if (roamSeed) {
+        destination.searchParams.set('roam', String(roamSeed));
+        destination.searchParams.set('arrived', moduleId);
+      }
       returnLink.href = destination.href;
     }
 

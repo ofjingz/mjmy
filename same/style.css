@@ -1,33 +1,46 @@
 /* ============================================================
-   幕间漫游 · 9 号模块「same」（SAME 展区）视觉层 · v4 框架优先
-   房间：午夜放映（蓝黑 #0D0D0F → #1B2028 + 暖白 #F2EFE9 + 琥珀金 #D4A359）
-
-   本页只做「设计线框级正确」的基础可读样式；视觉统一与美化由
-   后续 Gemini 工序负责（见 _tasks/视觉交接规范-给Gemini.md）。
+   幕间漫游 · 9 号模块「same」（SAME 展区）视觉层
+   视觉语汇：101 夜午夜钴蓝 (#061022 → #0d1931 → #191026) · 丝绒玫瑰红 (#e05887) · 星光蓝灰 (#8ab4f8)
 
    纪律：
-   - 文字三级（主 --screen-warm / 次 --ink-muted / 弱 --ink-subtle）
-   - 琥珀金 --amber 仅用于主按钮与 focus 焦点环（toast 成功态）
-   - 无 1px 实线边框、无框式标签、无装饰动画
-   - 8px 间距节奏；字阶四级（页眉主标题 / 章节标题 / 正文卡片标题 / 图注次要）
+   - 文字层级（主 --ink / 正文 --ink-body / 次 --ink-muted / 弱 --ink-subtle）
+   - 丝绒玫瑰红用于主按钮、激活态与 focus 焦点环；星光蓝灰用于轻凉次要高光
+   - 保留 --qr-fg: #161618 与 --qr-bg: #ffffff 以保证二维码扫码对比度
+   - 保留 .typewriter-title 等宽打字机标题风格（见 FONT_GUIDELINES.md）
    - 图片自适应：max-width:100%、height:auto、width/height 防跳动、
      gallery 自然高度不裁切、lightbox 大图百分比自适应、二维码 clamp 尺寸
-   - 字体：标题 Long Cang（--font-display），正文苹方黑体栈（--font-body），
+   - 字体：标题 Long Cang（--font-display，font-weight: 400），正文苹方黑体栈（--font-body），
      变量定义见 /shared/shell.css
    ============================================================ */
 :root {
   color-scheme: dark;
 
-  /* —— 午夜放映（房间 2）色温令牌 —— */
-  --bg-0: #0D0D0F;              /* 蓝黑最深处 */
-  --bg-1: #1B2028;              /* 午夜蓝黑亮端 */
-  --bg-card: #141821;           /* 卡片表面（浅一档蓝黑） */
-  --screen-warm: #F2EFE9;       /* 银幕暖白：标题 / 主文字 */
-  --amber: #D4A359;             /* 琥珀金：主按钮 / 焦点环 / toast */
-  --ink-muted: #A39E93;         /* 次级文字 */
-  --ink-subtle: #6E6B64;        /* 弱文字 */
+  /* —— 101 夜午夜钴蓝 & 丝绒玫瑰色温令牌 —— */
+  --bg-0: #061022;
+  --bg-1: #0d1931;
+  --bg-2: #191026;
+  --surface: #0f1b33;
+  --surface-elevated: #152442;
+  --surface-glass: rgba(15, 27, 51, 0.82);
+  --border: rgba(186, 206, 238, 0.14);
 
-  /* 二维码前景 / 底色（由 JS 读取，不写死） */
+  --ink: #f3f1f6;
+  --ink-body: #dce3ef;
+  --ink-muted: #a9b9d2;
+  --ink-subtle: #788aa8;
+
+  --rose: #e05887;
+  --rose-bright: #f282a8;
+  --rose-deep: #c03865;
+  --rose-fill: #d64677;
+  --rose-fill-hover: #c83b6b;
+  --rose-soft: rgba(224, 88, 135, 0.16);
+  --rose-border: rgba(224, 88, 135, 0.45);
+  --starlight: #8ab4f8;
+
+  --mj-return-bg: #061022;
+
+  /* 二维码前景 / 底色（由 JS 读取，严格保留高对比度以保障扫码） */
   --qr-fg: #161618;
   --qr-bg: #ffffff;
 
@@ -43,19 +56,47 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--bg-0);
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+  background-color: var(--bg-0);
+  background-image:
+    radial-gradient(ellipse 56% 42% at 82% 8%, rgba(44, 106, 218, 0.17), transparent 68%),
+    radial-gradient(ellipse 46% 40% at 14% 26%, rgba(192, 56, 101, 0.13), transparent 72%),
+    linear-gradient(180deg, #061022 0%, #0d1931 54%, #191026 100%);
   background-attachment: fixed;
-  color: var(--screen-warm);
+  color: var(--ink);
   font-family: var(--font-body);
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.8;
   overflow-x: clip;
   padding-bottom: 104px; /* 为全局 .mj-shell-dock 预留安全空间 */
+}
+
+/* 顶部返回栏与午夜钴蓝幕布无缝衔接 */
+.mj-exhibit-bar {
+  background: #061022;
+  border-bottom: 1px solid rgba(186, 206, 238, 0.1);
+  color: var(--ink);
+}
+
+.mj-return--header,
+.mj-return--header:visited {
+  color: var(--ink-body);
+}
+
+.mj-return--header:hover {
+  color: var(--ink);
+  border-color: rgba(186, 206, 238, 0.28);
+}
+
+.mj-return--header:focus-visible {
+  outline-color: var(--rose);
+  box-shadow: 0 0 0 6px #061022;
 }
 
 /* ============================================================
@@ -78,28 +119,40 @@ body {
   justify-content: space-between;
   gap: 24px;
   padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
 }
 
 .exhibit-title {
   margin: 0 0 12px;
   font-family: var(--font-display);
-  font-size: clamp(40px, 7vw, 64px);      /* 字阶 1：页眉主标题 */
+  font-size: clamp(42px, 6.4vw, 64px);      /* 字阶 1：页眉主标题 */
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+/* 保留 same 的西文打字机等宽标题（遵循 FONT_GUIDELINES.md） */
+.exhibit-title.typewriter-title,
+.exhibit-title .typewriter-title {
+  font-family: ui-monospace, "Courier New", monospace;
   font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: 0;
-  color: var(--screen-warm);
 }
 
 .exhibit-author {
   margin: 10px 0 0;
-  font-size: 13px;
-  color: var(--ink-subtle);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--starlight);
 }
 
 .header-motif {
   width: 104px;
   height: auto;
-  opacity: 0.2;
+  opacity: 0.22;
+  filter: brightness(1.35) drop-shadow(0 0 22px rgba(44, 106, 218, 0.28));
   flex-shrink: 0;
   pointer-events: none;
   user-select: none;
@@ -113,14 +166,14 @@ body {
   z-index: 1;
   max-width: 1220px;
   margin: 0 auto;
-  padding: 32px 28px 24px;
+  padding: 36px 28px 24px;
 }
 
 /* ============================================================
    宣传片 Hero
    ============================================================ */
 .promo-hero {
-  margin-bottom: 48px;
+  margin-bottom: 52px;
 }
 
 .promo-inner {
@@ -129,11 +182,12 @@ body {
   align-items: center;
   gap: 32px;
   padding: 40px 40px;
-  background: linear-gradient(180deg, rgba(27, 33, 43, 0.9), rgba(16, 20, 27, 0.94));
+  background: linear-gradient(160deg, rgba(21, 36, 66, 0.88), rgba(15, 27, 51, 0.84));
+  border: 1px solid var(--border);
   border-radius: 20px;
   box-shadow:
-    0 18px 44px rgba(0, 0, 0, 0.32),
-    0 2px 10px rgba(0, 0, 0, 0.2);
+    0 18px 44px rgba(3, 8, 20, 0.42),
+    0 2px 10px rgba(3, 8, 20, 0.24);
 }
 
 .promo-copy {
@@ -143,25 +197,28 @@ body {
 
 .promo-platform {
   margin: 0 0 12px;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: var(--ink-muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--starlight);
 }
 
 .promo-title {
   margin: 0 0 24px;
   font-family: var(--font-display);
-  font-size: clamp(24px, 3.4vw, 32px);      /* 字阶 2：章节 / Hero 标题 */
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--screen-warm);
+  font-size: clamp(30px, 4.2vw, 40px);      /* 字阶 2：章节 / Hero 标题 */
+  font-weight: 400;
+  line-height: 1.32;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  text-wrap: balance;
   overflow-wrap: anywhere;
 }
 
 .promo-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .promo-actions .c-btn {
@@ -185,31 +242,33 @@ body {
   display: flex;
   align-items: baseline;
   gap: 12px;
-  margin: 24px 0 20px;
+  margin: 24px 0 24px;
 }
 
 .section-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(24px, 3vw, 30px);        /* 字阶 2：章节标题 */
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--screen-warm);
+  font-size: clamp(30px, 4.2vw, 42px);      /* 字阶 2：章节标题 */
+  font-weight: 400;
+  line-height: 1.32;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  text-wrap: balance;
 }
 
-/* 柔和胶片齿孔纹理（纯 CSS 点阵，非边框线，可被 Gemini 移除/重做） */
+/* 柔和胶片齿孔纹理（冷珍珠银蓝点阵） */
 .film-edge {
   height: 14px;
-  margin: 8px 0;
+  margin: 10px 0;
   background-image: radial-gradient(
     circle at center,
-    rgba(212, 163, 89, 0.28) 3px,
+    rgba(186, 206, 238, 0.22) 3px,
     transparent 3.5px
   );
   background-size: 28px 14px;
   background-repeat: repeat-x;
   background-position: center;
-  opacity: 0.5;
+  opacity: 0.65;
   pointer-events: none;
 }
 
@@ -230,8 +289,8 @@ body {
 
 .g-shot {
   appearance: none;
-  border: 0;
-  background: #0A0C10;
+  border: 1px solid var(--border);
+  background: #061022;
   padding: 0;
   width: 100%;
   border-radius: 14px;
@@ -240,7 +299,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 0 30px rgba(13, 13, 15, 0.5);
+  box-shadow: inset 0 0 30px rgba(6, 16, 34, 0.55);
+  transition: border-color 0.22s ease, transform 0.22s ease;
+}
+
+.g-shot:hover {
+  border-color: var(--rose-border);
+  transform: translateY(-2px);
 }
 
 .g-shot-img {
@@ -249,18 +314,18 @@ body {
   width: 100%;
   height: auto;                 /* 自然高度，不裁切 */
   object-fit: contain;          /* 兜底：任何固定盒内都不裁切 */
-  background: #0A0C10;
+  background: #061022;
 }
 
 .g-shot:focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--rose);
   outline-offset: 3px;
 }
 
 .g-caption {
   margin: 0;
-  font-size: 13px;              /* 字阶 4：图注 / 次要 */
-  line-height: 1.5;
+  font-size: 13.5px;            /* 字阶 4：图注 / 次要 */
+  line-height: 1.65;
   color: var(--ink-muted);
   overflow-wrap: anywhere;
 }
@@ -277,16 +342,16 @@ body {
 }
 
 /* ============================================================
-   按钮：主按钮琥珀实底深字；次按钮 ghost（无边框）
+   按钮：主按钮丝绒玫瑰实底纯白字；次按钮冷夜半透描边
    ============================================================ */
 .c-btn {
   appearance: none;
   min-height: 44px;
-  padding: 10px 16px;
+  padding: 10px 18px;
   border-radius: 11px;
-  border: 0;
+  border: 1px solid transparent;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
@@ -295,35 +360,38 @@ body {
   justify-content: center;
   gap: 6px;
   text-align: center;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .c-btn--primary {
-  background: var(--amber);
-  color: #14120D;
+  background: var(--rose-fill);
+  color: #fff9fb;
+  font-weight: 600;
 }
 
 .c-btn--primary:hover {
-  background: #E0B46A;
+  background: var(--rose-fill-hover);
 }
 
 .c-btn--secondary {
-  background: transparent;
-  color: var(--screen-warm);
+  background: rgba(15, 27, 51, 0.72);
+  border-color: var(--border);
+  color: var(--ink-body);
 }
 
 .c-btn--secondary:hover {
-  background: rgba(242, 239, 233, 0.07);
-  color: #FFFFFF;
+  background: var(--surface-elevated);
+  border-color: var(--rose-border);
+  color: #fff9fb;
 }
 
 .c-btn:focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--rose);
   outline-offset: 2px;
 }
 
 /* ============================================================
-   二维码（clamp 尺寸，点击放大）
+   二维码（clamp 尺寸，点击放大；纯白底高对比度扫码）
    ============================================================ */
 .c-qr {
   appearance: none;
@@ -335,7 +403,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: zoom-in;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.34);
+  box-shadow: 0 8px 24px rgba(3, 8, 20, 0.45);
   transition: transform 0.2s ease;
 }
 
@@ -344,7 +412,7 @@ body {
 }
 
 .c-qr:focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--rose);
   outline-offset: 3px;
 }
 
@@ -356,13 +424,13 @@ body {
 
 .c-qr-hint {
   margin: 0;
-  font-size: 12px;
-  color: var(--ink-subtle);
+  font-size: 12.5px;
+  color: var(--ink-muted);
   text-align: center;
 }
 
 /* ============================================================
-   LIGHTBOX（无边框面板，遮罩保持蓝黑）
+   LIGHTBOX（遮罩保持午夜钴蓝）
    ============================================================ */
 .lightbox {
   position: fixed;
@@ -382,7 +450,7 @@ body {
 .lightbox-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(13, 13, 15, 0.9);
+  background: rgba(6, 16, 34, 0.92);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -413,15 +481,15 @@ body {
   height: auto;
   object-fit: contain;
   border-radius: 10px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
-  background: #0A0C10;
+  box-shadow: 0 20px 60px rgba(3, 8, 20, 0.72);
+  background: #061022;
 }
 
 .lightbox-media .lb-qr-box {
   background: #ffffff;
   padding: 18px;
   border-radius: 14px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 20px 60px rgba(3, 8, 20, 0.72);
 }
 
 .lightbox-media .lb-qr-box svg {
@@ -432,8 +500,9 @@ body {
 
 .lightbox-caption {
   margin-top: 14px;
-  font-size: 13.5px;
-  color: #E7DFD1;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-body);
   text-align: center;
   max-width: 60ch;
   overflow-wrap: anywhere;
@@ -446,23 +515,26 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 0;
-  background: rgba(16, 19, 25, 0.8);
-  color: #fff;
+  border: 1px solid rgba(186, 206, 238, 0.22);
+  background: var(--surface-glass);
+  color: var(--ink);
   font-size: 18px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .lightbox-close:hover {
-  background: rgba(242, 239, 233, 0.18);
+  border-color: var(--rose-border);
+  background: var(--rose-soft);
+  color: var(--rose-bright);
 }
 
 .lightbox-close:focus-visible,
 .lightbox-nav:focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--rose);
   outline-offset: 2px;
 }
 
@@ -471,23 +543,26 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 0;
-  background: rgba(16, 19, 25, 0.8);
-  color: #fff;
+  border: 1px solid rgba(186, 206, 238, 0.22);
+  background: var(--surface-glass);
+  color: var(--ink);
   font-size: 26px;
   line-height: 1;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .lightbox-nav:hover {
-  background: rgba(242, 239, 233, 0.18);
+  border-color: var(--rose-border);
+  background: var(--rose-soft);
+  color: var(--rose-bright);
 }
 
 /* ============================================================
-   手动复制兜底弹窗（微信内置浏览器，无边框面板）
+   手动复制兜底弹窗（微信内置浏览器）
    ============================================================ */
 .copy-dialog {
   position: fixed;
@@ -502,7 +577,7 @@ body {
 .copy-dialog-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(13, 13, 15, 0.82);
+  background: rgba(6, 16, 34, 0.84);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -511,10 +586,11 @@ body {
   position: relative;
   z-index: 1;
   width: min(420px, 92vw);
-  background: linear-gradient(180deg, #1A1F28, #12151B);
+  background: linear-gradient(180deg, #152442, #0f1b33);
+  border: 1px solid var(--border);
   border-radius: 18px;
   padding: 28px 24px 24px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 24px 60px rgba(3, 8, 20, 0.65);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -527,31 +603,37 @@ body {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  border: 0;
-  background: rgba(16, 19, 25, 0.7);
-  color: #fff;
+  border: 1px solid rgba(186, 206, 238, 0.18);
+  background: rgba(6, 16, 34, 0.72);
+  color: var(--ink);
   font-size: 15px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .copy-dialog-close:hover {
-  background: rgba(242, 239, 233, 0.18);
+  border-color: var(--rose-border);
+  background: var(--rose-soft);
+  color: var(--rose-bright);
 }
 
+/* 紧凑弹窗标题采用苹方 Semibold，避免小字号龙藏偏小 */
 .copy-dialog-title {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 17px;
+  font-family: var(--font-body);
+  font-size: 18px;
   font-weight: 600;
-  color: var(--screen-warm);
+  line-height: 1.4;
+  color: var(--ink);
 }
 
 .copy-dialog-hint {
-  margin: 0;
-  font-size: 13px;
+  margin: 0 0 0.25em;
+  font-size: 14px;
+  line-height: 1.7;
   color: var(--ink-muted);
 }
 
@@ -559,19 +641,19 @@ body {
   width: 100%;
   min-height: 44px;
   padding: 10px 12px;
-  border: 0;
+  border: 1px solid var(--border);
   border-radius: 9px;
-  background: #171C24;
-  color: var(--screen-warm);
+  background: #061022;
+  color: var(--ink);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 13.5px;
   overflow-wrap: anywhere;
   user-select: text;
   -webkit-user-select: text;
 }
 
 .copy-dialog-input:focus {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--rose);
   outline-offset: 1px;
 }
 
@@ -588,12 +670,13 @@ body {
   bottom: max(74px, calc(env(safe-area-inset-bottom) + 64px));
   transform: translateX(-50%);
   z-index: 9900;
-  background: rgba(18, 21, 27, 0.96);
-  color: var(--screen-warm);
+  background: rgba(15, 27, 51, 0.96);
+  border: 1px solid var(--rose-border);
+  color: var(--ink);
   border-radius: 999px;
   padding: 10px 18px;
-  font-size: 13px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  font-size: 13.5px;
+  box-shadow: 0 12px 30px rgba(3, 8, 20, 0.55);
   max-width: calc(100vw - 32px);
   text-align: center;
 }
@@ -605,14 +688,16 @@ body {
   text-align: center;
   color: var(--ink-subtle);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 14.5px;
 }
 
 .noscript-note {
+  margin: 0 0 1.05em;
   padding: 24px 16px;
   text-align: center;
   color: var(--ink-muted);
-  font-size: 14px;
+  font-size: 15.5px;
+  line-height: 1.8;
 }
 
 /* ============================================================

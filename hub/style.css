@@ -618,8 +618,8 @@ body {
 }
 
 @keyframes catalog-lit-glow {
-  0%, 100% { box-shadow: 0 0 0 rgba(212, 163, 89, 0); }
-  50% { box-shadow: 0 0 22px rgba(212, 163, 89, 0.12); }
+  0%, 100% { box-shadow: 0 0 0 rgba(192, 56, 101, 0); }
+  50% { box-shadow: 0 0 22px rgba(192, 56, 101, 0.14); }
 }
 
 .catalog-tagline {

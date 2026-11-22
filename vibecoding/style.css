@@ -1,45 +1,50 @@
 /* ============================================================
    幕间漫游 · 5 号模块「vibecoding 合集」视觉层
-   本页属于房间 2 —— 主展漫游 / 影院星球 / 林立手记（午夜放映）
+   统一 101-Nights 午夜钴蓝 & 丝绒玫红暗房美学（与主厅 roam.css、影院星球一致）
 
-   本版为「线框级正确」参考实现：干净、规范、可被换皮。
-   只做基础可读样式，不含装饰动画、阴影堆叠、边框与渐变卡片。
+   色温令牌：
+   - 暗房画布：#061022 → #0d1931 → #191026
+   - 卡片表面：#0f1b33 + 冷光细线 rgba(186, 206, 238, 0.14)
+   - 文字三级：#f3f1f6 / #a9b9d2 / #788aa8
+   - 主强调色：丝绒玫红 #d84b7a / #e05887（白字 #fff9fb），焦点环星光蓝 #8ab4f8
 
-   全站「母体骨架 + 随展厅呼吸的色温令牌（Room Lighting Tokens）」参考表：
-   房间 1 · 序幕（暗房开场）：银盐纯黑 #080809 + 微光白 #E9E7E2
-   房间 2 · 主展漫游 / 影院星球 / 林立手记（午夜放映）★ 本页
-           蓝黑 #0D0D0F → #1B2028 + 银幕暖白 #F2EFE9 + 琥珀金 #D4A359
-   房间 3 · 停下深读：档案温纸 #F4F1E9 / #EFE4D2 + 胶片炭黑 #161616 + 印章朱红 #B8402F
-   房间 4 · 片尾散场：丝绒洋红 #B82E6B → #6E123B + 香槟金 #FFE2A8
-   房间 5 · 彩蛋：复用 /shared/motifs/ 原创线条拼贴图案
-
-   字体规范：标题使用 Long Cang（--font-display），正文使用苹方黑体栈
-   （--font-body，变量见 /shared/shell.css）。不使用伪手写变换。
+   字体规范：主标题与弹窗标题使用 Long Cang（--font-display，西文 vibecoding 保留 .typewriter-title），
+   卡片标题与正文使用苹方黑体栈（--font-body，变量见 /shared/shell.css）。不使用伪粗体。
    ============================================================ */
 :root {
   color-scheme: dark;
 
-  /* —— 房间 2 · 午夜放映 色温令牌（仅基础可读样式）—— */
-  --bg-0: #0D0D0F;      /* 背景最深 */
-  --bg-1: #1B2028;      /* 背景亮端（渐变上端） */
-  --surface: #141821;   /* 卡片单一浅表面色 */
-  --ink: #F2EFE9;       /* 主文字 */
-  --ink-2: #A39E93;     /* 次文字 */
-  --ink-3: #6E6B64;     /* 弱文字 */
-  --accent: #D4A359;    /* 强调：主按钮 + focus 焦点环 */
+  /* —— 101-Nights 午夜钴蓝 & 丝绒玫红 色温令牌 —— */
+  --bg-0: #061022;
+  --bg-1: #0d1931;
+  --bg-2: #191026;
+  --surface: #0f1b33;
+  --surface-hover: #142342;
+  --border-hairline: rgba(186, 206, 238, 0.14);
+  --border-strong: rgba(186, 206, 238, 0.26);
+  --ink: #f3f1f6;
+  --ink-2: #a9b9d2;
+  --ink-3: #788aa8;
+  --accent: #d84b7a;
+  --accent-hover: #e05887;
+  --accent-ink: #fff9fb;
+  --focus-ring: #8ab4f8;
+  --mj-return-bg: #061022;
 
   /* 二维码前景/底色（扫码对比度优先，勿改） */
   --qr-fg: #161618;
   --qr-bg: #ffffff;
 
-  /* 字阶四级 + 行高 */
-  --fs-title: clamp(32px, 6vw, 48px);   /* 页面主标题 */
-  --fs-label: 18px;                      /* 卡片标题 */
+  /* 字阶与行高（Long Cang 光学补偿） */
+  --fs-title: clamp(38px, 6vw, 54px);   /* 页面主标题（Long Cang） */
+  --fs-modal-title: 28px;                /* 弹窗标题（Long Cang >= 28px） */
+  --fs-label: 18px;                      /* 卡片标题（PingFang Semibold 17-18px） */
   --fs-body: 16px;                       /* 正文 / 描述 / 按钮 */
   --fs-caption: 13px;                    /* 类型 / 作者 / 图注 / 提示 */
-  --lh-title: 1.25;
+  --lh-title: 1.22;
+  --lh-modal-title: 1.32;
   --lh-label: 1.4;
-  --lh-body: 1.7;
+  --lh-body: 1.72;
   --lh-caption: 1.5;
 
   /* 8px 间距节奏 */
@@ -67,18 +72,25 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  background-color: var(--bg-0);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  /* 单一极简静态午夜蓝黑渐变 */
-  background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 100%);
+  background-color: var(--bg-0);
+  background-image: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 56%, var(--bg-2) 100%);
   color: var(--ink);
   font-family: var(--font-body);
   line-height: var(--lh-body);
   overflow-x: clip;
   padding-bottom: 104px; /* 为全局 .mj-shell-dock 预留安全空间 */
+}
+
+.mj-exhibit-bar {
+  --mj-return-bg: #061022;
+  background: #061022;
+  border-bottom: 1px solid rgba(186, 206, 238, 0.1);
 }
 
 /* —— 图片自适应基线：所有 img 不溢出、不变形 —— */
@@ -89,12 +101,13 @@ img {
 }
 
 /* ============================================================
-   HEADER（纯文字元信息，无框无点）
+   HEADER（纯文字元信息，冷光细线分隔）
    ============================================================ */
 .exhibit-header {
   position: relative;
   z-index: 2;
-  background: rgba(13, 13, 15, 0.55);
+  background: rgba(6, 16, 34, 0.56);
+  border-bottom: 1px solid var(--border-hairline);
 }
 
 .header-inner {
@@ -115,9 +128,10 @@ img {
   margin: 0 0 var(--sp-1);
   font-family: var(--font-display);
   font-size: var(--fs-title);
-  font-weight: 600;
-  letter-spacing: 0;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   line-height: var(--lh-title);
+  text-wrap: balance;
   color: var(--ink);
 }
 
@@ -148,20 +162,22 @@ img {
   align-items: stretch;
 }
 
-/* 卡片：单一浅表面色，无边框、无渐变、无阴影堆叠 */
+/* 卡片：午夜钴蓝浅表面 + 柔和冷光细线 */
 .c-card {
   background: var(--surface);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-lg);
   padding: var(--sp-3);
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
   min-width: 0;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .c-card:hover {
-  background: #181D27;
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
 }
 
 /* 预览图「银幕」：aspect-ratio 预留空间防 CLS，图片 object-fit:contain 不裁切 */
@@ -171,7 +187,7 @@ img {
 
 .c-shot {
   appearance: none;
-  border: 0;
+  border: 1px solid rgba(186, 206, 238, 0.1);
   background: var(--bg-0);
   padding: 0;
   width: 100%;
@@ -192,7 +208,7 @@ img {
 }
 
 .c-shot:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -201,7 +217,7 @@ img {
   font-size: var(--fs-caption);
 }
 
-/* 多图缩略图切换条：小尺寸防溢出，明暗区分选中 */
+/* 多图缩略图切换条：小尺寸防溢出，明暗与玫红细框区分选中 */
 .c-thumbs {
   display: flex;
   flex-wrap: wrap;
@@ -211,7 +227,7 @@ img {
 
 .c-thumb {
   appearance: none;
-  border: 0;
+  border: 1px solid transparent;
   background: var(--bg-0);
   border-radius: var(--radius-sm);
   padding: 0;
@@ -220,7 +236,7 @@ img {
   overflow: hidden;
   cursor: pointer;
   opacity: 0.55;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
 }
 
 .c-thumb img {
@@ -232,6 +248,7 @@ img {
 
 .c-thumb.is-active {
   opacity: 1;
+  border-color: var(--accent-hover);
 }
 
 .c-thumb:hover {
@@ -239,7 +256,7 @@ img {
 }
 
 .c-thumb:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -261,7 +278,7 @@ img {
 
 .c-title {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--fs-label);
   font-weight: 600;
   letter-spacing: 0;
@@ -312,7 +329,7 @@ img {
 }
 
 .c-qr:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -347,14 +364,14 @@ img {
   text-align: center;
 }
 
-/* 按钮：主按钮强调色实底深字；次按钮 ghost（无边框） */
+/* 按钮：主按钮丝绒玫红实底白字；次按钮冷光细线 ghost */
 .c-btn {
   appearance: none;
   width: 100%;
   min-height: 44px;
   padding: 10px var(--sp-2);
   border-radius: var(--radius-md);
-  border: 0;
+  border: 1px solid transparent;
   font-family: var(--font-body);
   font-size: var(--fs-body);
   font-weight: 500;
@@ -365,35 +382,38 @@ img {
   justify-content: center;
   gap: var(--sp-1);
   text-align: center;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .c-btn--primary {
   background: var(--accent);
-  color: #14120D;
+  color: var(--accent-ink);
 }
 
 .c-btn--primary:hover {
-  background: #E0B46A;
+  background: var(--accent-hover);
+  color: var(--accent-ink);
 }
 
 .c-btn--secondary {
   background: transparent;
+  border-color: var(--border-hairline);
   color: var(--ink);
 }
 
 .c-btn--secondary:hover {
-  background: rgba(242, 239, 233, 0.08);
-  color: #FFFFFF;
+  background: rgba(186, 206, 238, 0.1);
+  border-color: var(--border-strong);
+  color: #ffffff;
 }
 
 .c-btn:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
 /* ============================================================
-   LIGHTBOX（无边框面板，遮罩蓝黑）
+   LIGHTBOX（午夜钴蓝遮罩）
    ============================================================ */
 .lightbox {
   position: fixed;
@@ -413,7 +433,7 @@ img {
 .lightbox-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(13, 13, 15, 0.9);
+  background: rgba(6, 16, 34, 0.92);
 }
 
 .lightbox-frame {
@@ -474,7 +494,7 @@ img {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 0;
+  border: 1px solid var(--border-hairline);
   background: var(--surface);
   color: var(--ink);
   font-size: 18px;
@@ -485,11 +505,17 @@ img {
 }
 
 .lightbox-close:hover {
-  background: #181D27;
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+}
+
+.lightbox-close:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 /* ============================================================
-   手动复制兜底弹窗（无边框面板）
+   手动复制兜底弹窗
    ============================================================ */
 .copy-dialog {
   position: fixed;
@@ -504,7 +530,7 @@ img {
 .copy-dialog-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(13, 13, 15, 0.82);
+  background: rgba(6, 16, 34, 0.84);
 }
 
 .copy-dialog-frame {
@@ -512,6 +538,7 @@ img {
   z-index: 1;
   width: min(420px, 92vw);
   background: var(--surface);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-lg);
   padding: var(--sp-4) var(--sp-3) var(--sp-3);
   display: flex;
@@ -537,15 +564,21 @@ img {
 }
 
 .copy-dialog-close:hover {
-  background: rgba(242, 239, 233, 0.1);
+  background: rgba(186, 206, 238, 0.12);
+}
+
+.copy-dialog-close:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .copy-dialog-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-label);
-  font-weight: 600;
-  line-height: var(--lh-label);
+  font-size: var(--fs-modal-title);
+  font-weight: 400;
+  line-height: var(--lh-modal-title);
+  text-wrap: balance;
   color: var(--ink);
 }
 
@@ -560,7 +593,7 @@ img {
   width: 100%;
   min-height: 44px;
   padding: 10px var(--sp-2);
-  border: 0;
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-md);
   background: var(--bg-0);
   color: var(--ink);
@@ -572,7 +605,7 @@ img {
 }
 
 .copy-dialog-input:focus {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 1px;
 }
 
@@ -590,12 +623,13 @@ img {
   transform: translateX(-50%);
   z-index: 9900;
   background: var(--surface);
+  border: 1px solid var(--border-hairline);
   color: var(--ink);
   border-radius: 999px;
   padding: 10px var(--sp-2);
   font-size: var(--fs-caption);
   line-height: var(--lh-caption);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 28px rgba(2, 6, 18, 0.55);
   max-width: calc(100vw - var(--sp-4));
   text-align: center;
 }
@@ -650,6 +684,10 @@ img {
 
   .c-card {
     padding: var(--sp-2);
+  }
+
+  .c-title {
+    font-size: 17px;
   }
 }
 

@@ -144,28 +144,57 @@
     var roamCellOrder = [];
     var lastStageWidth = 0;
     var hubUrl = new URL(location.href);
+    var rawHash = (hubUrl.hash || '').toLowerCase();
     var navigation = performance.getEntriesByType('navigation')[0];
-    var reloading = navigation && navigation.type === 'reload';
+    var reloading = Boolean(navigation && navigation.type === 'reload');
+    var isBackForward = Boolean(navigation && navigation.type === 'back_forward');
+    var fromExhibit = hubUrl.searchParams.get('from') || hubUrl.searchParams.get('arrived') || '';
     var historySeed = !reloading && history.state && history.state.mujianEnteredHall
       ? Routes.parseRoamSeed(history.state.mujianRoamSeed) : 0;
     // Some containers reopen the hall URL instead of restoring the history entry.
     var lastArrival = Footprint && Footprint.takeRoamReturn && Footprint.takeRoamReturn();
     var arrivalSeed = !reloading ? Routes.parseRoamSeed(lastArrival) : 0;
-    var returnedSeed = Routes.parseRoamSeed(hubUrl.searchParams.get('roam'));
-    var restoredHall = Boolean(returnedSeed || historySeed || arrivalSeed);
-    var layoutSeed = returnedSeed || historySeed || arrivalSeed || Math.floor(Math.random() * 2147483646) + 1;
-    var arrived = hubUrl.searchParams.get('arrived');
-    if (returnedSeed && enabledModules.some(function (module) { return module.id === arrived; })
+    var returnedSeed = !reloading ? Routes.parseRoamSeed(hubUrl.searchParams.get('roam')) : 0;
+    var sessionActive = false;
+    try { sessionActive = sessionStorage.getItem('mujian.hub.session.v1') === '1'; } catch (_) {}
+
+    // Only skip opening & keep lit exhibits when returning mid-session from a sub-exhibit or Back/Forward.
+    // Any manual reload or fresh tab / reopened browser starts with the opening sequence and all exhibits unlit.
+    var returningFromExhibit = !reloading && Boolean(fromExhibit || returnedSeed || arrivalSeed || isBackForward);
+    var shouldFreshStart = reloading || (!returningFromExhibit && !sessionActive) || (!returningFromExhibit && !rawHash);
+    if (shouldFreshStart && Footprint && typeof Footprint.startFreshSession === 'function') {
+      Footprint.startFreshSession();
+    }
+    try { sessionStorage.setItem('mujian.hub.session.v1', '1'); } catch (_) {}
+
+    var restoredHall = !shouldFreshStart && Boolean(returningFromExhibit || historySeed);
+    var layoutSeed = (!shouldFreshStart && (returnedSeed || historySeed || arrivalSeed)) || Math.floor(Math.random() * 2147483646) + 1;
+    var arrived = hubUrl.searchParams.get('arrived') || fromExhibit;
+    if (!shouldFreshStart && returnedSeed && enabledModules.some(function (module) { return module.id === arrived; })
         && Footprint && Footprint.rememberRoamVisit) {
       Footprint.rememberRoamVisit(arrived, returnedSeed);
     }
-    // Keep Back stable without making a copied or reloaded hall URL carry a visit.
+    // Keep Back stable without making a copied or reloaded hall URL carry a visit or skip opening.
+    hubUrl.searchParams.delete('from');
     hubUrl.searchParams.delete('roam');
     hubUrl.searchParams.delete('arrived');
+    if (shouldFreshStart) {
+      hubUrl.hash = '';
+    } else if (returningFromExhibit && rawHash === '#hall') {
+      hubUrl.hash = '';
+    }
     try {
       history.replaceState(Object.assign({}, history.state, { mujianRoamSeed: layoutSeed, mujianEnteredHall: false }), '', hubUrl);
     } catch (_) {}
     updateSpecialLinks('hall');
+
+    var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    function syncThemeColor() {
+      if (!themeColorMeta) return;
+      if (phase !== 'hall') themeColorMeta.setAttribute('content', '#080809');
+      else if (viewMode === 'catalog') themeColorMeta.setAttribute('content', '#efe4d2');
+      else themeColorMeta.setAttribute('content', '#03132d');
+    }
 
     var ticketCtrl = window.MujianTicket ? window.MujianTicket.createController(roamObjectPath) : null;
     rootEl.style.setProperty('--curtain-close', CURTAIN_CLOSE + 'ms');
@@ -353,6 +382,7 @@
       });
       phase = 'opening';
       syncExploreAxis();
+      syncThemeColor();
 
       rootEl.classList.remove('is-entered', 'is-transitioning', 'is-title-visible', 'is-catalog-mode', 'is-opening-finale');
       rootEl.classList.add('is-opening-phase', 'is-ready');
@@ -626,7 +656,8 @@
       // This avoids making eight objects into an unnecessarily long single file.
       if (mobile && !single) {
         var laneW = (stageW - side * 2 - gap) / 2;
-        var laneBottom = [top + random() * 24, top + 75 + random() * 40];
+        var laneBottom = [top + random() * 20, top + 64 + random() * 32];
+        var maxNodeBottom = 0;
         roamCellOrder.forEach(function (idx, order) {
           var lane = laneBottom[0] <= laneBottom[1] ? 0 : 1;
           var box = sizes[idx];
@@ -636,9 +667,10 @@
           el.style.left = x.toFixed(1) + 'px';
           el.style.top = y.toFixed(1) + 'px';
           el.classList.toggle('projects-left', lane === 1);
-          laneBottom[lane] += box.h + 30 + random() * 36;
+          maxNodeBottom = Math.max(maxNodeBottom, y + box.h / 2);
+          laneBottom[lane] += box.h + 26 + random() * 30;
         });
-        roamStage.style.minHeight = Math.ceil(Math.max.apply(null, laneBottom) + bottom) + 'px';
+        roamStage.style.minHeight = Math.ceil(maxNodeBottom + 20) + 'px';
         return;
       }
       var area = sizes.reduce(function (sum, box) { return sum + box.w * box.h; }, 0);
@@ -770,6 +802,7 @@
       if (menuToggle.getAttribute('aria-expanded') === 'true') setHallMenu(false, hallNavigation.contains(document.activeElement));
       rootEl.classList.toggle('is-catalog-mode', isCatalog);
       syncExploreAxis();
+      syncThemeColor();
       if (roamView) {
         roamView.hidden = isCatalog;
         roamView.setAttribute('aria-hidden', isCatalog ? 'true' : 'false');
@@ -858,7 +891,11 @@
     }
 
     function handleHashRoute(initialBoot) {
-      var hash = (location.hash || '').toLowerCase();
+      if (initialBoot && shouldFreshStart) {
+        startOpening({ initial: true });
+        return;
+      }
+      var hash = initialBoot ? rawHash : (location.hash || '').toLowerCase();
       if (initialBoot && !hash && restoredHall) hash = '#hall';
       var hasSkipHash = hash === '#hall' || hash === '#catalog' || hash === '#ticket';
       // The homepage and the explicit replay link both start with the opening.

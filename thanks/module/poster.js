@@ -38,6 +38,7 @@ function paintIllustration(context, image, layer) {
 // Use the browser's line breaks, including long nicknames and mixed scripts.
 function measureText(element, bounds) {
   const node = element.firstChild;
+  if (!node || !node.data) return { lines: [], color: '', spacing: '0px', font: '' };
   const range = document.createRange();
   const lines = [];
   let offset = 0;

@@ -52,7 +52,21 @@ img{max-width:100%}
 a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0}
 
-/* 六格奔马放映 */
+/* 六格奔马放映：首帧即遮罩正文，避免开场动画前闪现正文 */
+html.has-film-intro,
+html.has-film-intro body{
+  background:var(--ink);
+  background-image:radial-gradient(ellipse at 50% 44%,#302923,var(--ink) 72%);
+  overflow:hidden;
+}
+html.has-film-intro main,
+html.has-film-intro .topbar,
+html.has-film-intro .rail,
+html.has-film-intro .progress{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
 .film-intro:not([open]){display:none}
 .film-intro{
   position:fixed;inset:0;
@@ -66,7 +80,7 @@ button{font:inherit;color:inherit;background:none;border:0}
   background:radial-gradient(ellipse at 50% 44%,#302923,var(--ink) 72%);
   transition:opacity .42s ease;
 }
-.film-intro::backdrop{background:transparent}
+.film-intro::backdrop{background:var(--ink)}
 .film-intro.is-ending{opacity:0}
 .film-intro__strip{
   display:grid;
@@ -76,7 +90,10 @@ button{font:inherit;color:inherit;background:none;border:0}
   border:1px solid rgba(244,241,233,.22);
   padding-block:clamp(5px,1.1vh,11px);
   box-shadow:0 12px 60px rgba(0,0,0,.45);
+  opacity:0;
+  transition:opacity .22s ease;
 }
+.film-intro.is-playing .film-intro__strip{opacity:1}
 .film-intro__strip::before,.film-intro__strip::after{
   content:"";
   width:42%;justify-self:center;
@@ -96,8 +113,8 @@ button{font:inherit;color:inherit;background:none;border:0}
   display:block;width:100%;height:auto;
   filter:sepia(.24) contrast(.96);
 }
-.film-intro[open] .film-intro__frames{
-  animation:horse-frames .72s steps(1,end) .24s 3 both;
+.film-intro.is-playing .film-intro__frames{
+  animation:horse-frames .72s steps(1,end) .2s 3 both;
 }
 @keyframes horse-frames{
   0%{transform:translateY(0)}

@@ -1,7 +1,7 @@
 import { contributors, acknowledgments, exhibition } from './data.js';
-import { renderPoster } from './poster.js?v=polish-20261122';
+import { renderPoster } from './poster.js?v=save-20261122';
 
-const styleURL = new URL('./credits.css?v=polish-20261122', import.meta.url).href;
+const styleURL = new URL('./credits.css?v=save-20261122', import.meta.url).href;
 const assetRoot = new URL('./assets/', import.meta.url);
 const CARD_OPEN_DELAY_MS = 2000;
 const TWINKLE_RESUME_DELAY_MS = 500;
@@ -77,6 +77,7 @@ export function mountCredits(container, options = {}) {
   let twinkling = [];
   let posterRevision = 0;
   let posterURL = '';
+  let posterFilename = '';
   let posterFile;
   let resolveReady;
   const pauses = new Set();
@@ -507,12 +508,27 @@ export function mountCredits(container, options = {}) {
     posterRevision++;
     if (posterURL) URL.revokeObjectURL(posterURL);
     posterURL = '';
+    posterFilename = '';
     posterFile = undefined;
     posterImage.hidden = true;
     posterImage.removeAttribute('src');
     savePoster.hidden = true;
     savePoster.removeAttribute('href');
+    savePoster.removeAttribute('download');
     saveStatus.textContent = '';
+  }
+
+  function triggerPosterDownload() {
+    if (!posterURL) return false;
+    const link = document.createElement('a');
+    link.href = posterURL;
+    link.download = posterFilename || '幕间漫游-共创者海报.png';
+    link.rel = 'noopener';
+    link.style.display = 'none';
+    document.body.append(link);
+    link.click();
+    setTimeout(() => link.remove(), 120);
+    return true;
   }
 
   async function preparePoster(name) {
@@ -525,7 +541,8 @@ export function mountCredits(container, options = {}) {
       const blob = await renderPoster(card);
       if (revision !== posterRevision || !dialog.open) return;
       const filename = `幕间漫游-${name.replace(/[\\/:*?"<>|]/g, '-')}.png`;
-      posterFile = new File([blob], filename, { type: 'image/png' });
+      posterFilename = filename;
+      posterFile = typeof File === 'function' ? new File([blob], filename, { type: 'image/png' }) : undefined;
       posterURL = URL.createObjectURL(blob);
       posterImage.src = posterURL;
       await posterImage.decode();
@@ -534,7 +551,7 @@ export function mountCredits(container, options = {}) {
       savePoster.href = posterURL;
       savePoster.download = filename;
       savePoster.hidden = false;
-      saveStatus.textContent = matchMedia('(pointer: coarse)').matches ? '长按海报可存入相册' : '';
+      saveStatus.textContent = matchMedia('(pointer: coarse)').matches ? '长按海报或点“保存海报”存入相册' : '';
     } catch {
       if (revision === posterRevision && dialog.open) saveStatus.textContent = '海报生成失败，请关闭后重试。';
     }
@@ -637,12 +654,23 @@ export function mountCredits(container, options = {}) {
   listen(thanksTab, 'click', () => showSection('thanks'));
   listen(closeButton, 'click', closeCard);
   listen(savePoster, 'click', async event => {
-    if (!posterFile || !navigator.canShare?.({ files: [posterFile] })) return;
     event.preventDefault();
-    try {
-      await navigator.share({ files: [posterFile] });
-    } catch (error) {
-      if (error.name !== 'AbortError' && dialog.open) saveStatus.textContent = '可长按图片存入相册';
+    if (!posterURL) return;
+    const isTouch = matchMedia('(pointer: coarse)').matches;
+    if (isTouch && posterFile && navigator.canShare?.({ files: [posterFile] })) {
+      try {
+        await navigator.share({ files: [posterFile], title: '幕间漫游 · 共创者海报' });
+        if (dialog.open) saveStatus.textContent = '已调起系统保存菜单';
+        return;
+      } catch (error) {
+        if (error.name === 'AbortError') return;
+      }
+    }
+    triggerPosterDownload();
+    if (dialog.open) {
+      saveStatus.textContent = isTouch
+        ? '已尝试下载，若未弹出请长按上方海报存入相册'
+        : '海报已开始下载';
     }
   });
   listen(dialog, 'close', finishClose);
